@@ -1,6 +1,5 @@
 import server.NanoHTTPDchild;
-import client.view.MainView;
-import database.*;
+import Client.view.MainView;
 
 public class Apl {
 	private static boolean serverTest = false;

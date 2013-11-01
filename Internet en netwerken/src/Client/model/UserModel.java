@@ -1,4 +1,4 @@
-package client.model;
+package Client.model;
 
 import java.util.Observable;
 

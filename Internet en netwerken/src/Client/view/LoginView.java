@@ -1,12 +1,12 @@
-package client.view;
+package Client.view;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import client.control.LoginControl;
-import client.model.ClientModel;
-import client.model.UserModel;
+import Client.control.LoginControl;
+import Client.model.ClientModel;
+import Client.model.UserModel;
 
 public class LoginView extends JPanel {
 	private UserModel userModel;

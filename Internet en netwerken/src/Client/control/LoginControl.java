@@ -1,4 +1,4 @@
-package client.control;
+package Client.control;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -9,8 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import client.model.ClientModel;
-import client.model.UserModel;
+import Client.model.ClientModel;
+import Client.model.UserModel;
 
 public class LoginControl extends JPanel{
 	private JTextField user, password;

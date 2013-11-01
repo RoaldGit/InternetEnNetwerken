@@ -1,4 +1,4 @@
-package client.view;
+package Client.view;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -7,8 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import client.model.ClientModel;
-import client.model.UserModel;
+import Client.model.ClientModel;
+import Client.model.UserModel;
 
 public class MainView extends JFrame implements Observer {
 	private LoginView login;
