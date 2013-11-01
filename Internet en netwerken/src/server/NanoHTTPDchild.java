@@ -59,5 +59,4 @@ public class NanoHTTPDchild extends NanoHTTPD {
 
 		return response;
 	}
-
 }

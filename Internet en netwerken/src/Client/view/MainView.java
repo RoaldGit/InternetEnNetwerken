@@ -70,4 +70,3 @@ public class MainView extends JFrame implements Observer {
 		}
 	}
 }
-
