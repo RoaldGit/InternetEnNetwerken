@@ -13,7 +13,7 @@ public class UserModel extends Observable {
 		portoWaarde = 0;
 	}
 
-	public void setUserDetails(String user, String password) {
+	public void setUserDetails(String password, String user) {
 		this.user = user;
 		this.password = password;
 

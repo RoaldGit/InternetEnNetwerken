@@ -27,7 +27,7 @@ public class MainView extends JFrame implements Observer {
 		frame.setLayout(null);
 		
 		sideBar = new JPanel();
-		sideBar.setBounds(0, 0, 125, 75);
+		sideBar.setBounds(0, 0, 150, 75);
 		sideBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 
 		userModel = new UserModel();
