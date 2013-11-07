@@ -14,7 +14,7 @@ public class MainView extends JFrame implements Observer {
 	private LoginView login;
 	private UserModel userModel;
 	private ClientModel clientModel;
-	private JLabel connected, loggedIn;
+	private JLabel connected, loggedIn, saldo;
 	private JPanel background;
 
 	public MainView() {
@@ -34,8 +34,11 @@ public class MainView extends JFrame implements Observer {
 		connected = new JLabel("Not connected");
 		connected.setBounds(5, 5, 100, 20);
 
-		loggedIn = new JLabel();
+		loggedIn = new JLabel("Not logged in");
 		loggedIn.setBounds(5, 25, 100, 20);
+
+		saldo = new JLabel();
+		saldo.setBounds(5, 45, 100, 20);
 
 		login = new LoginView(userModel, clientModel);
 		login.setBounds(300, 300, 200, 100);
@@ -43,10 +46,15 @@ public class MainView extends JFrame implements Observer {
 		background.setLayout(null);
 		background.add(connected);
 		background.add(loggedIn);
+		background.add(saldo);
 
 		frame.add(login);
 		frame.add(background);
 
+		clientModel.addObserver(this);
+		userModel.addObserver(this);
+
+		clientModel.setConnected(true);
 
 		frame.setVisible(true);
 	}
@@ -54,16 +62,24 @@ public class MainView extends JFrame implements Observer {
 	public void update(Observable o, Object arg) {
 		if (o == clientModel) {
 			if (arg.equals("connected")) {
-				Boolean con = clientModel.getConnected();
-				if (con)
+				if (clientModel.getConnected()) {
 					connected.setText("Connected");
+					loggedIn.setText("Not logged in");
+				}
 				else
 					connected.setText("Not Connected");
 			}
+		}
+
+		if (o == userModel) {
 			if (arg.equals("loggedIn") && clientModel.getConnected()) {
-				Boolean log = clientModel.getLoggedIn();
-				if (log)
+				if (clientModel.getLoggedIn()) {
 					loggedIn.setText("Logged in as: " + userModel.getUser());
+					String saldoString = String.format("Huidig saldo: %.2f",
+							userModel.getSaldo());
+					saldo.setText(saldoString);
+					login.setVisible(false);
+				}
 				else
 					loggedIn.setText("Not logged in");
 			}
