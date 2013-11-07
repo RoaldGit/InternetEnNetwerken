@@ -42,10 +42,12 @@ public class LoginControl extends JPanel{
 
 	class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			userModel.setPassword(password.getText());
-			userModel.setUser(user.getText());
 			// TODO Check login info with webserver, before setting userModel
-			// vars
+			// vars. Ook: Saldo en aandelen ophalen voor de user
+			clientModel.setLoggedIn(true);
+			userModel.setUserDetails(password.getText(), user.getText());
+
+			System.out.println("LoginControl: Button Pressed");
 		}
 	}
 }
