@@ -16,10 +16,8 @@ public class ClientModel extends Observable {
 		notifyObservers("connected");
 	}
 
-	public void setLoggedIn(Boolean b) {
+	public void setLoggedIn(boolean b) {
 		loggedIn = b;
-		setChanged();
-		notifyObservers("loggedIn");
 	}
 
 	public boolean getConnected() {
@@ -29,4 +27,6 @@ public class ClientModel extends Observable {
 	public boolean getLoggedIn() {
 		return loggedIn;
 	}
+
+
 }
