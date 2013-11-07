@@ -91,10 +91,10 @@ public class MainView extends JFrame implements Observer {
 			if (arg.equals("loggedIn") && clientModel.getConnected()) {
 				if (clientModel.getLoggedIn()) {
 					loggedIn.setText("Logged in as: " + userModel.getUser());
-					String saldoString = String.format("Huidig saldo: %.2f",
+					String saldoString = String.format("Huidig saldo: € %.2f",
 							userModel.getSaldo());
 					String portoString = String.format(
-							"Waarde portofeuille: %.2f",
+							"Waarde portofeuille: € %.2f",
 							userModel.getPortoWaarde());
 
 					saldo.setText(saldoString);
@@ -102,7 +102,6 @@ public class MainView extends JFrame implements Observer {
 
 					login.setVisible(false);
 					beurs.setVisible(true);
-					// sideBar.setVisible(true);
 
 					beurs.updateTables();
 				}
