@@ -2,7 +2,7 @@ import server.NanoHTTPDchild;
 import Client.view.MainView;
 
 public class Apl {
-	private static boolean serverTest = true;
+	private static boolean serverTest = false;
 	private static boolean clientTest = true;
 	private static boolean databaseTest = false;
 
