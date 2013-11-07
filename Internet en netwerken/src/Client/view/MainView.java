@@ -3,19 +3,22 @@ package Client.view;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 
 import Client.model.ClientModel;
 import Client.model.UserModel;
 
 public class MainView extends JFrame implements Observer {
 	private LoginView login;
+	private BeursView beurs;
 	private UserModel userModel;
 	private ClientModel clientModel;
 	private JLabel connected, loggedIn, saldo;
-	private JPanel background;
+	private JPanel sideBar;
 
 	public MainView() {
 		JFrame frame = new JFrame("Internet en Netwerken Eindopdracht");
@@ -23,8 +26,9 @@ public class MainView extends JFrame implements Observer {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(null);
 		
-		background = new JPanel();
-		background.setBounds(0, 0, 800, 800);
+		sideBar = new JPanel();
+		sideBar.setBounds(0, 0, 125, 75);
+		sideBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 
 		userModel = new UserModel();
 		clientModel = new ClientModel();
@@ -43,18 +47,25 @@ public class MainView extends JFrame implements Observer {
 		login = new LoginView(userModel, clientModel);
 		login.setBounds(300, 300, 200, 100);
 
-		background.setLayout(null);
-		background.add(connected);
-		background.add(loggedIn);
-		background.add(saldo);
+		beurs = new BeursView(userModel);
+		beurs.setBounds(5, 100, 400, 400);
+
+		sideBar.setLayout(null);
+		sideBar.add(connected);
+		sideBar.add(loggedIn);
+		sideBar.add(saldo);
 
 		frame.add(login);
-		frame.add(background);
+		frame.add(sideBar);
+		frame.add(beurs);
 
 		clientModel.addObserver(this);
 		userModel.addObserver(this);
 
 		clientModel.setConnected(true);
+
+		login.setVisible(true);
+		beurs.setVisible(false);
 
 		frame.setVisible(true);
 	}
@@ -78,7 +89,10 @@ public class MainView extends JFrame implements Observer {
 					String saldoString = String.format("Huidig saldo: %.2f",
 							userModel.getSaldo());
 					saldo.setText(saldoString);
+
 					login.setVisible(false);
+					beurs.setVisible(true);
+					sideBar.setVisible(true);
 				}
 				else
 					loggedIn.setText("Not logged in");
