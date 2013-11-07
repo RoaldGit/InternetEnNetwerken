@@ -48,7 +48,7 @@ public class MainView extends JFrame implements Observer {
 		login.setBounds(300, 300, 200, 100);
 
 		beurs = new BeursView(userModel);
-		beurs.setBounds(5, 100, 400, 400);
+		beurs.setBounds(0, 0, 800, 800);
 
 		sideBar.setLayout(null);
 		sideBar.add(connected);
