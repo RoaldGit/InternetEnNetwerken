@@ -17,7 +17,7 @@ public class MainView extends JFrame implements Observer {
 	private BeursView beurs;
 	private UserModel userModel;
 	private ClientModel clientModel;
-	private JLabel connected, loggedIn, saldo;
+	private JLabel connected, loggedIn, saldo, portoWaarde;
 	private JPanel sideBar;
 
 	public MainView() {
@@ -27,7 +27,7 @@ public class MainView extends JFrame implements Observer {
 		frame.setLayout(null);
 		
 		sideBar = new JPanel();
-		sideBar.setBounds(0, 0, 150, 75);
+		sideBar.setBounds(0, 0, 200, 75);
 		sideBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 
 		userModel = new UserModel();
@@ -39,10 +39,13 @@ public class MainView extends JFrame implements Observer {
 		connected.setBounds(5, 5, 100, 20);
 
 		loggedIn = new JLabel("Not logged in");
-		loggedIn.setBounds(5, 25, 100, 20);
+		loggedIn.setBounds(5, 20, 200, 20);
 
 		saldo = new JLabel();
-		saldo.setBounds(5, 45, 100, 20);
+		saldo.setBounds(5, 35, 200, 20);
+
+		portoWaarde = new JLabel();
+		portoWaarde.setBounds(5, 50, 200, 20);
 
 		login = new LoginView(userModel, clientModel);
 		login.setBounds(300, 300, 200, 100);
@@ -51,9 +54,11 @@ public class MainView extends JFrame implements Observer {
 		beurs.setBounds(0, 0, 800, 800);
 
 		sideBar.setLayout(null);
+
 		sideBar.add(connected);
 		sideBar.add(loggedIn);
 		sideBar.add(saldo);
+		sideBar.add(portoWaarde);
 
 		frame.add(login);
 		frame.add(sideBar);
@@ -88,11 +93,18 @@ public class MainView extends JFrame implements Observer {
 					loggedIn.setText("Logged in as: " + userModel.getUser());
 					String saldoString = String.format("Huidig saldo: %.2f",
 							userModel.getSaldo());
+					String portoString = String.format(
+							"Waarde portofeuille: %.2f",
+							userModel.getPortoWaarde());
+
 					saldo.setText(saldoString);
+					portoWaarde.setText(portoString);
 
 					login.setVisible(false);
 					beurs.setVisible(true);
-					sideBar.setVisible(true);
+					// sideBar.setVisible(true);
+
+					beurs.updateTables();
 				}
 				else
 					loggedIn.setText("Not logged in");
