@@ -8,21 +8,27 @@ public class WebServer extends Thread {
 	private String requestMessageLine;
 	private String fileName;
 	private int port;
+	private ServerSocket listenSocket;
 
 	public WebServer(int port) {
 		this.port = port;
+		try {
+			listenSocket = new ServerSocket(port);
+		} catch (Exception e) {
+			System.out.println("Webserver|Consctructor: " + e);
+		}
 	}
 
 	public void run() {
-		try {
-			ServerSocket listenSocket = new ServerSocket(port);
+		while (!listenSocket.isClosed()) {
+			try {
+				Socket connectionSocket = listenSocket.accept();
+				if (!connectionSocket.isClosed())
+					serve(connectionSocket);
 
-			Socket connectionSocket = listenSocket.accept();
-			if (!connectionSocket.isClosed())
-				serve(connectionSocket);
-
-		} catch (Exception e) {
-			System.out.println("Webserver: " + e);
+			} catch (Exception e) {
+				System.out.println("Webserver|run: " + e);
+			}
 		}
 	}
 
@@ -51,7 +57,7 @@ public class WebServer extends Thread {
 
 			connectionSocket.close();
 		} catch (Exception e) {
-			System.out.println("Webserver: " + e);
+			System.out.println("Webserver|serve: " + e);
 		}
 	}
 }
