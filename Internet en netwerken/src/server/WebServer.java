@@ -4,17 +4,30 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class WebServer {
+public class WebServer extends Thread {
+	private String requestMessageLine;
+	private String fileName;
+	private int port;
+
 	public WebServer(int port) {
-		//
-		// public static void main(String argv[]) throws Exception {
+		this.port = port;
+	}
+
+	public void run() {
 		try {
-			String requestMessageLine;
-			String fileName;
-
 			ServerSocket listenSocket = new ServerSocket(port);
-			Socket connectionSocket = listenSocket.accept();
 
+			Socket connectionSocket = listenSocket.accept();
+			if (!connectionSocket.isClosed())
+				serve(connectionSocket);
+
+		} catch (Exception e) {
+			System.out.println("Webserver: " + e);
+		}
+	}
+
+	public void serve(Socket connectionSocket) {
+		try {
 			BufferedReader inFromClient = new BufferedReader(
 					new InputStreamReader(connectionSocket.getInputStream()));
 
@@ -31,39 +44,12 @@ public class WebServer {
 			}
 
 			outToClient.writeBytes("HTTP/1.1 200 OK\n\r");
-			outToClient
-					.writeBytes("Content-Type: text/html; charset=utf-8\n\r");
+			outToClient.writeBytes("Content-Type: text/html;\n\r");
 			outToClient.writeBytes("Content-Length: length \r\n");
 			outToClient.writeBytes("Ok, received\n\r");
 			outToClient.writeBytes("\r\n");
 
-			// if (tokenizedLine.nextToken().equals("GET")) {
-			// fileName = tokenizedLine.nextToken();
-			// if (fileName.startsWith("/") == true)
-			// fileName = fileName.substring(1);
-			//
-			// File file = new File(fileName);
-			// int numOfBytes = (int) file.length();
-			// FileInputStream inFile = new FileInputStream(fileName);
-			// byte[] fileInBytes = new byte[numOfBytes];
-			// inFile.read(fileInBytes);
-			//
-			// outToClient.writeBytes("HTTP/1.0 200 Document Follows\r\n");
-			//
-			// if (fileName.endsWith(".jpg"))
-			// outToClient.writeBytes("Content-Type: image/jpeg\r\n");
-			//
-			// if (fileName.endsWith(".gif"))
-			// outToClient.writeBytes("Content-Type: image/gif\r\n");
-			//
-			// outToClient
-			// .writeBytes("Content-Length: " + numOfBytes + "\r\n");
-			// outToClient.writeBytes("\r\n");
-			// outToClient.write(fileInBytes, 0, numOfBytes);
-			//
 			connectionSocket.close();
-			// } else
-			// System.out.println("Bad Request Message");
 		} catch (Exception e) {
 			System.out.println("Webserver: " + e);
 		}
