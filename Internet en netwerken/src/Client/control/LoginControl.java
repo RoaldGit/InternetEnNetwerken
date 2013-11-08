@@ -3,6 +3,11 @@ package Client.control;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.Socket;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -44,6 +49,38 @@ public class LoginControl extends JPanel{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Check login info with webserver, before setting userModel
 			// vars. Ook: Saldo en aandelen ophalen voor de user
+			Thread myThread = new Thread(new Runnable() {
+				public void run() {
+					try {
+						Socket connectionSocket = new Socket("localhost", 800);
+						
+						InputStream in = connectionSocket.getInputStream();
+						
+						BufferedReader inFromClient = new BufferedReader(
+								new InputStreamReader(in));
+						
+						DataOutputStream outToClient = new DataOutputStream(
+								connectionSocket.getOutputStream());
+
+						outToClient.writeBytes("GET HTTP/1.1\n\r\n\r");
+
+						String requestMessageLine;
+
+						while (!connectionSocket.isClosed()) {
+							if (in.available() > 0) {
+								requestMessageLine = inFromClient.readLine();
+								System.out.println("Response: "
+										+ requestMessageLine);
+							}
+						}
+
+					} catch (Exception ex) {
+						System.out.println("LoginControl|Connecting: " + ex);
+					}
+				}
+			});
+			myThread.start();
+
 			clientModel.setLoggedIn(true);
 			userModel.setUserDetails(password.getText(), user.getText());
 
