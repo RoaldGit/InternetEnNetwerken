@@ -3,7 +3,7 @@ import Client.view.MainView;
 
 public class Apl {
 	private static boolean serverTest = true;
-	private static boolean clientTest = false;
+	private static boolean clientTest = true;
 	private static boolean databaseTest = false;
 
 	public static void main(String args[]) {
@@ -16,6 +16,7 @@ public class Apl {
 			// System.out.println("Server boot");
 			// }
 			WebServer server = new WebServer(800);
+			server.start();
 		}
 
 		if (clientTest) {
