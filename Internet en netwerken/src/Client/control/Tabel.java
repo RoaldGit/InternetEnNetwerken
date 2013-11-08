@@ -38,9 +38,6 @@ public class Tabel extends JTable {
 		}
 
 		public void setValue(Object value) {
-			if (formatter == null) {
-				formatter = NumberFormat.getCurrencyInstance(Locale.GERMANY);
-			}
 			setText((value == null) ? "" : String.format("€ %.2f", value));
 		}
 	}
