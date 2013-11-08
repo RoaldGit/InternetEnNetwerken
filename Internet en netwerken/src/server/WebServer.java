@@ -1,8 +1,10 @@
 package server;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
-class WebServer {
+
+public class WebServer {
 	public static void main(String argv[]) throws Exception {
 		String requestMessageLine;
 		String fileName;
