@@ -22,17 +22,20 @@ public class WebServer {
 					connectionSocket.getOutputStream());
 
 			requestMessageLine = inFromClient.readLine();
-			System.out.println(requestMessageLine);
 
 			StringTokenizer tokenizedLine = new StringTokenizer(
 					requestMessageLine);
 
-			String token = tokenizedLine.nextToken();
-
-			while (!token.equals("\r\n")) {
-				System.out.println(token);
-				token = tokenizedLine.nextToken();
+			while (tokenizedLine.hasMoreTokens()) {
+				System.out.println(tokenizedLine.nextToken());
 			}
+
+			outToClient.writeBytes("HTTP/1.1 200 OK\n\r");
+			outToClient
+					.writeBytes("Content-Type: text/html; charset=utf-8\n\r");
+			outToClient.writeBytes("Content-Length: length \r\n");
+			outToClient.writeBytes("Ok, received\n\r");
+			outToClient.writeBytes("\r\n");
 
 			// if (tokenizedLine.nextToken().equals("GET")) {
 			// fileName = tokenizedLine.nextToken();
@@ -58,7 +61,7 @@ public class WebServer {
 			// outToClient.writeBytes("\r\n");
 			// outToClient.write(fileInBytes, 0, numOfBytes);
 			//
-			// connectionSocket.close();
+			connectionSocket.close();
 			// } else
 			// System.out.println("Bad Request Message");
 		} catch (Exception e) {
