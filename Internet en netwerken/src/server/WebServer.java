@@ -50,10 +50,7 @@ public class WebServer extends Thread {
 			}
 
 			outToClient.writeBytes("HTTP/1.1 200 OK\n\r");
-			outToClient.writeBytes("Content-Type: text/html;\n\r");
-			outToClient.writeBytes("Content-Length: length \r\n");
-			outToClient.writeBytes("Ok, received\n\r");
-			outToClient.writeBytes("\r\n");
+			outToClient.writeBytes("Ok");
 
 			connectionSocket.close();
 		} catch (Exception e) {
