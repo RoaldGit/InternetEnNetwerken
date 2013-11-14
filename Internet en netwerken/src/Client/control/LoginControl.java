@@ -57,14 +57,16 @@ public class LoginControl extends JPanel{
 
 	class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			LoginControl source = (LoginControl) e.getSource();
-			String response = connection.login(source.getUser(),
-					source.getPass());
+			String response = connection.login(user.getText(),
+					password.getText());
 
 			if (response.equals("200 OK")) {
 				clientModel.setLoggedIn(true);
 				userModel.setUserDetails(password.getText(), user.getText());
 			}
+ else
+				System.out.println("Login not correct");
+
 			System.out.println("LoginControl: Button Pressed");
 		}
 	}

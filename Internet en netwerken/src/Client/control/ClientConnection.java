@@ -21,27 +21,6 @@ public class ClientConnection extends Thread{
 		connect();
 	}
 
-//	public void run() {
-//		try {
-//
-//			//outToClient.writeBytes("GET HTTP/1.1\n\r\n\r");
-//			outToClient.writeBytes("Aandeel\n\r\n\r");
-//
-//			String requestMessageLine;
-//
-//			while (!connectionSocket.isClosed()) {
-//				if (in.available() > 0) {
-//					requestMessageLine = inFromClient.readLine();
-//					System.out.println("Response: "
-//							+ requestMessageLine);
-//				}
-//			}
-//
-//		} catch (Exception ex) {
-//			System.out.println("ClientConnection|Run: " + ex);
-//		}
-//	}
-	
 	public void connect(){
 		try {
 			connectionSocket = new Socket("localhost", 800);
