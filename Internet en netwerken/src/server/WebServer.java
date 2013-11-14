@@ -9,6 +9,7 @@ public class WebServer extends Thread {
 	private String fileName;
 	private int port;
 	private ServerSocket listenSocket;
+	private String user= "a", pass="b";
 
 	public WebServer(int port) {
 		this.port = port;
@@ -48,11 +49,19 @@ public class WebServer extends Thread {
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
 	
-				while (tokenizedLine.hasMoreTokens()) {
-					System.out.println("Dit: " + tokenizedLine.nextToken());
-				}
-				if(requestMessageLine.contains("Login"))
-					outToClient.writeBytes("Login oak\n\r\n\r");
+//				while (tokenizedLine.hasMoreTokens()) {
+//					System.out.println("Dit: " + tokenizedLine.nextToken());
+//				}
+				if(tokenizedLine.nextToken().equals("Login"))
+					if(tokenizedLine.nextToken().equals(user)){
+						// user
+						if(tokenizedLine.nextToken().equals(pass)){
+							outToClient.writeBytes("Login ok\n\r\n\r");
+						}
+					}
+					else{
+						outToClient.writeBytes("Login oak\n\r\n\r");
+					}
 				
 				if(requestMessageLine.contains("Done"))				
 					connectionSocket.close();
