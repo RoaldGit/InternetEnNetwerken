@@ -44,24 +44,20 @@ public class WebServer extends Thread {
 	
 				requestMessageLine = inFromClient.readLine();
 				byte[] bytes = requestMessageLine.getBytes();
-				System.out.println(bytes[0]);
 	
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
-	
-//				while (tokenizedLine.hasMoreTokens()) {
-//					System.out.println("Dit: " + tokenizedLine.nextToken());
-//				}
-				if(tokenizedLine.nextToken().equals("Login"))
-					if(tokenizedLine.nextToken().equals(user)){
-						// user
-						if(tokenizedLine.nextToken().equals(pass)){
+
+				if (tokenizedLine.nextToken().equals("Login")) {
+					if (tokenizedLine.nextToken().equals(user)) {
+						if (tokenizedLine.nextToken().equals(pass)) {
 							outToClient.writeBytes("Login ok\n\r\n\r");
 						}
 					}
-					else{
+ else {
 						outToClient.writeBytes("Login oak\n\r\n\r");
 					}
+				}
 				
 				if(requestMessageLine.contains("Done"))				
 					connectionSocket.close();
