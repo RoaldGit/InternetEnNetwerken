@@ -58,7 +58,7 @@ public class ClientConnection extends Thread{
 		String response = "";
 
 		try {
-			outToClient.writeBytes("Login |" + user + "|" + password
+			outToClient.writeBytes("Login " + user + " " + password
 					+ "\n\r\n\r");
 			response = inFromClient.readLine();
 		} catch (Exception e) {
