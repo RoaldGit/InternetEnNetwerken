@@ -24,6 +24,7 @@ public class ClientConnection extends Thread{
 	public void connect(){
 		try {
 			connectionSocket = new Socket("localhost", 800);
+
 			in = connectionSocket.getInputStream();
 
 			inFromClient = new BufferedReader(
@@ -43,6 +44,7 @@ public class ClientConnection extends Thread{
 	
 	public void close(){
 		try {
+			outToClient.writeBytes("Done");
 			connectionSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -50,7 +52,11 @@ public class ClientConnection extends Thread{
 	}
 
 	public String login(String user, String password) {
+		if (connectionSocket.isClosed())
+			connect();
+
 		String response = "";
+
 		try {
 			outToClient.writeBytes("Login " + user + "|" + password
 					+ "\n\r\n\r");
