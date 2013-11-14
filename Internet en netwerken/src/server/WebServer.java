@@ -49,14 +49,10 @@ public class WebServer extends Thread {
 						requestMessageLine);
 
 				if (tokenizedLine.nextToken().equals("Login")) {
-					if (tokenizedLine.nextToken().equals(user)) {
-						if (tokenizedLine.nextToken().equals(pass)) {
-							outToClient.writeBytes("Login ok\n\r\n\r");
-						}
-					}
- else {
+					if (checkLogin(tokenizedLine))
+						outToClient.writeBytes("Login ok\n\r\n\r");
+					else
 						outToClient.writeBytes("Login oak\n\r\n\r");
-					}
 				}
 				
 				if(requestMessageLine.contains("Done"))				
@@ -65,5 +61,16 @@ public class WebServer extends Thread {
 		} catch (Exception e) {
 			System.out.println("Webserver|serve: " + e);
 		}
+	}
+
+	public boolean checkLogin(StringTokenizer tokenizedLine) {
+		String user, pass;
+		user = tokenizedLine.nextToken();
+		pass = tokenizedLine.nextToken();
+
+		if (this.user.equals(user) && this.pass.equals(pass))
+			return true;
+		else
+			return false;
 	}
 }
