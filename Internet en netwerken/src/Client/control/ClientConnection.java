@@ -31,6 +31,9 @@ public class ClientConnection extends Thread{
 
 			outToClient = new DataOutputStream(
 					connectionSocket.getOutputStream());
+
+			System.out.println("ClientConnection: connect");
+
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -49,7 +52,8 @@ public class ClientConnection extends Thread{
 	public String login(String user, String password) {
 		String response = "";
 		try {
-			outToClient.writeBytes("Login " + user + "|" + password);
+			outToClient.writeBytes("Login " + user + "|" + password
+					+ "\n\r\n\r");
 			response = inFromClient.readLine();
 		} catch (Exception e) {
 			System.out.println("ClientConnection|login: " + e);
