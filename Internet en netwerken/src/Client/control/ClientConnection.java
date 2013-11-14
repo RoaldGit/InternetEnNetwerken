@@ -44,7 +44,7 @@ public class ClientConnection extends Thread{
 			}
 
 		} catch (Exception ex) {
-			System.out.println("LoginControl|Connecting: " + ex);
+			System.out.println("ClientConnection|Run: " + ex);
 		}
 	}
 

@@ -49,8 +49,8 @@ public class LoginControl extends JPanel{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Check login info with webserver, before setting userModel
 			// vars. Ook: Saldo en aandelen ophalen voor de user
-			Thread myThread = new Thread(new Runnable() {
-				public void run() {
+			// Thread myThread = new Thread(new Runnable() {
+			// public void run() {
 					try {
 						Socket connectionSocket = new Socket("localhost", 800);
 						
@@ -72,14 +72,16 @@ public class LoginControl extends JPanel{
 								System.out.println("Response: "
 										+ requestMessageLine);
 							}
+ else
+						break;
 						}
 
 					} catch (Exception ex) {
 						System.out.println("LoginControl|Connecting: " + ex);
 					}
-				}
-			});
-			myThread.start();
+			// }
+			// });
+			// myThread.start();
 
 			clientModel.setLoggedIn(true);
 			userModel.setUserDetails(password.getText(), user.getText());
