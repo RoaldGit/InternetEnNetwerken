@@ -51,8 +51,8 @@ public class WebServer extends Thread {
 				System.out.println("Dit: " + tokenizedLine.nextToken());
 			}
 
-			outToClient.writeBytes("HTTP/1.1 200 OK\n\r");
-			outToClient.writeBytes("Ok");
+			// outToClient.writeBytes("HTTP/1.1 200 OK\n\r");
+			outToClient.writeBytes("Login ok\n\r\n\r");
 
 			connectionSocket.close();
 		} catch (Exception e) {
