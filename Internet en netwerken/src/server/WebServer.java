@@ -41,25 +41,34 @@ public class WebServer extends Thread {
 	
 				DataOutputStream outToClient = new DataOutputStream(
 						connectionSocket.getOutputStream());
+
 			while (!connectionSocket.isClosed()) {
 				requestMessageLine = inFromClient.readLine();
 
-				// System.out.println("Webserver|serve: " + requestMessageLine);
+				if (!requestMessageLine.equals("")) {
+					System.out.println("Webserver|requestMessageLine: "
+							+ requestMessageLine);
 
-				// byte[] bytes = requestMessageLine.getBytes();
+					StringTokenizer tokenizedLine = new StringTokenizer(
+							requestMessageLine);
+
+					if (tokenizedLine.hasMoreTokens()) {
+						if (tokenizedLine.nextToken().equals("Login")) {
+							if (checkLogin(tokenizedLine)) {
+								outToClient.writeBytes("Login ok\n\r\n\r");
+								System.out.println("Response sent");
+							}
+							else
+								outToClient.writeBytes("Login oak\n\r\n\r");
+						}
 	
-				StringTokenizer tokenizedLine = new StringTokenizer(
-						requestMessageLine);
+						else if (requestMessageLine.contains("Done"))
+							connectionSocket.close();
 
-				if (tokenizedLine.nextToken().equals("Login")) {
-					if (checkLogin(tokenizedLine))
-						outToClient.writeBytes("Login ok\n\r\n\r");
-					else
-						outToClient.writeBytes("Login oak\n\r\n\r");
+
+					}
 				}
-				
-				else if (requestMessageLine.contains("Done"))
-					connectionSocket.close();
+				outToClient.flush();
 			}
 		} catch (Exception e) {
 			System.out.println("Webserver|serve: " + e);
@@ -67,15 +76,19 @@ public class WebServer extends Thread {
 	}
 
 	public boolean checkLogin(StringTokenizer tokenizedLine) {
-		String user, pass;
-		user = tokenizedLine.nextToken();
-		pass = tokenizedLine.nextToken();
+		String username, password;
+		username = tokenizedLine.nextToken();
+		password = tokenizedLine.nextToken();
 
-		System.out.println("Webserver|checkLogin: " + user + "|" + pass);
+		System.out
+				.println("Webserver|checkLogin: " + username + "|" + password);
 
-		if (this.user.equals(user) && this.pass.equals(pass))
+		if (user.equals(username) && pass.equals(password)) {
+			System.out.println("Webserver|checkLogin: Login Correct");
 			return true;
-		else
+		} else {
+			System.out.println("Webserver|checkLogin: Login Incorrect");
 			return false;
+		}
 	}
 }

@@ -63,6 +63,7 @@ public class ClientConnection extends Thread{
 		try {
 			outToClient.writeBytes(request + "\n\r\n\r");
 			response = inFromClient.readLine();
+			System.out.println(response);
 		} catch (Exception e) {
 			System.out.println("ClientConnection|login: " + e);
 		}
