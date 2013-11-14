@@ -47,47 +47,24 @@ public class LoginControl extends JPanel{
 		login.addActionListener(new ButtonListener());
 	}
 
+	public String getUser() {
+		return user.getText();
+	}
+
+	public String getPass() {
+		return password.getText();
+	}
+
 	class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			// TODO Check login info with webserver, before setting userModel
-			// vars. Ook: Saldo en aandelen ophalen voor de user
-			// Thread myThread = new Thread(new Runnable() {
-			// public void run() {
-			try {
-				Socket connectionSocket = new Socket("localhost", 800);
+			LoginControl source = (LoginControl) e.getSource();
+			String response = connection.login(source.getUser(),
+					source.getPass());
 
-				InputStream in = connectionSocket.getInputStream();
-
-				BufferedReader inFromClient = new BufferedReader(
-						new InputStreamReader(in));
-
-				DataOutputStream outToClient = new DataOutputStream(
-						connectionSocket.getOutputStream());
-
-				outToClient.writeBytes("GET HTTP/1.1\n\r\n\r");
-
-				String requestMessageLine;
-
-				while (!connectionSocket.isClosed()) {
-					if (in.available() > 0) {
-						requestMessageLine = inFromClient.readLine();
-						System.out.println("Response: "
-								+ requestMessageLine);
-					}
-					else
-						break;
-				}
-
-			} catch (Exception ex) {
-				System.out.println("LoginControl|Connecting: " + ex);
+			if (response.equals("200 OK")) {
+				clientModel.setLoggedIn(true);
+				userModel.setUserDetails(password.getText(), user.getText());
 			}
-			// }
-			// });
-			// myThread.start();
-
-			clientModel.setLoggedIn(true);
-			userModel.setUserDetails(password.getText(), user.getText());
-
 			System.out.println("LoginControl: Button Pressed");
 		}
 	}
