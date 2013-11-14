@@ -14,7 +14,6 @@ public class BeursModel extends Observable {
 
 	public void setSelectedAandeel(String select) {
 		aandeelSelect = select;
-		System.out.println("BeursModel|setSelected: " + select);
 		setChanged();
 		notifyObservers("aandeelSelect");
 	}
