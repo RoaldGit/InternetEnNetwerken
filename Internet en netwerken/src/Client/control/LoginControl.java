@@ -3,14 +3,11 @@ package Client.control;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.Socket;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -65,7 +62,9 @@ public class LoginControl extends JPanel{
 				userModel.setUserDetails(password.getText(), user.getText());
 			}
  else
-				System.out.println("Login not correct");
+				JOptionPane.showMessageDialog(new JFrame(),
+						"Invalid username or password", "Error bij login",
+						JOptionPane.ERROR_MESSAGE);
 
 			System.out.println("LoginControl: Button Pressed");
 		}
