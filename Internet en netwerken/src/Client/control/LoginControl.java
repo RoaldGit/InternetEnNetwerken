@@ -53,34 +53,34 @@ public class LoginControl extends JPanel{
 			// vars. Ook: Saldo en aandelen ophalen voor de user
 			// Thread myThread = new Thread(new Runnable() {
 			// public void run() {
-			try {
-				Socket connectionSocket = new Socket("localhost", 800);
-
-				InputStream in = connectionSocket.getInputStream();
-
-				BufferedReader inFromClient = new BufferedReader(
-						new InputStreamReader(in));
-
-				DataOutputStream outToClient = new DataOutputStream(
-						connectionSocket.getOutputStream());
-
-				outToClient.writeBytes("GET HTTP/1.1\n\r\n\r");
-
-				String requestMessageLine;
-
-				while (!connectionSocket.isClosed()) {
-					if (in.available() > 0) {
-						requestMessageLine = inFromClient.readLine();
-						System.out.println("Response: "
-								+ requestMessageLine);
-					}
-					else
-						break;
-				}
-
-			} catch (Exception ex) {
-				System.out.println("LoginControl|Connecting: " + ex);
-			}
+			//			try {
+			//				Socket connectionSocket = new Socket("localhost", 800);
+			//
+			//				InputStream in = connectionSocket.getInputStream();
+			//
+			//				BufferedReader inFromClient = new BufferedReader(
+			//						new InputStreamReader(in));
+			//
+			//				DataOutputStream outToClient = new DataOutputStream(
+			//						connectionSocket.getOutputStream());
+			//
+			//				outToClient.writeBytes("GET $ HTTP/1.1\n\r\n\r");
+			//
+			//				String requestMessageLine;
+			//
+			//				while (!connectionSocket.isClosed()) {
+			//					if (in.available() > 0) {
+			//						requestMessageLine = inFromClient.readLine();
+			//						System.out.println("Response: "
+			//								+ requestMessageLine);
+			//					}
+			//					else
+			//						break;
+			//				}
+			//
+			//			} catch (Exception ex) {
+			//				System.out.println("LoginControl|Connecting: " + ex);
+			//			}
 			// }
 			// });
 			// myThread.start();
