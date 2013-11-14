@@ -46,7 +46,7 @@ public class LoginControl extends JPanel{
 
 		login.addActionListener(new ButtonListener());
 	}
-
+	
 	public String getUser() {
 		return user.getText();
 	}
