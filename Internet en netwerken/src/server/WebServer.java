@@ -34,27 +34,29 @@ public class WebServer extends Thread {
 
 	public void serve(Socket connectionSocket) {
 		try {
-			BufferedReader inFromClient = new BufferedReader(
-					new InputStreamReader(connectionSocket.getInputStream()));
-
-			DataOutputStream outToClient = new DataOutputStream(
-					connectionSocket.getOutputStream());
-
-			requestMessageLine = inFromClient.readLine();
-			byte[] bytes = requestMessageLine.getBytes();
-			System.out.println(bytes[0]);
-
-			StringTokenizer tokenizedLine = new StringTokenizer(
-					requestMessageLine);
-
-			while (tokenizedLine.hasMoreTokens()) {
-				System.out.println("Dit: " + tokenizedLine.nextToken());
+			while(!connectionSocket.isClosed()) {
+				BufferedReader inFromClient = new BufferedReader(
+						new InputStreamReader(connectionSocket.getInputStream()));
+	
+				DataOutputStream outToClient = new DataOutputStream(
+						connectionSocket.getOutputStream());
+	
+				requestMessageLine = inFromClient.readLine();
+				byte[] bytes = requestMessageLine.getBytes();
+				System.out.println(bytes[0]);
+	
+				StringTokenizer tokenizedLine = new StringTokenizer(
+						requestMessageLine);
+	
+				while (tokenizedLine.hasMoreTokens()) {
+					System.out.println("Dit: " + tokenizedLine.nextToken());
+				}
+				if(requestMessageLine.contains("Login"))
+					outToClient.writeBytes("Login oak\n\r\n\r");
+				
+				if(requestMessageLine.contains("Done"))				
+					connectionSocket.close();
 			}
-
-			// outToClient.writeBytes("HTTP/1.1 200 OK\n\r");
-			outToClient.writeBytes("Login ok\n\r\n\r");
-
-			connectionSocket.close();
 		} catch (Exception e) {
 			System.out.println("Webserver|serve: " + e);
 		}
