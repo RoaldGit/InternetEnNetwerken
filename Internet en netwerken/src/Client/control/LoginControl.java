@@ -54,7 +54,6 @@ public class LoginControl extends JPanel{
 
 	class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("LoginControl: Button Pressed");
 
 			String userInput = user.getText();
 			String passwordInput = password.getText();

@@ -45,30 +45,20 @@ public class WebServer extends Thread {
 			while (!connectionSocket.isClosed()) {
 				requestMessageLine = inFromClient.readLine();
 
-				if (!requestMessageLine.equals("")) {
-					System.out.println("Webserver|requestMessageLine: "
-							+ requestMessageLine);
+				StringTokenizer tokenizedLine = new StringTokenizer(
+						requestMessageLine);
 
-					StringTokenizer tokenizedLine = new StringTokenizer(
-							requestMessageLine);
-
-					if (tokenizedLine.hasMoreTokens()) {
-						if (tokenizedLine.nextToken().equals("Login")) {
-							if (checkLogin(tokenizedLine)) {
-								outToClient.writeBytes("Login ok\n\r\n\r");
-								System.out.println("Response sent");
-							}
-							else
-								outToClient.writeBytes("Login oak\n\r\n\r");
-						}
-	
-						else if (requestMessageLine.contains("Done"))
-							connectionSocket.close();
-
-
+				if (tokenizedLine.hasMoreTokens()) {
+					if (tokenizedLine.nextToken().equals("Login")) {
+						if (checkLogin(tokenizedLine)) {
+							outToClient.writeBytes("Login ok\n\r\n\r");
+						} else
+							outToClient.writeBytes("Login oak\n\r\n\r");
 					}
+
+					else if (requestMessageLine.contains("Done"))
+						connectionSocket.close();
 				}
-				outToClient.flush();
 			}
 		} catch (Exception e) {
 			System.out.println("Webserver|serve: " + e);
@@ -80,15 +70,9 @@ public class WebServer extends Thread {
 		username = tokenizedLine.nextToken();
 		password = tokenizedLine.nextToken();
 
-		System.out
-				.println("Webserver|checkLogin: " + username + "|" + password);
-
-		if (user.equals(username) && pass.equals(password)) {
-			System.out.println("Webserver|checkLogin: Login Correct");
+		if (user.equals(username) && pass.equals(password))
 			return true;
-		} else {
-			System.out.println("Webserver|checkLogin: Login Incorrect");
+		else
 			return false;
-		}
 	}
 }
