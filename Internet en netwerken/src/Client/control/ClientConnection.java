@@ -67,5 +67,14 @@ public class ClientConnection extends Thread{
 		}
 	}
 
-	
+	public String login(String user, String password) {
+		String response = "";
+		try {
+			outToClient.writeBytes("Login " + user + "|" + password);
+			response = inFromClient.readLine();
+		} catch (Exception e) {
+			System.out.println("ClientConnection|login: " + e);
+		}
+		return response;
+	}
 }
