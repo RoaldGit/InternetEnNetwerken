@@ -8,13 +8,6 @@ public class Apl {
 
 	public static void main(String args[]) {
 		if (serverTest) {
-			// NanoHTTPDchild server = new NanoHTTPDchild(8080);
-			// try {
-			// server.start();
-			// } catch (Exception e) {
-			// System.out.println(e);
-			// System.out.println("Server boot");
-			// }
 			WebServer server = new WebServer(800);
 			server.start();
 		}
