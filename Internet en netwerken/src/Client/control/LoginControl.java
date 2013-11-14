@@ -60,7 +60,7 @@ public class LoginControl extends JPanel{
 			String response = connection.login(user.getText(),
 					password.getText());
 
-			if (response.equals("200 OK")) {
+			if (response.equals("Login ok")) {
 				clientModel.setLoggedIn(true);
 				userModel.setUserDetails(password.getText(), user.getText());
 			}
