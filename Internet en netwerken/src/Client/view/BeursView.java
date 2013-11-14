@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import Client.control.AandelenLijst;
+import Client.control.ClientConnection;
 import Client.control.Tabel;
 import Client.model.BeursModel;
 import Client.model.UserModel;
@@ -18,6 +19,7 @@ public class BeursView extends JPanel implements Observer {
 			sellingScroll;
 	private UserModel userModel;
 	private BeursModel beursModel;
+	private ClientConnection connection;
 	private String user;
 	private String[] portoHeader, buyingHeader, sellingHeader, buyHeader,
 			sellHeader, aandelen;
@@ -25,9 +27,10 @@ public class BeursView extends JPanel implements Observer {
 			dummySell;
 	private JLabel portoLabel, buyingLabel, sellingLabel, buyLabel, sellLabel;
 
-	public BeursView(UserModel uModel, BeursModel bModel) {
+	public BeursView(UserModel uModel, BeursModel bModel, ClientConnection connection) {
 		this.userModel = uModel;
 		this.setLayout(null);
+		this.connection = connection;
 
 		beursModel = bModel;
 		beursModel.addObserver(this);

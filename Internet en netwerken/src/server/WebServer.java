@@ -41,12 +41,14 @@ public class WebServer extends Thread {
 					connectionSocket.getOutputStream());
 
 			requestMessageLine = inFromClient.readLine();
+			byte[] bytes = requestMessageLine.getBytes();
+			System.out.println(bytes[0]);
 
 			StringTokenizer tokenizedLine = new StringTokenizer(
 					requestMessageLine);
 
 			while (tokenizedLine.hasMoreTokens()) {
-				System.out.println(tokenizedLine.nextToken());
+				System.out.println("Dit: " + tokenizedLine.nextToken());
 			}
 
 			outToClient.writeBytes("HTTP/1.1 200 OK\n\r");

@@ -22,8 +22,9 @@ public class LoginControl extends JPanel{
 	private JButton login = new JButton("Login");
 	private UserModel userModel;
 	private ClientModel clientModel;
-	
-	public LoginControl(UserModel userModel, ClientModel clientModel) {
+	private ClientConnection connection;
+
+	public LoginControl(UserModel userModel, ClientModel clientModel, ClientConnection connection) {
 		setLayout(new GridLayout(3, 2));
 		setSize(250, 100);
 
@@ -34,6 +35,7 @@ public class LoginControl extends JPanel{
 
 		this.userModel = userModel;
 		this.clientModel = clientModel;
+		this.connection = connection;
 
 		add(userLabel);
 		add(user);
@@ -51,34 +53,34 @@ public class LoginControl extends JPanel{
 			// vars. Ook: Saldo en aandelen ophalen voor de user
 			// Thread myThread = new Thread(new Runnable() {
 			// public void run() {
-					try {
-						Socket connectionSocket = new Socket("localhost", 800);
-						
-						InputStream in = connectionSocket.getInputStream();
-						
-						BufferedReader inFromClient = new BufferedReader(
-								new InputStreamReader(in));
-						
-						DataOutputStream outToClient = new DataOutputStream(
-								connectionSocket.getOutputStream());
+			try {
+				Socket connectionSocket = new Socket("localhost", 800);
 
-						outToClient.writeBytes("GET HTTP/1.1\n\r\n\r");
+				InputStream in = connectionSocket.getInputStream();
 
-						String requestMessageLine;
+				BufferedReader inFromClient = new BufferedReader(
+						new InputStreamReader(in));
 
-						while (!connectionSocket.isClosed()) {
-							if (in.available() > 0) {
-								requestMessageLine = inFromClient.readLine();
-								System.out.println("Response: "
-										+ requestMessageLine);
-							}
- else
-						break;
-						}
+				DataOutputStream outToClient = new DataOutputStream(
+						connectionSocket.getOutputStream());
 
-					} catch (Exception ex) {
-						System.out.println("LoginControl|Connecting: " + ex);
+				outToClient.writeBytes("GET HTTP/1.1\n\r\n\r");
+
+				String requestMessageLine;
+
+				while (!connectionSocket.isClosed()) {
+					if (in.available() > 0) {
+						requestMessageLine = inFromClient.readLine();
+						System.out.println("Response: "
+								+ requestMessageLine);
 					}
+					else
+						break;
+				}
+
+			} catch (Exception ex) {
+				System.out.println("LoginControl|Connecting: " + ex);
+			}
 			// }
 			// });
 			// myThread.start();

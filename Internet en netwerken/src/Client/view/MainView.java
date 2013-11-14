@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import Client.control.ClientConnection;
 import Client.model.BeursModel;
 import Client.model.ClientModel;
 import Client.model.UserModel;
@@ -21,6 +22,7 @@ public class MainView extends JFrame implements Observer {
 	private ClientModel clientModel;
 	private JLabel connected, loggedIn, saldo, portoWaarde;
 	private JPanel sideBar;
+	private ClientConnection connection;
 
 	public MainView() {
 		JFrame frame = new JFrame("Internet en Netwerken Eindopdracht");
@@ -35,6 +37,7 @@ public class MainView extends JFrame implements Observer {
 		userModel = new UserModel();
 		beursModel = new BeursModel();
 		clientModel = new ClientModel();
+		connection = new ClientConnection();
 
 
 		clientModel.addObserver(this);
@@ -51,10 +54,10 @@ public class MainView extends JFrame implements Observer {
 		portoWaarde = new JLabel();
 		portoWaarde.setBounds(5, 50, 200, 20);
 
-		login = new LoginView(userModel, clientModel);
+		login = new LoginView(userModel, clientModel, connection);
 		login.setBounds(300, 300, 200, 100);
 
-		beurs = new BeursView(userModel, beursModel);
+		beurs = new BeursView(userModel, beursModel, connection);
 		beurs.setBounds(0, 0, 800, 800);
 
 		sideBar.setLayout(null);
