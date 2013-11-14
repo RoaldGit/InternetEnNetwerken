@@ -54,8 +54,12 @@ public class LoginControl extends JPanel{
 
 	class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			String response = connection.login(user.getText(),
-					password.getText());
+			System.out.println("LoginControl: Button Pressed");
+
+			String userInput = user.getText();
+			String passwordInput = password.getText();
+
+			String response = connection.login(userInput, passwordInput);
 
 			if (response.equals("Login ok")) {
 				clientModel.setLoggedIn(true);
@@ -65,8 +69,6 @@ public class LoginControl extends JPanel{
 				JOptionPane.showMessageDialog(new JFrame(),
 						"Invalid username or password", "Error bij login",
 						JOptionPane.ERROR_MESSAGE);
-
-			System.out.println("LoginControl: Button Pressed");
 		}
 	}
 }

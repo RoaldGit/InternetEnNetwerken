@@ -35,15 +35,18 @@ public class WebServer extends Thread {
 
 	public void serve(Socket connectionSocket) {
 		try {
-			while(!connectionSocket.isClosed()) {
+
 				BufferedReader inFromClient = new BufferedReader(
 						new InputStreamReader(connectionSocket.getInputStream()));
 	
 				DataOutputStream outToClient = new DataOutputStream(
 						connectionSocket.getOutputStream());
-	
+			while (!connectionSocket.isClosed()) {
 				requestMessageLine = inFromClient.readLine();
-				byte[] bytes = requestMessageLine.getBytes();
+
+				// System.out.println("Webserver|serve: " + requestMessageLine);
+
+				// byte[] bytes = requestMessageLine.getBytes();
 	
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
@@ -55,7 +58,7 @@ public class WebServer extends Thread {
 						outToClient.writeBytes("Login oak\n\r\n\r");
 				}
 				
-				if(requestMessageLine.contains("Done"))				
+				else if (requestMessageLine.contains("Done"))
 					connectionSocket.close();
 			}
 		} catch (Exception e) {
@@ -67,6 +70,8 @@ public class WebServer extends Thread {
 		String user, pass;
 		user = tokenizedLine.nextToken();
 		pass = tokenizedLine.nextToken();
+
+		System.out.println("Webserver|checkLogin: " + user + "|" + pass);
 
 		if (this.user.equals(user) && this.pass.equals(pass))
 			return true;
