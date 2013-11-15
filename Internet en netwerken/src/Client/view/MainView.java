@@ -37,7 +37,7 @@ public class MainView extends JFrame implements Observer {
 		userModel = new UserModel();
 		beursModel = new BeursModel();
 		clientModel = new ClientModel();
-		connection = new ClientConnection();
+		connection = new ClientConnection(clientModel);
 
 
 		clientModel.addObserver(this);
@@ -54,7 +54,7 @@ public class MainView extends JFrame implements Observer {
 		portoWaarde = new JLabel();
 		portoWaarde.setBounds(5, 50, 200, 20);
 
-		login = new LoginView(userModel, clientModel, connection);
+		login = new LoginView(userModel, clientModel, connection, beursModel);
 		login.setBounds(300, 300, 200, 100);
 
 		beurs = new BeursView(userModel, beursModel, connection);

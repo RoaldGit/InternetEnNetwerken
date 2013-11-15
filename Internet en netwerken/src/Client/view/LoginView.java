@@ -6,6 +6,7 @@ import javax.swing.border.EtchedBorder;
 
 import Client.control.ClientConnection;
 import Client.control.LoginControl;
+import Client.model.BeursModel;
 import Client.model.ClientModel;
 import Client.model.UserModel;
 
@@ -13,15 +14,18 @@ public class LoginView extends JPanel {
 	private UserModel userModel;
 	private ClientModel clientModel;
 	private ClientConnection connection;
+	private BeursModel beursModel;
 
-	public LoginView(UserModel uModel, ClientModel cModel, ClientConnection connection) {
+	public LoginView(UserModel uModel, ClientModel cModel,
+			ClientConnection con, BeursModel bModel) {
 		userModel = uModel;
 		clientModel = cModel;
-		this.connection = connection;
+		connection = con;
+		beursModel = bModel;
 
 		setSize(250, 100);
 
-		add(new LoginControl(userModel, clientModel, connection));
+		add(new LoginControl(userModel, clientModel, connection, beursModel));
 
 		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 	}

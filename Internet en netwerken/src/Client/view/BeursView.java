@@ -9,7 +9,6 @@ import javax.swing.JScrollPane;
 
 import Client.control.AandelenLijst;
 import Client.control.ClientConnection;
-import Client.control.Tabel;
 import Client.model.BeursModel;
 import Client.model.UserModel;
 
@@ -60,15 +59,40 @@ public class BeursView extends JPanel implements Observer {
 		sellLabel.setBounds(375, 230, 200, 20);
 		
 
-		AandelenLijst aandelenLijst = new AandelenLijst(aandelen, beursModel);
 
+		porto = new Tabel(dummyPorto, portoHeader, beursModel);
+		buying = new Tabel(dummyBuying, buyingHeader, beursModel);
+		selling = new Tabel(dummySelling, sellingHeader, beursModel);
+		buy = new Tabel(dummyBuy, buyHeader, beursModel);
+		sell = new Tabel(dummySell, sellHeader, beursModel);
+
+		portoScroll = new JScrollPane(porto);
+		buyingScroll = new JScrollPane(buying);
+		sellingScroll = new JScrollPane(selling);
+		buyScroll = new JScrollPane(buy);
+		sellScroll = new JScrollPane(sell);
+
+		portoScroll.setBounds(5, 100, 350, 100);
+		buyingScroll.setBounds(5, 250, 350, 100);
+		sellingScroll.setBounds(5, 400, 350, 100);
+		buyScroll.setBounds(375, 100, 400, 100);
+		sellScroll.setBounds(375, 250, 400, 100);
+
+		AandelenLijst aandelenLijst = new AandelenLijst(aandelen, beursModel);
 		aandelenLijst.setBounds(400, 50, 200, 20);
+
+		add(portoScroll);
+		add(buyingScroll);
+		add(sellingScroll);
+		add(buyScroll);
+		add(sellScroll);
 
 		add(portoLabel);
 		add(buyingLabel);
 		add(sellingLabel);
 		add(buyLabel);
 		add(sellLabel);
+
 		add(aandelenLijst);
 
 		updateTables();
@@ -86,7 +110,6 @@ public class BeursView extends JPanel implements Observer {
 			if (obj instanceof Tabel) {
 				if (obj != null)
 					((Tabel) obj).clearSelection();
-				((Tabel) obj).changeData(null);
 			}
 
 		}
@@ -104,67 +127,25 @@ public class BeursView extends JPanel implements Observer {
 
 	public void updateTableData() {
 		user = userModel.getUser();
-		dummyPorto = new Object[][] { { "Syntaxis", 10, 5.00, 50.00 },
-				{ "Watt", 5, 5.00, 25.00 } };
-		dummyBuying = new Object[][] { { "LiNK", 8, 5.00, 40.00 } };
-		dummySelling = new Object[][] { { "Syntaxis", 5, 5.00, 25.50 } };
-		dummyBuy = new Object[][] { { user, "Syntaxis", 20, 5.00, 100.00 },
-				{ "User", "LiNK", 8, 5.00, 40.00 } };
-		dummySell = new Object[][] { { user, "Syntaxis", 5, 5.00, 25.50 } };
 	}
 
 	public void updatePorto() {
-		if (porto != null)
-			remove(portoScroll);
-
-		porto = new Tabel(dummyPorto, portoHeader, beursModel);
-		portoScroll = new JScrollPane(porto);
-		portoScroll.setBounds(5, 100, 350, 100);
-
-		add(portoScroll);
+		porto.changeData(beursModel.getPorto());
 	}
 
 	public void updateBuying() {
-		if (buying != null)
-			remove(buyingScroll);
-
-		buying = new Tabel(dummyBuying, buyingHeader, beursModel);
-		buyingScroll = new JScrollPane(buying);
-		buyingScroll.setBounds(5, 250, 350, 100);
-
-		add(buyingScroll);
+		buying.changeData(beursModel.getBuying());
 	}
 
 	public void updateSelling() {
-		if (selling != null)
-			remove(sellingScroll);
-
-		selling = new Tabel(dummySelling, sellingHeader, beursModel);
-		sellingScroll = new JScrollPane(selling);
-		sellingScroll.setBounds(5, 400, 350, 100);
-
-		add(sellingScroll);
+		selling.changeData(beursModel.getSelling());
 	}
 
 	public void updateBuy() {
-		if (buy != null)
-			remove(buyScroll);
-
-		buy = new Tabel(dummyBuy, buyHeader, beursModel);
-		buyScroll = new JScrollPane(buy);
-		buyScroll.setBounds(375, 100, 400, 100);
-
-		add(buyScroll);
+		buy.changeData(beursModel.getBuy());
 	}
 
 	public void updateSell() {
-		if (sell != null)
-			remove(sellScroll);
-
-		sell = new Tabel(dummySell, sellHeader, beursModel);
-		sellScroll = new JScrollPane(sell);
-		sellScroll.setBounds(375, 250, 400, 100);
-
-		add(sellScroll);
+		sell.changeData(beursModel.getSell());
 	}
 }

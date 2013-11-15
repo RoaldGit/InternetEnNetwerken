@@ -71,8 +71,9 @@ public class WebServer extends Thread {
 						// orders
 						break;
 					case "Done":
-						outToClient.writeBytes("Ack");
+						outToClient.writeBytes("Ack\n\r\n\r");
 						connectionSocket.close();
+						System.out.println("Webserver: Connection closed");
 						break;
 					}
 				}

@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import Client.model.BeursModel;
 import Client.model.ClientModel;
 import Client.model.UserModel;
 
@@ -20,8 +21,10 @@ public class LoginControl extends JPanel{
 	private UserModel userModel;
 	private ClientModel clientModel;
 	private ClientConnection connection;
+	private BeursModel beursModel;
 
-	public LoginControl(UserModel userModel, ClientModel clientModel, ClientConnection connection) {
+	public LoginControl(UserModel uModel, ClientModel cModel,
+			ClientConnection con, BeursModel bModel) {
 		setLayout(new GridLayout(3, 2));
 		setSize(250, 100);
 
@@ -30,9 +33,10 @@ public class LoginControl extends JPanel{
 		password = new JTextField();
 		JLabel passwordLabel = new JLabel("Password");
 
-		this.userModel = userModel;
-		this.clientModel = clientModel;
-		this.connection = connection;
+		userModel = uModel;
+		clientModel = cModel;
+		connection = con;
+		beursModel = bModel;
 
 		add(userLabel);
 		add(user);
@@ -62,7 +66,8 @@ public class LoginControl extends JPanel{
 
 			if (response.equals("Login ok")) {
 				clientModel.setLoggedIn(true);
-				userModel.setUserDetails(password.getText(), user.getText());
+				userModel.setUserDetails(passwordInput, userInput);
+				beursModel.setUser(userInput);
 			}
  else
 				JOptionPane.showMessageDialog(new JFrame(),

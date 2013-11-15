@@ -4,6 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import Client.model.BeursModel;
+import Client.view.Tabel;
 
 public class ClickEvent extends MouseAdapter {
 	private BeursModel beursModel;
