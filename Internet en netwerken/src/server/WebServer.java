@@ -52,7 +52,7 @@ public class WebServer extends Thread {
 					case "Login":
 						checkLogin(tokenizedLine, outToClient);
 						break;
-					case "Aandeel":
+					case "Porto":
 						getPorto(tokenizedLine, outToClient);
 						// TODO Aandelen van de user ophalen
 						// Request bevat username en (waarschijnlijk) soort van
@@ -72,6 +72,14 @@ public class WebServer extends Thread {
 						break;
 					case "Stort":
 						stortGeld(tokenizedLine, outToClient);
+						break;
+					case "KoopOrder":
+						break;
+					case "VerkoopOrder":
+						break;
+					case "AandeelKoop":
+						break;
+					case "AandeelVerkoop":
 						break;
 					case "Done":
 						outToClient.writeBytes("Ack\n\r\n\r");
@@ -102,10 +110,9 @@ public class WebServer extends Thread {
 		}
 	}
 	
-	public String[][] getPorto(StringTokenizer tokenizedLine,
+	public void getPorto(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		//TODO Huidige porto ophalen van User
-		return null;
 	}
 	
 	public void verkoopAandeel(StringTokenizer tokenizedLine,
