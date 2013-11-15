@@ -86,6 +86,7 @@ public class BeursView extends JPanel implements Observer {
 			if (obj instanceof Tabel) {
 				if (obj != null)
 					((Tabel) obj).clearSelection();
+				((Tabel) obj).changeData(null);
 			}
 
 		}
