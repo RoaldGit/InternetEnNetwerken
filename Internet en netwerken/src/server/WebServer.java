@@ -49,13 +49,14 @@ public class WebServer extends Thread {
 						requestMessageLine);
 				//TODO Meerdere filters toevoegen, Data ophalen etc.
 				if (tokenizedLine.hasMoreTokens()) {
-					if (tokenizedLine.nextToken().equals("Login")) {
+					String firstToken = tokenizedLine.nextToken();
+					if (firstToken.equals("Login")) {
 						if (checkLogin(tokenizedLine)) {
 							outToClient.writeBytes("Login ok\n\r\n\r");
 						} else
 							outToClient.writeBytes("Login oak\n\r\n\r");
 					}
-					else if (tokenizedLine.nextToken().equals("Aan")){
+ else if (firstToken.equals("Aan")) {
 						//TODO Aandelen kopen of verkopen
 					}
 					else if (requestMessageLine.contains("Done"))
