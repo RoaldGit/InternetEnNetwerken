@@ -9,15 +9,16 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import Client.model.ClientModel;
-import Client.model.UserModel;
 
-public class ClientConnection extends Thread{
+public class ClientConnection {
 	private Socket connectionSocket;
 	private InputStream in;
 	private BufferedReader inFromClient;
 	private DataOutputStream outToClient;
+	private ClientModel clientModel;
 
-	public ClientConnection(){
+	public ClientConnection(ClientModel cModel) {
+		clientModel = cModel;
 		connect();
 	}
 
@@ -35,9 +36,11 @@ public class ClientConnection extends Thread{
 
 			System.out.println("ClientConnection: connect");
 
+			clientModel.setConnected(false);
+
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -46,6 +49,8 @@ public class ClientConnection extends Thread{
 		try {
 			outToClient.writeBytes("Done");
 			connectionSocket.close();
+
+			clientModel.setConnected(false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

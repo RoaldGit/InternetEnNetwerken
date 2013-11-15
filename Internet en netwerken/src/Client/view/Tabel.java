@@ -1,4 +1,4 @@
-package Client.control;
+package Client.view;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
+import Client.control.ClickEvent;
 import Client.model.BeursModel;
 
 public class Tabel extends JTable {
@@ -19,7 +20,7 @@ public class Tabel extends JTable {
 	public Tabel() {
 		super();
 
-		addMouseListener(new ClickEvent());
+		addMouseListener(null);
 	}
 
 	public Tabel(Object[][] row, String[] col, BeursModel bModel) {
@@ -35,7 +36,7 @@ public class Tabel extends JTable {
 
 		beursModel = bModel;
 
-		addMouseListener(new ClickEvent());
+		addMouseListener(new ClickEvent(beursModel));
 	}
 
 	public boolean isCellEditable(int row, int column) {
@@ -58,20 +59,6 @@ public class Tabel extends JTable {
 
 		public void setValue(Object value) {
 			setText((value == null) ? "" : String.format("€ %.2f", value));
-		}
-	}
-
-	class ClickEvent extends MouseAdapter {
-		public void mouseClicked(MouseEvent e) {
-			Tabel source = (Tabel) e.getSource();
-			int row = source.getSelectedRow();
-			int cols = source.getColumnCount();
-
-			for (int i = 0; i < cols; i++)
-				System.out.println(source.getColumnName(i) + ": "
-						+ source.getValueAt(row, i));
-
-			beursModel.setSelectedTable(source);
 		}
 	}
 }
