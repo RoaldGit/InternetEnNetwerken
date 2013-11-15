@@ -85,7 +85,16 @@ public class ClientConnection {
 		if (connectionSocket.isClosed())
 			connect();
 
-		String response = "";
 		String request = "Porto " + user;
+
+		try {
+			outToClient.writeBytes(request + "\n\r\n\r");
+
+			// while (response.equals(""))
+			// response = inFromClient.readLine();
+
+		} catch (Exception e) {
+			System.out.println("ClientConnection|login: " + e);
+		}
 	}
 }

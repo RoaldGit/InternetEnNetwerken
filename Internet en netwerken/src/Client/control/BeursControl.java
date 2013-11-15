@@ -13,6 +13,7 @@ public class BeursControl {
 		beursModel = bModel;
 		userModel = uModel;
 		connection = con;
+		// retreivePorto();
 	}
 	
 	public void retreivePorto() {

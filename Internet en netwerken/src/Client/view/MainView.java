@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import Client.control.BeursControl;
 import Client.control.ClientConnection;
 import Client.model.BeursModel;
 import Client.model.ClientModel;
@@ -37,8 +38,8 @@ public class MainView extends JFrame implements Observer {
 		userModel = new UserModel();
 		beursModel = new BeursModel();
 		clientModel = new ClientModel();
-		connection = new ClientConnection(clientModel);
 
+		connection = new ClientConnection(clientModel);
 
 		clientModel.addObserver(this);
 
@@ -79,6 +80,7 @@ public class MainView extends JFrame implements Observer {
 		login.setVisible(true);
 		beurs.setVisible(false);
 
+		BeursControl test = new BeursControl(beursModel, userModel, connection);
 		frame.setVisible(true);
 	}
 

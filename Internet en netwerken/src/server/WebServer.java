@@ -42,6 +42,8 @@ public class WebServer extends Thread {
 			while (!connectionSocket.isClosed()) {
 				requestMessageLine = inFromClient.readLine();
 
+				System.out.println(requestMessageLine);
+
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
 
@@ -99,19 +101,28 @@ public class WebServer extends Thread {
 		String username, password;
 		username = tokenizedLine.nextToken();
 		password = tokenizedLine.nextToken();
-		try {
-			if (user.equals(username) && pass.equals(password))
-				outToClient.writeBytes("Login ok\n\r\n\r");
+
+		if (user.equals(username) && pass.equals(password))
+			sendToClient(outToClient, "Login ok\n\r\n\r");
 			// TODO DB checken voor login gegevens;
-			else
-				outToClient.writeBytes("Login incorrect\n\r\n\r");
-		} catch (Exception e) {
-			System.out.println("Webserver|checkLogin: " + e);
-		}
+		else
+			sendToClient(outToClient, "Login incorrect\n\r\n\r");
 	}
 	
 	public void getPorto(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
+		Object[][] data = new Object[][] { { "Syntaxis", 10, 5.00, 50.00 },
+				{ "Watt", 5, 5.00, 25.00 } };
+
+		for (int i = 0; i < data.length; i++) {
+			String aandeel = "";
+			for (int j = 0; j < data[0].length; j++)
+				aandeel += (data[i][j] + " ");
+
+			sendToClient(outToClient, aandeel + "\n\r");
+		}
+
+		sendToClient(outToClient, "\n\r\n\r");
 		//TODO Huidige porto ophalen van User
 	}
 	
@@ -127,5 +138,14 @@ public class WebServer extends Thread {
 	public void stortGeld(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient){
 		//TODO Geld storten voor de user
+	}
+
+	public void sendToClient(DataOutputStream outToClient, String message) {
+		try {
+			outToClient.writeBytes(message);
+		} catch (Exception e) {
+			System.out.println("Webserver|sentToClient: " + e);
+			System.out.println(Thread.currentThread().getStackTrace());
+		}
 	}
 }
