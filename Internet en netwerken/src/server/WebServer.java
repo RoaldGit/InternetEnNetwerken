@@ -114,6 +114,7 @@ public class WebServer extends Thread {
 		Object[][] data = new Object[][] { { "Syntaxis", 10, 5.00, 50.00 },
 				{ "Watt", 5, 5.00, 25.00 } };
 
+		// TODO sent result size for Object[][]
 		for (int i = 0; i < data.length; i++) {
 			String aandeel = "";
 			for (int j = 0; j < data[0].length; j++)

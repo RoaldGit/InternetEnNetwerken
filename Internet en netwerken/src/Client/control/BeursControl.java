@@ -17,6 +17,6 @@ public class BeursControl {
 	}
 	
 	public void retreivePorto() {
-		connection.getPorto(userModel.getUser());
+		Object[][] porto = connection.getPorto(userModel.getUser());
 	}
 }

@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import Client.model.ClientModel;
 
@@ -81,20 +83,27 @@ public class ClientConnection {
 		return result;
 	}
 
-	public void getPorto(String user) {
+	public Object[][] getPorto(String user) {
 		if (connectionSocket.isClosed())
 			connect();
 
+		String response = "";
+		ArrayList<Object[]> data = new ArrayList<Object[]>();
 		String request = "Porto " + user;
 
 		try {
 			outToClient.writeBytes(request + "\n\r\n\r");
 
-			// while (response.equals(""))
-			// response = inFromClient.readLine();
+			while (response.equals("")) {
+				response = inFromClient.readLine();
+				StringTokenizer tokenizedLine = new StringTokenizer(response);
+
+			}
 
 		} catch (Exception e) {
 			System.out.println("ClientConnection|login: " + e);
 		}
+
+		return null;
 	}
 }
