@@ -70,6 +70,9 @@ public class WebServer extends Thread {
 						// Fancy implementatie kijkt ook naar bestaande koop
 						// orders
 						break;
+					case "Stort":
+						stortGeld(tokenizedLine, outToClient);
+						break;
 					case "Done":
 						outToClient.writeBytes("Ack");
 						connectionSocket.close();
@@ -104,16 +107,17 @@ public class WebServer extends Thread {
 		return null;
 	}
 	
-	public boolean verkoopAandeel(StringTokenizer tokenizedLine,
+	public void verkoopAandeel(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
-		boolean verkocht = false;
 		//TODO aandeel verkopen, dingen updaten, boolean returnen
-		return verkocht;
 	}
 	
-	public boolean koopAandeel(StringTokenizer tokenizedLine,
+	public void koopAandeel(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
-		boolean gekocht = false;
-		return gekocht;
+	}
+	
+	public void stortGeld(StringTokenizer tokenizedLine,
+			DataOutputStream outToClient){
+		//TODO Geld storten voor de user
 	}
 }
