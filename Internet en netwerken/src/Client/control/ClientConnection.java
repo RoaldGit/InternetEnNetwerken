@@ -80,4 +80,12 @@ public class ClientConnection {
 
 		return result;
 	}
+
+	public void getPorto(String user) {
+		if (connectionSocket.isClosed())
+			connect();
+
+		String response = "";
+		String request = "Porto " + user;
+	}
 }

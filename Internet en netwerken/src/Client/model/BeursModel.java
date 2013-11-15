@@ -43,6 +43,26 @@ public class BeursModel extends Observable {
 		this.user = user;
 	}
 
+	public void setPorto(Object[][] data) {
+		dummyPorto = data;
+	}
+
+	public void setBuying(Object[][] data) {
+		dummyBuying = data;
+	}
+
+	public void setSelling(Object[][] data) {
+		dummySelling = data;
+	}
+
+	public void setBuy(Object[][] data) {
+		dummyBuy = data;
+	}
+
+	public void setSell(Object[][] data) {
+		dummySell = data;
+	}
+
 	public String getSelectedAandeel() {
 		return aandeelSelect;
 	}

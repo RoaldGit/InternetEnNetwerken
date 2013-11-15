@@ -26,13 +26,15 @@ public class BeursView extends JPanel implements Observer {
 			dummySell;
 	private JLabel portoLabel, buyingLabel, sellingLabel, buyLabel, sellLabel;
 
-	public BeursView(UserModel uModel, BeursModel bModel, ClientConnection connection) {
-		this.userModel = uModel;
-		this.setLayout(null);
-		this.connection = connection;
+	public BeursView(UserModel uModel, BeursModel bModel, ClientConnection con) {
+		setLayout(null);
 
+		userModel = uModel;
 		beursModel = bModel;
+		connection = con;
+
 		beursModel.addObserver(this);
+		userModel.addObserver(this);
 		
 		portoHeader = new String[] { "Aandeel", "Aantal", "Waarde",
 				"Totale waarde" };
@@ -111,7 +113,11 @@ public class BeursView extends JPanel implements Observer {
 				if (obj != null)
 					((Tabel) obj).clearSelection();
 			}
-
+		}
+		if (obs == userModel) {
+			if (obj.equals("loggedIn")) {
+				updateTables();
+			}
 		}
 	}
 
