@@ -6,12 +6,15 @@ import java.text.NumberFormat;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
 import Client.model.BeursModel;
 
 public class Tabel extends JTable {
 	private BeursModel beursModel;
+	private Object[][] rowData;
+	private String[] colData;
 
 	public Tabel() {
 		super();
@@ -22,6 +25,9 @@ public class Tabel extends JTable {
 	public Tabel(Object[][] row, String[] col, BeursModel bModel) {
 		super(row, col);
 
+		rowData = row;
+		colData = col;
+		
 		int cols = col.length - 1;
 		TableColumnModel tcm = this.getColumnModel();
 		tcm.getColumn(cols - 1).setCellRenderer(new NumberRenderer());
@@ -34,6 +40,13 @@ public class Tabel extends JTable {
 
 	public boolean isCellEditable(int row, int column) {
 		return false;
+	}
+
+	public void changeData(Object[][] data) {
+		rowData = data;
+
+		DefaultTableModel dtm = new DefaultTableModel(rowData, colData);
+		setModel(dtm);
 	}
 
 	class NumberRenderer extends DefaultTableCellRenderer {
