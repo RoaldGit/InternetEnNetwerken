@@ -47,7 +47,7 @@ public class WebServer extends Thread {
 
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
-
+				//TODO Meerdere filters toevoegen, Data ophalen etc.
 				if (tokenizedLine.hasMoreTokens()) {
 					if (tokenizedLine.nextToken().equals("Login")) {
 						if (checkLogin(tokenizedLine)) {
@@ -55,7 +55,9 @@ public class WebServer extends Thread {
 						} else
 							outToClient.writeBytes("Login oak\n\r\n\r");
 					}
-
+					else if (tokenizedLine.nextToken().equals("Aan")){
+						//TODO Aandelen kopen of verkopen
+					}
 					else if (requestMessageLine.contains("Done"))
 						connectionSocket.close();
 				}
@@ -74,5 +76,28 @@ public class WebServer extends Thread {
 			return true;
 		else
 			return false;
+	}
+	
+	public String getAandeel(StringTokenizer tokenizedLine){
+		String aandeel = "";
+		//TODO Huidige data van user ophalen
+		return aandeel;
+	}
+	
+	public String getPorto(StringTokenizer tokenizedLine){
+		String porto = "";
+		//TODO Huidige porto ophalen van User
+		return porto;
+	}
+	
+	public boolean sellAandeel(StringTokenizer tokenizedLine){
+		boolean verkocht = false;
+		//TODO aandeel verkopen, dingen updaten, boolean returnen
+		return verkocht;
+	}
+	
+	public boolean koopAandeel(StringTokenizer tokenizedLine){
+		boolean gekocht = false;
+		return gekocht;
 	}
 }
