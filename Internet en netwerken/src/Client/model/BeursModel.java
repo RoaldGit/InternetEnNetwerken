@@ -94,4 +94,8 @@ public class BeursModel extends Observable {
 	public Object[][] getSell() {
 		return sell;
 	}
+
+	public String getUser() {
+		return user;
+	}
 }

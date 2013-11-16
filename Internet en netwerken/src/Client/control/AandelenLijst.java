@@ -9,10 +9,15 @@ import Client.model.BeursModel;
 
 public class AandelenLijst extends JComboBox {
 	private BeursModel beursModel;
+	private ClientConnection clientConnection;
 
-	public AandelenLijst(String[] aandelen, BeursModel bModel) {
+	public AandelenLijst(String[] aandelen, BeursModel bModel,
+			ClientConnection con) {
 		super(aandelen);
-		this.beursModel = bModel;
+
+		beursModel = bModel;
+		clientConnection = con;
+
 		beursModel.setSelectedAandeel(this.getSelectedItem().toString());
 		this.addActionListener(new ComboListener());
 	}
@@ -20,7 +25,15 @@ public class AandelenLijst extends JComboBox {
 	class ComboListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			JComboBox combo = (JComboBox) e.getSource();
-			beursModel.setSelectedAandeel(combo.getSelectedItem().toString());
+
+			String selected = combo.getSelectedItem().toString();
+
+			beursModel.setSelectedAandeel(selected);
+
+			beursModel.setBuy(clientConnection.getAandelen(
+					beursModel.getUser(), "Buy " + selected));
+			beursModel.setSell(clientConnection.getAandelen(
+					beursModel.getUser(), "Sell " + selected));
 		}
 	}
 }

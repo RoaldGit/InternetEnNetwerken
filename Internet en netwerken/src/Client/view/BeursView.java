@@ -80,7 +80,8 @@ public class BeursView extends JPanel implements Observer {
 		buyScroll.setBounds(375, 100, 400, 100);
 		sellScroll.setBounds(375, 250, 400, 100);
 
-		AandelenLijst aandelenLijst = new AandelenLijst(aandelen, beursModel);
+		AandelenLijst aandelenLijst = new AandelenLijst(aandelen, beursModel,
+				connection);
 		aandelenLijst.setBounds(400, 50, 200, 20);
 
 		add(portoScroll);

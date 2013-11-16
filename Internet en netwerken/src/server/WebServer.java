@@ -131,7 +131,7 @@ public class WebServer extends Thread {
 			sendToClient(outToClient, "Login incorrect\n\r\n\r");
 	}
 	
-	public synchronized void getAandelen(DataOutputStream outToClient,
+	public void getAandelen(DataOutputStream outToClient,
 			Object[][] data) {
 		sendToClient(outToClient, "Aandeel: Size: " + data.length + "\n\r");
 
@@ -156,17 +156,56 @@ public class WebServer extends Thread {
 
 	public void getBuy(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
-		Object[][] data = new Object[][] {
-				{ "Syntaxis", "Syntaxis", 20, 5.00, 100.00 },
-				{ "User", "LiNK", 8, 5.00, 40.00 } };
+		String aandeel = "";
+
+		if(tokenizedLine.hasMoreTokens())
+			aandeel = tokenizedLine.nextToken();
+		
+		Object[][] data = new Object[2][];
+		
+		switch(aandeel) {
+		default:
+		case "Syntaxis":
+			data[0] = new Object[] { "Syntaxis", "Syntaxis", 20, 5.00, 100.00 };
+			data[1] = new Object[] { "Syntaxis", "Syntaxis", 200, 5.00, 1000.00 };
+			break;
+		case "LiNK":
+			data[0] = new Object[] { "LiNK", "LiNK", 20, 5.00, 100.00 };
+			data[1] = new Object[] { "LiNK", "LiNK", 200, 5.00, 1000.00 };
+			break;
+		case "WaTT":
+			data[0] = new Object[] { "WaTT", "WaTT", 20, 5.00, 100.00 };
+			data[1] = new Object[] { "WaTT", "WaTT", 200, 5.00, 1000.00 };
+			break;
+		}
 
 		getAandelen(outToClient, data);
 	}
 
 	public void getSell(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
-		Object[][] data = new Object[][] { { "Syntaxis", "Syntaxis", 5, 5.00,
-				25.50 } };
+		String aandeel = "";
+
+		if (tokenizedLine.hasMoreTokens())
+			aandeel = tokenizedLine.nextToken();
+
+		Object[][] data = new Object[2][];
+
+		switch (aandeel) {
+		default:
+		case "Syntaxis":
+			data[0] = new Object[] { "Syntaxis", "Syntaxis", 20, 5.00, 100.00 };
+			data[1] = new Object[] { "Syntaxis", "Syntaxis", 200, 5.00, 1000.00 };
+			break;
+		case "LiNK":
+			data[0] = new Object[] { "LiNK", "LiNK", 20, 5.00, 100.00 };
+			data[1] = new Object[] { "LiNK", "LiNK", 200, 5.00, 1000.00 };
+			break;
+		case "WaTT":
+			data[0] = new Object[] { "WaTT", "WaTT", 20, 5.00, 100.00 };
+			data[1] = new Object[] { "WaTT", "WaTT", 200, 5.00, 1000.00 };
+			break;
+		}
 
 		getAandelen(outToClient, data);
 	}
