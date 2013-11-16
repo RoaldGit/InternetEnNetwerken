@@ -16,6 +16,7 @@ public class Tabel extends JTable {
 	private BeursModel beursModel;
 	private Object[][] rowData;
 	private String[] colData;
+	TableColumnModel tcm;
 
 	public Tabel() {
 		super();
@@ -29,17 +30,21 @@ public class Tabel extends JTable {
 
 		rowData = row;
 		colData = col;
-		
-		int cols = col.length - 1;
-
-		TableColumnModel tcm = this.getColumnModel();
-
-		tcm.getColumn(cols - 1).setCellRenderer(new NumberRenderer());
-		tcm.getColumn(cols).setCellRenderer(new NumberRenderer());
 
 		beursModel = bModel;
 
+		setupRenderer();
+
 		addMouseListener(new ClickEvent(beursModel));
+	}
+
+	private void setupRenderer() {
+		int cols = colData.length - 1;
+
+		tcm = this.getColumnModel();
+
+		tcm.getColumn(cols - 1).setCellRenderer(new NumberRenderer());
+		tcm.getColumn(cols).setCellRenderer(new NumberRenderer());
 	}
 
 	public boolean isCellEditable(int row, int column) {
@@ -51,6 +56,8 @@ public class Tabel extends JTable {
 
 		DefaultTableModel dtm = new DefaultTableModel(rowData, colData);
 		setModel(dtm);
+
+		setupRenderer();
 	}
 
 	class NumberRenderer extends DefaultTableCellRenderer {
@@ -61,7 +68,8 @@ public class Tabel extends JTable {
 		}
 
 		public void setValue(Object value) {
-			setText((value == null) ? "" : String.format("€ %.2f", value));
+			Double number = Double.parseDouble(value.toString());
+			setText((value == null) ? "" : String.format("€ %,.2f", number));
 		}
 	}
 }
