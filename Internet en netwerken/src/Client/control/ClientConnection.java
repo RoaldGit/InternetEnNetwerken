@@ -147,13 +147,11 @@ public class ClientConnection {
 		try {
 			outToClient.writeBytes("Aandelen b\n\r\n\r");
 
-			String response = " ";
+			String response = "";
 
 			while (!response.contains("Aandelen")
 					&& !response.contains("Error"))
-				// while (response.equals(""))
 				response = inFromClient.readLine();
-
 
 			StringTokenizer tokenizedLine = new StringTokenizer(response);
 
@@ -169,8 +167,6 @@ public class ClientConnection {
 		} catch (Exception e) {
 			System.out.println("ClientConnection|getAandelen: " + e);
 		}
-
-		String[] aandelen = new String[] { "Syntaxis", "LiNK", "WaTT" };
 
 		return aandeel;
 	}

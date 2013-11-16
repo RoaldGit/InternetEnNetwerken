@@ -1,5 +1,7 @@
 package Client.control;
 
+import javax.swing.JButton;
+
 import Client.model.BeursModel;
 import Client.model.UserModel;
 
@@ -21,6 +23,14 @@ public class BeursControl {
 		retreiveAandelen("Sell");
 		retreiveAandelen("Buying");
 		retreiveAandelen("Selling");
+	}
+
+	public JButton getBuy() {
+		return null;
+	}
+
+	public JButton getSell() {
+		return null;
 	}
 
 	public void retreiveAandelen(String tabel) {

@@ -3,9 +3,11 @@ package Client.view;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EtchedBorder;
 
 import Client.control.AandelenLijst;
 import Client.control.ClientConnection;
@@ -85,6 +87,12 @@ public class BeursView extends JPanel implements Observer {
 				connection);
 		aandelenLijst.setBounds(400, 50, 200, 20);
 
+		JPanel details = new JPanel(null);
+		details.setBounds(5, 500, 780, 260);
+		details.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+
+		// JLabel
+
 		add(portoScroll);
 		add(buyingScroll);
 		add(sellingScroll);
@@ -98,6 +106,7 @@ public class BeursView extends JPanel implements Observer {
 		add(sellLabel);
 
 		add(aandelenLijst);
+		add(details);
 
 		updateTables();
 	}
