@@ -13,10 +13,37 @@ public class BeursControl {
 		beursModel = bModel;
 		userModel = uModel;
 		connection = con;
-		// retreivePorto();
 	}
 	
-	public void retreivePorto() {
-		Object[][] porto = connection.getPorto(userModel.getUser());
+	public void retreiveAlleAandelen() {
+		retreiveAandelen("Porto");
+		retreiveAandelen("Buy");
+		retreiveAandelen("Sell");
+		retreiveAandelen("Buying");
+		retreiveAandelen("Selling");
+	}
+
+	public void retreiveAandelen(String tabel) {
+		Object[][] data = connection.getAandelen(userModel.getUser(), tabel);
+
+		switch (tabel) {
+		case "Porto":
+			beursModel.setPorto(data);
+			break;
+		case "Buy":
+			beursModel.setBuy(data);
+			break;
+		case "Sell":
+			beursModel.setSell(data);
+			break;
+		case "Buying":
+			beursModel.setBuying(data);
+			break;
+		case "Selling":
+			beursModel.setSelling(data);
+			break;
+		default:
+			break;
+		}
 	}
 }

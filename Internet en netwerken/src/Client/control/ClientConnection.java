@@ -68,8 +68,9 @@ public class ClientConnection {
 		try {
 			outToClient.writeBytes(request + "\n\r\n\r");
 
-			while (response.equals(""))
+			while (!response.contains("Login")) {
 				response = inFromClient.readLine();
+			}
 
 		} catch (Exception e) {
 			System.out.println("ClientConnection|login: " + e);
@@ -77,33 +78,71 @@ public class ClientConnection {
 		return response;
 	}
 
-	public Object[][] getAandelenOverzicht(String aandeel) {
-		Object[][] result = null;
-
-		return result;
-	}
-
-	public Object[][] getPorto(String user) {
+	public Object[][] getAandelen(String user, String method) {
 		if (connectionSocket.isClosed())
 			connect();
 
 		String response = "";
-		ArrayList<Object[]> data = new ArrayList<Object[]>();
-		String request = "Porto " + user;
+		String request = method + " " + user;
+
+		int arraySize = 0;
+		int pos = 0;
+		Object[][] porto = new Object[1][];
 
 		try {
 			outToClient.writeBytes(request + "\n\r\n\r");
 
-			while (response.equals("")) {
+			while (!response.contains("Done")) {
 				response = inFromClient.readLine();
-				StringTokenizer tokenizedLine = new StringTokenizer(response);
 
+				if (response.contains("Size:")) {
+					arraySize = retrieveSize(response);
+					porto = new Object[arraySize][];
+				}
+
+				if (!response.equals("")) {
+					if (!response.contains("Done")
+							&& !response.contains("Size")) {
+						porto[pos] = retrieveAandeel(response);
+						pos++;
+					}
+				}
 			}
 
 		} catch (Exception e) {
 			System.out.println("ClientConnection|login: " + e);
 		}
+		return porto;
+	}
 
+	public Object[][] getBuy(String user) {
+		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public int retrieveSize(String response) {
+		StringTokenizer tokenizedLine = new StringTokenizer(response);
+
+		tokenizedLine.nextToken();
+		tokenizedLine.nextToken();
+
+		int arraySize = Integer.parseInt(tokenizedLine.nextToken());
+
+		return arraySize;
+	}
+
+	public Object[] retrieveAandeel(String response) {
+		StringTokenizer tokenizedLine = new StringTokenizer(response);
+		tokenizedLine.nextToken();
+
+		int size = tokenizedLine.countTokens();
+
+		Object[] aandeel = new Object[size];
+
+		for (int i = 0; i < size; i++) {
+			aandeel[i] = tokenizedLine.nextToken();
+		}
+
+		return aandeel;
 	}
 }

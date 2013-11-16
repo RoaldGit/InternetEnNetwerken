@@ -22,9 +22,10 @@ public class LoginControl extends JPanel{
 	private ClientModel clientModel;
 	private ClientConnection connection;
 	private BeursModel beursModel;
+	private BeursControl beursControl;
 
 	public LoginControl(UserModel uModel, ClientModel cModel,
-			ClientConnection con, BeursModel bModel) {
+			ClientConnection con, BeursModel bModel, BeursControl bControl) {
 		setLayout(new GridLayout(3, 2));
 		setSize(250, 100);
 
@@ -37,6 +38,7 @@ public class LoginControl extends JPanel{
 		clientModel = cModel;
 		connection = con;
 		beursModel = bModel;
+		beursControl = bControl;
 
 		add(userLabel);
 		add(user);
@@ -61,18 +63,24 @@ public class LoginControl extends JPanel{
 
 			String userInput = user.getText();
 			String passwordInput = password.getText();
-
-			String response = connection.login(userInput, passwordInput);
-
-			if (response.equals("Login ok")) {
-				clientModel.setLoggedIn(true);
-				userModel.setUserDetails(passwordInput, userInput);
-				beursModel.setUser(userInput);
-			}
- else
+			
+			if (userInput.equals("") || passwordInput.equals(""))
 				JOptionPane.showMessageDialog(new JFrame(),
-						"Invalid username or password", "Error bij login",
-						JOptionPane.ERROR_MESSAGE);
+						"Please enter your username and password",
+						"Error bij login", JOptionPane.ERROR_MESSAGE);
+			else {
+				String response = connection.login(userInput, passwordInput);
+
+				if (response.equals("Login ok")) {
+					clientModel.setLoggedIn(true);
+					userModel.setUserDetails(passwordInput, userInput);
+					beursModel.setUser(userInput);
+					beursControl.retreiveAlleAandelen();
+				} else
+					JOptionPane.showMessageDialog(new JFrame(),
+							"Invalid username or password", "Error bij login",
+							JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 }

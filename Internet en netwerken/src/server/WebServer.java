@@ -31,67 +31,87 @@ public class WebServer extends Thread {
 	}
 
 	public void serve(Socket connectionSocket) {
-		try {
+		BufferedReader inFromClient = null;
+		DataOutputStream outToClient = null;
 
-				BufferedReader inFromClient = new BufferedReader(
-						new InputStreamReader(connectionSocket.getInputStream()));
-	
-				DataOutputStream outToClient = new DataOutputStream(
-						connectionSocket.getOutputStream());
+		try {
+			inFromClient = new BufferedReader(new InputStreamReader(
+					connectionSocket.getInputStream()));
+
+			outToClient = new DataOutputStream(
+					connectionSocket.getOutputStream());
 
 			while (!connectionSocket.isClosed()) {
 				requestMessageLine = inFromClient.readLine();
 
-				System.out.println(requestMessageLine);
+				if (!requestMessageLine.equals(""))
+				System.out.println("Webserver|Received request: "
+						+ requestMessageLine);
 
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
 
-				//TODO Meerdere filters toevoegen, Data ophalen etc.
 				if (tokenizedLine.hasMoreTokens()) {
 					String firstToken = tokenizedLine.nextToken();
+					// if (tokenizedLine.hasMoreTokens()) {
 					switch (firstToken) {
-					case "Login":
-						checkLogin(tokenizedLine, outToClient);
-						break;
-					case "Porto":
+						case "Login":
+							checkLogin(tokenizedLine, outToClient);
+							break;
+						case "Porto":
 						getPorto(tokenizedLine, outToClient);
-						// TODO Aandelen van de user ophalen
-						// Request bevat username en (waarschijnlijk) soort van
-						// identifier
 						break;
-					case "Koop":
-						koopAandeel(tokenizedLine, outToClient);
-						// TODO Aandeel order plaatsen
-						// Fancy implementatie kijkt ook naar bestaande verkoop
-						// orders
+					case "Buy":
+						getBuy(tokenizedLine, outToClient);
 						break;
-					case "Verkoop":
-						verkoopAandeel(tokenizedLine, outToClient);
-						// TODO Aandeel order plaatsen
-						// Fancy implementatie kijkt ook naar bestaande koop
-						// orders
+					case "Sell":
+						getSell(tokenizedLine, outToClient);
 						break;
-					case "Stort":
-						stortGeld(tokenizedLine, outToClient);
+					case "Buying":
+						getBuying(tokenizedLine, outToClient);
 						break;
-					case "KoopOrder":
-						break;
-					case "VerkoopOrder":
-						break;
-					case "AandeelKoop":
-						break;
-					case "AandeelVerkoop":
-						break;
-					case "Done":
-						outToClient.writeBytes("Ack\n\r\n\r");
-						connectionSocket.close();
-						System.out.println("Webserver: Connection closed");
-						break;
+					case "Selling":
+						getSelling(tokenizedLine, outToClient);
+							// TODO Aandelen van de user ophalen
+							// Request bevat username en (waarschijnlijk) soort
+							// van
+							// identifier
+							break;
+						case "Koop":
+							koopAandeel(tokenizedLine, outToClient);
+							// TODO Aandeel order plaatsen
+							// Fancy implementatie kijkt ook naar bestaande
+							// verkoop
+							// orders
+							break;
+						case "Verkoop":
+							verkoopAandeel(tokenizedLine, outToClient);
+							// TODO Aandeel order plaatsen
+							// Fancy implementatie kijkt ook naar bestaande koop
+							// orders
+							break;
+						case "Stort":
+							stortGeld(tokenizedLine, outToClient);
+							break;
+						case "KoopOrder":
+							break;
+						case "VerkoopOrder":
+							break;
+						case "AandeelKoop":
+							break;
+						case "AandeelVerkoop":
+							break;
+						case "Done":
+							outToClient.writeBytes("Ack\n\r\n\r");
+							connectionSocket.close();
+							System.out.println("Webserver: Connection closed");
+							break;
+					// }
 					}
 				}
 			}
 		} catch (Exception e) {
+			sendToClient(outToClient, "Error\n\r\n\r");
 			System.out.println("Webserver|serve: " + e);
 		}
 	}
@@ -109,24 +129,59 @@ public class WebServer extends Thread {
 			sendToClient(outToClient, "Login incorrect\n\r\n\r");
 	}
 	
-	public void getPorto(StringTokenizer tokenizedLine,
-			DataOutputStream outToClient) {
-		Object[][] data = new Object[][] { { "Syntaxis", 10, 5.00, 50.00 },
-				{ "Watt", 5, 5.00, 25.00 } };
+	public void getAandelen(DataOutputStream outToClient, Object[][] data) {
+		sendToClient(outToClient, "Aandeel: Size: " + data.length + "\n\r");
 
-		// TODO sent result size for Object[][]
 		for (int i = 0; i < data.length; i++) {
 			String aandeel = "";
 			for (int j = 0; j < data[0].length; j++)
 				aandeel += (data[i][j] + " ");
 
-			sendToClient(outToClient, aandeel + "\n\r");
+			sendToClient(outToClient, "Aandeel: " + aandeel + "\n\r");
 		}
 
-		sendToClient(outToClient, "\n\r\n\r");
-		//TODO Huidige porto ophalen van User
+		sendToClient(outToClient, "Aandeel: Done\n\r\n\r");
 	}
 	
+	public void getPorto(StringTokenizer tokenizedLine,
+			DataOutputStream outToClient) {
+		Object[][] data = new Object[][] { { "Syntaxis", 10, 5.00, 50.00 },
+				{ "Watt", 5, 5.00, 25.00 } };
+
+		getAandelen(outToClient, data);
+	}
+
+	public void getBuy(StringTokenizer tokenizedLine,
+			DataOutputStream outToClient) {
+		Object[][] data = new Object[][] {
+				{ "Syntaxis", "Syntaxis", 20, 5.00, 100.00 },
+				{ "User", "LiNK", 8, 5.00, 40.00 } };
+
+		getAandelen(outToClient, data);
+	}
+
+	public void getSell(StringTokenizer tokenizedLine,
+			DataOutputStream outToClient) {
+		Object[][] data = new Object[][] { { "Syntaxis", "Syntaxis", 5, 5.00,
+				25.50 } };
+
+		getAandelen(outToClient, data);
+	}
+
+	public void getBuying(StringTokenizer tokenizedLine,
+			DataOutputStream outToClient) {
+		Object[][] data = new Object[][] { { "LiNK", 8, 5.00, 40.00 } };
+
+		getAandelen(outToClient, data);
+	}
+
+	public void getSelling(StringTokenizer tokenizedLine,
+			DataOutputStream outToClient) {
+		Object[][] data = new Object[][] { { "Syntaxis", 5, 5.00, 25.50 } };
+
+		getAandelen(outToClient, data);
+	}
+
 	public void verkoopAandeel(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		//TODO aandeel verkopen, dingen updaten, boolean returnen
@@ -145,6 +200,7 @@ public class WebServer extends Thread {
 		try {
 			outToClient.writeBytes(message);
 		} catch (Exception e) {
+			sendToClient(outToClient, "error");
 			System.out.println("Webserver|sentToClient: " + e);
 			System.out.println(Thread.currentThread().getStackTrace());
 		}

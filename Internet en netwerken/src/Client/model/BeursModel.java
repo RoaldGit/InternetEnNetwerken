@@ -7,18 +7,11 @@ import Client.view.Tabel;
 public class BeursModel extends Observable {
 	private String aandeelSelect;
 	private Tabel tabelSelect = null;
-	private Object[][] dummyPorto, dummyBuying, dummySelling, dummyBuy,
-			dummySell;
+	private Object[][] porto, buying, selling, buy, sell;
 	private String user;
 
 	public BeursModel() {
-		dummyPorto = new Object[][] { { "Syntaxis", 10, 5.00, 50.00 },
-				{ "Watt", 5, 5.00, 25.00 } };
-		dummyBuying = new Object[][] { { "LiNK", 8, 5.00, 40.00 } };
-		dummySelling = new Object[][] { { "Syntaxis", 5, 5.00, 25.50 } };
-		dummyBuy = new Object[][] { { "", "Syntaxis", 20, 5.00, 100.00 },
-				{ "User", "LiNK", 8, 5.00, 40.00 } };
-		dummySell = new Object[][] { { "", "Syntaxis", 5, 5.00, 25.50 } };
+
 	}
 
 	public void setSelectedAandeel(String select) {
@@ -44,23 +37,38 @@ public class BeursModel extends Observable {
 	}
 
 	public void setPorto(Object[][] data) {
-		dummyPorto = data;
+		porto = data;
+
+		setChanged();
+		notifyObservers("Aandelen");
 	}
 
 	public void setBuying(Object[][] data) {
-		dummyBuying = data;
+		buying = data;
+
+		setChanged();
+		notifyObservers("Aandelen");
 	}
 
 	public void setSelling(Object[][] data) {
-		dummySelling = data;
+		selling = data;
+
+		setChanged();
+		notifyObservers("Aandelen");
 	}
 
 	public void setBuy(Object[][] data) {
-		dummyBuy = data;
+		buy = data;
+
+		setChanged();
+		notifyObservers("Aandelen");
 	}
 
 	public void setSell(Object[][] data) {
-		dummySell = data;
+		sell = data;
+
+		setChanged();
+		notifyObservers("Aandelen");
 	}
 
 	public String getSelectedAandeel() {
@@ -68,22 +76,22 @@ public class BeursModel extends Observable {
 	}
 
 	public Object[][] getPorto() {
-		return dummyPorto;
+		return porto;
 	}
 
 	public Object[][] getBuying() {
-		return dummyBuying;
+		return buying;
 	}
 
 	public Object[][] getSelling() {
-		return dummySelling;
+		return selling;
 	}
 
 	public Object[][] getBuy() {
-		return dummyBuy;
+		return buy;
 	}
 
 	public Object[][] getSell() {
-		return dummySell;
+		return sell;
 	}
 }

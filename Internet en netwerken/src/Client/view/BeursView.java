@@ -108,17 +108,19 @@ public class BeursView extends JPanel implements Observer {
 					buyLabel.setText("Inkooporders voor " + aandeel);
 					sellLabel.setText("Verkooporders voor " + aandeel);
 				}
+				if (obj.equals("Aandelen"))
+					updateTables();
 			}
+
 			if (obj instanceof Tabel) {
 				if (obj != null)
 					((Tabel) obj).clearSelection();
 			}
 		}
-		if (obs == userModel) {
-			if (obj.equals("loggedIn")) {
+
+		if (obs == userModel)
+			if (obj.equals("loggedIn"))
 				updateTables();
-			}
-		}
 	}
 
 	public void updateTables() {
