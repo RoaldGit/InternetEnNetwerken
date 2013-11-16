@@ -23,14 +23,17 @@ public class Tabel extends JTable {
 		addMouseListener(null);
 	}
 
-	public Tabel(Object[][] row, String[] col, BeursModel bModel) {
+	public Tabel(Object[][] row, String[] col, BeursModel bModel, String name) {
 		super(row, col);
+		this.setName(name);
 
 		rowData = row;
 		colData = col;
 		
 		int cols = col.length - 1;
+
 		TableColumnModel tcm = this.getColumnModel();
+
 		tcm.getColumn(cols - 1).setCellRenderer(new NumberRenderer());
 		tcm.getColumn(cols).setCellRenderer(new NumberRenderer());
 

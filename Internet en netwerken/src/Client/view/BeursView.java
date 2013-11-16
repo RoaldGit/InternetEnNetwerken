@@ -13,7 +13,7 @@ import Client.model.BeursModel;
 import Client.model.UserModel;
 
 public class BeursView extends JPanel implements Observer {
-	private Tabel porto, buy, sell, buying, selling;
+	private Tabel porto, buy, sell, buying, selling, selected;
 	private JScrollPane portoScroll, buyScroll, sellScroll, buyingScroll,
 			sellingScroll;
 	private UserModel userModel;
@@ -62,11 +62,11 @@ public class BeursView extends JPanel implements Observer {
 		
 
 
-		porto = new Tabel(dummyPorto, portoHeader, beursModel);
-		buying = new Tabel(dummyBuying, buyingHeader, beursModel);
-		selling = new Tabel(dummySelling, sellingHeader, beursModel);
-		buy = new Tabel(dummyBuy, buyHeader, beursModel);
-		sell = new Tabel(dummySell, sellHeader, beursModel);
+		porto = new Tabel(dummyPorto, portoHeader, beursModel, "porto");
+		buying = new Tabel(dummyBuying, buyingHeader, beursModel, "buying");
+		selling = new Tabel(dummySelling, sellingHeader, beursModel, "selling");
+		buy = new Tabel(dummyBuy, buyHeader, beursModel, "buy");
+		sell = new Tabel(dummySell, sellHeader, beursModel, "sell");
 
 		portoScroll = new JScrollPane(porto);
 		buyingScroll = new JScrollPane(buying);

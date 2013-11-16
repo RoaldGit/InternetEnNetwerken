@@ -107,11 +107,10 @@ public class WebServer extends Thread {
 						System.out.println("Webserver: Connection closed");
 						break;
 					default:
-						sendToClient(outToClient, "Error\n\r\n\r");
+						sendToClient(outToClient, "Unknown Error\n\r\n\r");
 						break;
 					}
-				} else
-					sendToClient(outToClient, "Error\n\r\n\r");
+				}
 			}
 		} catch (Exception e) {
 
@@ -132,7 +131,8 @@ public class WebServer extends Thread {
 			sendToClient(outToClient, "Login incorrect\n\r\n\r");
 	}
 	
-	public void getAandelen(DataOutputStream outToClient, Object[][] data) {
+	public synchronized void getAandelen(DataOutputStream outToClient,
+			Object[][] data) {
 		sendToClient(outToClient, "Aandeel: Size: " + data.length + "\n\r");
 
 		for (int i = 0; i < data.length; i++) {
@@ -202,9 +202,8 @@ public class WebServer extends Thread {
 	public void sendToClient(DataOutputStream outToClient, String message) {
 		try {
 			outToClient.writeBytes(message);
-			System.out.println("WebServer|sendToClient: Sent");
 		} catch (Exception e) {
-			sendToClient(outToClient, "Error\n\r\n\r");
+			sendToClient(outToClient, "Sending Error\n\r\n\r");
 			System.out.println("Webserver|sentToClient: " + e);
 			System.out.println(Thread.currentThread().getStackTrace());
 		}

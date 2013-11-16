@@ -70,6 +70,7 @@ public class ClientConnection {
 
 			while (!response.contains("Login") && !response.contains("Error")) {
 				response = inFromClient.readLine();
+				System.out.println(response);
 			}
 
 		} catch (Exception e) {
@@ -78,7 +79,7 @@ public class ClientConnection {
 		return response;
 	}
 
-	public Object[][] getAandelen(String user, String method) {
+	public synchronized Object[][] getAandelen(String user, String method) {
 		if (connectionSocket.isClosed())
 			connect();
 
@@ -94,6 +95,7 @@ public class ClientConnection {
 
 			while (!response.contains("Done")) {
 				response = inFromClient.readLine();
+				// System.out.print(response);
 
 				if (response.contains("Size:")) {
 					arraySize = retrieveSize(response);
@@ -113,11 +115,6 @@ public class ClientConnection {
 			System.out.println("ClientConnection|login: " + e);
 		}
 		return porto;
-	}
-
-	public Object[][] getBuy(String user) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public int retrieveSize(String response) {
