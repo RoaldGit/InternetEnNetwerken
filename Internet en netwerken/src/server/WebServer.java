@@ -93,6 +93,9 @@ public class WebServer extends Thread {
 					case "Stort":
 						stortGeld(tokenizedLine, outToClient);
 						break;
+					case "Aandelen":
+						sendAandeelNamen(outToClient);
+						break;
 					case "KoopOrder":
 						break;
 					case "VerkoopOrder":
@@ -118,6 +121,10 @@ public class WebServer extends Thread {
 		}
 	}
 
+	private void sendAandeelNamen(DataOutputStream outToClient) {
+		sendToClient(outToClient, "Aandelen: Syntaxis LiNK WaTT\n\r\n\r");
+	}
+
 	public void checkLogin(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String username, password;
@@ -126,7 +133,6 @@ public class WebServer extends Thread {
 
 		if (user.equals(username) && pass.equals(password))
 			sendToClient(outToClient, "Login ok\n\r\n\r");
-			// TODO DB checken voor login gegevens;
 		else
 			sendToClient(outToClient, "Login incorrect\n\r\n\r");
 	}

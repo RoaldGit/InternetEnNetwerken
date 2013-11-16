@@ -3,6 +3,8 @@ package Client.control;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
 import Client.model.BeursModel;
@@ -20,6 +22,10 @@ public class AandelenLijst extends JComboBox {
 
 		beursModel.setSelectedAandeel(this.getSelectedItem().toString());
 		this.addActionListener(new ComboListener());
+	}
+
+	public void setAandelen(String[] aandelen) {
+		setModel(new DefaultComboBoxModel<>(aandelen));
 	}
 
 	class ComboListener implements ActionListener {

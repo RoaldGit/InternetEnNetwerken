@@ -46,7 +46,8 @@ public class BeursView extends JPanel implements Observer {
 				"Totale waarde" };
 		sellHeader = new String[] { "Aanbieder", "Aandeel", "Aantal", "Waarde",
 				"Totale waarde" };
-		aandelen = new String[] { "Syntaxis", "LiNK", "WaTT" };
+
+		aandelen = connection.getAandelen();
 
 		portoLabel = new JLabel("Uw Portofeuille:");
 		buyingLabel = new JLabel("Uw inkooporders:");

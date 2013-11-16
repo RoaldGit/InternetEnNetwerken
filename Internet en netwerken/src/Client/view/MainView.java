@@ -80,8 +80,6 @@ public class MainView extends JFrame implements Observer {
 		login.setVisible(true);
 		beurs.setVisible(false);
 
-		// BeursControl test = new BeursControl(beursModel, userModel,
-		// connection);
 		frame.setVisible(true);
 	}
 

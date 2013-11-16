@@ -79,7 +79,7 @@ public class ClientConnection {
 		return response;
 	}
 
-	public synchronized Object[][] getAandelen(String user, String method) {
+	public Object[][] getAandelen(String user, String method) {
 		if (connectionSocket.isClosed())
 			connect();
 
@@ -141,5 +141,37 @@ public class ClientConnection {
 		}
 
 		return aandeel;
+	}
+
+	public String[] getAandelen() {
+		try {
+			outToClient.writeBytes("Aandelen\n\r\n\r");
+
+			String response = "";
+			// while (!response.contains("Aandelen")
+			// && !response.contains("Error"))
+			// while (response.equals(""))
+			// response = inFromClient.readLine();
+
+
+			// StringTokenizer tokenizedLine = new StringTokenizer(response);
+			System.out.println(response);
+			System.out.println("bla");
+			// tokenizedLine.nextToken();
+			//
+			// int size = tokenizedLine.countTokens();
+			//
+			// Object[] aandeel = new Object[size];
+			//
+			// for (int i = 0; i < size; i++) {
+			// aandeel[i] = tokenizedLine.nextToken();
+			// }
+		} catch (Exception e) {
+			System.out.println("ClientConnection|getAandelen: " + e);
+		}
+
+		String[] aandelen = new String[] { "Syntaxis", "LiNK", "WaTT" };
+
+		return aandelen;
 	}
 }
