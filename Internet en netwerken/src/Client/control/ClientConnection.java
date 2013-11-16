@@ -68,7 +68,7 @@ public class ClientConnection {
 		try {
 			outToClient.writeBytes(request + "\n\r\n\r");
 
-			while (!response.contains("Login")) {
+			while (!response.contains("Login") && !response.contains("Error")) {
 				response = inFromClient.readLine();
 			}
 

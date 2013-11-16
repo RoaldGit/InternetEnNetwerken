@@ -51,14 +51,14 @@ public class WebServer extends Thread {
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
 
-				if (tokenizedLine.hasMoreTokens()) {
+				if (tokenizedLine.hasMoreTokens()
+						&& tokenizedLine.countTokens() > 1) {
 					String firstToken = tokenizedLine.nextToken();
-					// if (tokenizedLine.hasMoreTokens()) {
 					switch (firstToken) {
-						case "Login":
-							checkLogin(tokenizedLine, outToClient);
-							break;
-						case "Porto":
+					case "Login":
+						checkLogin(tokenizedLine, outToClient);
+						break;
+					case "Porto":
 						getPorto(tokenizedLine, outToClient);
 						break;
 					case "Buy":
@@ -72,46 +72,49 @@ public class WebServer extends Thread {
 						break;
 					case "Selling":
 						getSelling(tokenizedLine, outToClient);
-							// TODO Aandelen van de user ophalen
-							// Request bevat username en (waarschijnlijk) soort
-							// van
-							// identifier
-							break;
-						case "Koop":
-							koopAandeel(tokenizedLine, outToClient);
-							// TODO Aandeel order plaatsen
-							// Fancy implementatie kijkt ook naar bestaande
-							// verkoop
-							// orders
-							break;
-						case "Verkoop":
-							verkoopAandeel(tokenizedLine, outToClient);
-							// TODO Aandeel order plaatsen
-							// Fancy implementatie kijkt ook naar bestaande koop
-							// orders
-							break;
-						case "Stort":
-							stortGeld(tokenizedLine, outToClient);
-							break;
-						case "KoopOrder":
-							break;
-						case "VerkoopOrder":
-							break;
-						case "AandeelKoop":
-							break;
-						case "AandeelVerkoop":
-							break;
-						case "Done":
-							outToClient.writeBytes("Ack\n\r\n\r");
-							connectionSocket.close();
-							System.out.println("Webserver: Connection closed");
-							break;
-					// }
+						// TODO Aandelen van de user ophalen
+						// Request bevat username en (waarschijnlijk) soort
+						// van
+						// identifier
+						break;
+					case "Koop":
+						koopAandeel(tokenizedLine, outToClient);
+						// TODO Aandeel order plaatsen
+						// Fancy implementatie kijkt ook naar bestaande
+						// verkoop
+						// orders
+						break;
+					case "Verkoop":
+						verkoopAandeel(tokenizedLine, outToClient);
+						// TODO Aandeel order plaatsen
+						// Fancy implementatie kijkt ook naar bestaande koop
+						// orders
+						break;
+					case "Stort":
+						stortGeld(tokenizedLine, outToClient);
+						break;
+					case "KoopOrder":
+						break;
+					case "VerkoopOrder":
+						break;
+					case "AandeelKoop":
+						break;
+					case "AandeelVerkoop":
+						break;
+					case "Done":
+						sendToClient(outToClient, "Ack\n\r\n\r");
+						connectionSocket.close();
+						System.out.println("Webserver: Connection closed");
+						break;
+					default:
+						sendToClient(outToClient, "Error\n\r\n\r");
+						break;
 					}
-				}
+				} else
+					sendToClient(outToClient, "Error\n\r\n\r");
 			}
 		} catch (Exception e) {
-			sendToClient(outToClient, "Error\n\r\n\r");
+
 			System.out.println("Webserver|serve: " + e);
 		}
 	}
@@ -199,8 +202,9 @@ public class WebServer extends Thread {
 	public void sendToClient(DataOutputStream outToClient, String message) {
 		try {
 			outToClient.writeBytes(message);
+			System.out.println("WebServer|sendToClient: Sent");
 		} catch (Exception e) {
-			sendToClient(outToClient, "error");
+			sendToClient(outToClient, "Error\n\r\n\r");
 			System.out.println("Webserver|sentToClient: " + e);
 			System.out.println(Thread.currentThread().getStackTrace());
 		}
