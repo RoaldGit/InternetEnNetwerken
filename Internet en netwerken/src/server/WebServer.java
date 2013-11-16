@@ -45,8 +45,8 @@ public class WebServer extends Thread {
 				requestMessageLine = inFromClient.readLine();
 
 				if (!requestMessageLine.equals(""))
-				System.out.println("Webserver|Received request: "
-						+ requestMessageLine);
+					System.out.println("Webserver|Received request: "
+							+ requestMessageLine);
 
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
@@ -116,13 +116,13 @@ public class WebServer extends Thread {
 				}
 			}
 		} catch (Exception e) {
-
 			System.out.println("Webserver|serve: " + e);
 		}
 	}
 
 	private void sendAandeelNamen(DataOutputStream outToClient) {
 		sendToClient(outToClient, "Aandelen: Syntaxis LiNK WaTT\n\r\n\r");
+		System.out.println("Sent");
 	}
 
 	public void checkLogin(StringTokenizer tokenizedLine,

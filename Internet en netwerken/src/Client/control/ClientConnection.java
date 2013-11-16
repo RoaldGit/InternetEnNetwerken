@@ -70,7 +70,6 @@ public class ClientConnection {
 
 			while (!response.contains("Login") && !response.contains("Error")) {
 				response = inFromClient.readLine();
-				System.out.println(response);
 			}
 
 		} catch (Exception e) {
@@ -144,34 +143,35 @@ public class ClientConnection {
 	}
 
 	public String[] getAandelen() {
+		String[] aandeel = new String[1];
 		try {
-			outToClient.writeBytes("Aandelen\n\r\n\r");
+			outToClient.writeBytes("Aandelen b\n\r\n\r");
 
-			String response = "";
-			// while (!response.contains("Aandelen")
-			// && !response.contains("Error"))
-			// while (response.equals(""))
-			// response = inFromClient.readLine();
+			String response = " ";
+
+			while (!response.contains("Aandelen")
+					&& !response.contains("Error"))
+				// while (response.equals(""))
+				response = inFromClient.readLine();
 
 
-			// StringTokenizer tokenizedLine = new StringTokenizer(response);
-			System.out.println(response);
-			System.out.println("bla");
-			// tokenizedLine.nextToken();
-			//
-			// int size = tokenizedLine.countTokens();
-			//
-			// Object[] aandeel = new Object[size];
-			//
-			// for (int i = 0; i < size; i++) {
-			// aandeel[i] = tokenizedLine.nextToken();
-			// }
+			StringTokenizer tokenizedLine = new StringTokenizer(response);
+
+			tokenizedLine.nextToken();
+			
+			int size = tokenizedLine.countTokens();
+			
+			aandeel = new String[size];
+			
+			for (int i = 0; i < size; i++) {
+				aandeel[i] = tokenizedLine.nextToken();
+			}
 		} catch (Exception e) {
 			System.out.println("ClientConnection|getAandelen: " + e);
 		}
 
 		String[] aandelen = new String[] { "Syntaxis", "LiNK", "WaTT" };
 
-		return aandelen;
+		return aandeel;
 	}
 }
