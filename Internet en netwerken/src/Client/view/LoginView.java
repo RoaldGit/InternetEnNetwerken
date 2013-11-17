@@ -18,7 +18,7 @@ public class LoginView extends JPanel {
 	private BeursModel beursModel;
 
 	public LoginView(UserModel uModel, ClientModel cModel,
-			ClientConnection con, BeursModel bModel) {
+			ClientConnection con, BeursModel bModel, BeursControl bControl) {
 		userModel = uModel;
 		clientModel = cModel;
 		connection = con;
@@ -27,7 +27,7 @@ public class LoginView extends JPanel {
 		setSize(250, 100);
 
 		add(new LoginControl(userModel, clientModel, connection, beursModel,
-				new BeursControl(beursModel, userModel, connection)));
+				bControl));
 
 		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 	}

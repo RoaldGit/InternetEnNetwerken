@@ -116,6 +116,28 @@ public class ClientConnection {
 		return porto;
 	}
 
+	public double getSaldo(String user) {
+		String response = "";
+		String request = "Saldo " + user;
+		double saldo = 0;
+		
+		try{
+			outToClient.writeBytes(request + "\n\r\n\r");
+			while (!response.contains("Saldo")) {
+				response = inFromClient.readLine();
+
+				if (!response.equals("")) {
+					StringTokenizer tokenizedLine = new StringTokenizer(
+							response);
+					tokenizedLine.nextToken();
+					saldo = Double.parseDouble(tokenizedLine.nextToken());
+				}
+			}
+		}catch(Exception e) {
+			System.out.println("ClientConnection|getSaldo: " + e);
+		}
+		return saldo;
+	}
 	public int retrieveSize(String response) {
 		StringTokenizer tokenizedLine = new StringTokenizer(response);
 

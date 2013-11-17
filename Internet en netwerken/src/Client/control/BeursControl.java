@@ -25,12 +25,8 @@ public class BeursControl {
 		retreiveAandelen("Selling");
 	}
 
-	public JButton getBuy() {
-		return null;
-	}
-
-	public JButton getSell() {
-		return null;
+	public void retreiveSaldo(String user) {
+		userModel.setSaldo(connection.getSaldo(user));
 	}
 
 	public void retreiveAandelen(String tabel) {

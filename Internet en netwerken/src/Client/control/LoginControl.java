@@ -76,6 +76,7 @@ public class LoginControl extends JPanel{
 					userModel.setUserDetails(passwordInput, userInput);
 					beursModel.setUser(userInput);
 					beursControl.retreiveAlleAandelen();
+					beursControl.retreiveSaldo(userInput);
 				} else
 					JOptionPane.showMessageDialog(new JFrame(),
 							"Invalid username or password", "Error bij login",

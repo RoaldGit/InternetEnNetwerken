@@ -1,16 +1,21 @@
 package Client.view;
 
+import java.awt.Color;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 
 import Client.control.AandelenLijst;
+import Client.control.BeursControl;
 import Client.control.ClientConnection;
+import Client.control.TextFieldEvent;
 import Client.model.BeursModel;
 import Client.model.UserModel;
 
@@ -26,14 +31,22 @@ public class BeursView extends JPanel implements Observer {
 			sellHeader, aandelen;
 	private Object[][] dummyPorto, dummyBuying, dummySelling, dummyBuy,
 			dummySell;
-	private JLabel portoLabel, buyingLabel, sellingLabel, buyLabel, sellLabel;
+	private JLabel portoLabel, buyingLabel, sellingLabel, buyLabel, sellLabel,
+			aandeelLabel, prijsLabel, aantalLabel,totaalLabel;;
+	private JTextField aandeelVeld, prijsVeld, totaalVeld, aantalVeld;
+	private JPanel details;
+	private BeursControl beursControl;
+	private JButton buyButton, sellButton, changeButton, cancelButton;
+	private TextFieldEvent textFieldEvent;
 
-	public BeursView(UserModel uModel, BeursModel bModel, ClientConnection con) {
+	public BeursView(UserModel uModel, BeursModel bModel, ClientConnection con,
+			BeursControl bControl) {
 		setLayout(null);
 
 		userModel = uModel;
 		beursModel = bModel;
 		connection = con;
+		beursControl = bControl;
 
 		beursModel.addObserver(this);
 		userModel.addObserver(this);
@@ -62,8 +75,6 @@ public class BeursView extends JPanel implements Observer {
 		sellingLabel.setBounds(5, 380, 200, 20);
 		buyLabel.setBounds(375, 80, 200, 20);
 		sellLabel.setBounds(375, 230, 200, 20);
-		
-
 
 		porto = new Tabel(dummyPorto, portoHeader, beursModel, "porto");
 		buying = new Tabel(dummyBuying, buyingHeader, beursModel, "buying");
@@ -87,11 +98,67 @@ public class BeursView extends JPanel implements Observer {
 				connection);
 		aandelenLijst.setBounds(400, 50, 200, 20);
 
-		JPanel details = new JPanel(null);
+		details = new JPanel(null);
 		details.setBounds(5, 500, 780, 260);
 		details.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 
-		// JLabel
+		aandeelLabel = new JLabel("Aandeel: ");
+		prijsLabel = new JLabel("Prijs per aandeel: ");
+		aantalLabel = new JLabel("Aantal aandelen: ");
+		totaalLabel = new JLabel("Totaal prijs: ");
+
+		aandeelVeld = new JTextField("");
+		prijsVeld = new JTextField("");
+		aantalVeld = new JTextField("0");
+		totaalVeld = new JTextField("");
+
+		buyButton = new JButton("Koop dit aandeel");
+		sellButton = new JButton("Verkoop dit aandeel");
+		changeButton = new JButton("Verander order");
+		cancelButton = new JButton("Verwijder order");
+
+		aandeelVeld.setEditable(false);
+		prijsVeld.setEditable(false);
+		aantalVeld.setEditable(false);
+		totaalVeld.setEditable(false);
+
+		aandeelLabel.setBounds(5, 5, 200, 20);
+		prijsLabel.setBounds(5, 30, 200, 20);
+		aantalLabel.setBounds(5, 55, 200, 20);
+		totaalLabel.setBounds(5, 80, 200, 20);
+
+		aandeelVeld.setBounds(175, 5, 100, 20);
+		prijsVeld.setBounds(175, 30, 100, 20);
+		aantalVeld.setBounds(175, 55, 100, 20);
+		totaalVeld.setBounds(175, 80, 100, 20);
+
+		buyButton.setBounds(300, 10, 400, 20);
+		sellButton.setBounds(300, 35, 400, 20);
+		changeButton.setBounds(300, 60, 400, 20);
+		cancelButton.setBounds(300, 85, 400, 20);
+
+		buyButton.setEnabled(false);
+		sellButton.setEnabled(false);
+		changeButton.setEnabled(false);
+		cancelButton.setEnabled(false);
+
+		textFieldEvent = new TextFieldEvent(beursModel);
+		aantalVeld.getDocument().addDocumentListener(textFieldEvent);
+
+		details.add(aandeelLabel);
+		details.add(prijsLabel);
+		details.add(aantalLabel);
+		details.add(totaalLabel);
+
+		details.add(aandeelVeld);
+		details.add(prijsVeld);
+		details.add(aantalVeld);
+		details.add(totaalVeld);
+
+		details.add(buyButton);
+		details.add(sellButton);
+		details.add(changeButton);
+		details.add(cancelButton);
 
 		add(portoScroll);
 		add(buyingScroll);
@@ -121,6 +188,53 @@ public class BeursView extends JPanel implements Observer {
 				}
 				if (obj.equals("Aandelen"))
 					updateTables();
+				if (obj.equals("select")) {
+					Tabel selected = beursModel.getSelectedTabel();
+					if (selected != null) {
+						aantalVeld.setEditable(true);
+
+						if (selected == porto)
+							portoSelected();
+						if (selected == buying)
+							buyingSelected();
+						if (selected == selling)
+							sellingSelected();
+						if (selected == buy)
+							buySelected();
+						if (selected == sell)
+							sellSelected();
+
+						int col = 1;
+						int row = selected.getSelectedRow();
+
+						if (selected == buy || selected == sell)
+							col = 1;
+						else
+							col = 0;
+
+						aandeelVeld.setText((String) selected.getValueAt(row,
+								col++));
+						prijsVeld.setText(String.format("€ %,.2f", Double
+								.parseDouble((String) selected.getValueAt(row,
+										++col))));
+
+						double prijs = Double.parseDouble((String) selected
+								.getValueAt(row, col));
+						int aantal = 0;
+
+						String text = aantalVeld.getText();
+
+						try {
+							aantalVeld.setBackground(Color.white);
+							aantal = Integer.parseInt(text);
+						} catch(Exception e) {
+							System.out.println(e);
+							aantalVeld.setBackground(Color.red);
+						}
+						totaalVeld.setText(String.format("€ %,.2f", prijs
+								* aantal));
+					}
+				}
 			}
 
 			if (obj instanceof Tabel) {
@@ -132,6 +246,42 @@ public class BeursView extends JPanel implements Observer {
 		if (obs == userModel)
 			if (obj.equals("loggedIn"))
 				updateTables();
+	}
+
+	private void sellSelected() {
+		buyButton.setEnabled(true);
+		sellButton.setEnabled(true);
+		changeButton.setEnabled(false);
+		cancelButton.setEnabled(false);
+
+	}
+
+	private void buySelected() {
+		buyButton.setEnabled(true);
+		sellButton.setEnabled(true);
+		changeButton.setEnabled(false);
+		cancelButton.setEnabled(false);
+	}
+
+	private void sellingSelected() {
+		buyButton.setEnabled(false);
+		sellButton.setEnabled(false);
+		changeButton.setEnabled(true);
+		cancelButton.setEnabled(true);
+	}
+
+	private void buyingSelected() {
+		buyButton.setEnabled(false);
+		sellButton.setEnabled(false);
+		changeButton.setEnabled(true);
+		cancelButton.setEnabled(true);
+	}
+
+	public void portoSelected() {
+		buyButton.setEnabled(true);
+		sellButton.setEnabled(true);
+		changeButton.setEnabled(false);
+		cancelButton.setEnabled(false);
 	}
 
 	public void updateTables() {

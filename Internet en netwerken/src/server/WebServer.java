@@ -104,6 +104,9 @@ public class WebServer extends Thread {
 						break;
 					case "AandeelVerkoop":
 						break;
+					case "Saldo":
+						sendSaldo(tokenizedLine, outToClient);
+						break;
 					case "Done":
 						sendToClient(outToClient, "Ack\n\r\n\r");
 						connectionSocket.close();
@@ -120,9 +123,13 @@ public class WebServer extends Thread {
 		}
 	}
 
+	private void sendSaldo(StringTokenizer tokenizedLine,
+			DataOutputStream outToClient) {
+		sendToClient(outToClient, "Saldo 1000\n\r\n\r");
+	}
+
 	private void sendAandeelNamen(DataOutputStream outToClient) {
 		sendToClient(outToClient, "Aandelen: Syntaxis LiNK WaTT\n\r\n\r");
-		System.out.println("Sent");
 	}
 
 	public void checkLogin(StringTokenizer tokenizedLine,

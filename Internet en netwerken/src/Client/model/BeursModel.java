@@ -30,6 +30,13 @@ public class BeursModel extends Observable {
 
 		setChanged();
 		notifyObservers(oldSelect);
+
+		selected();
+	}
+
+	public void selected() {
+		setChanged();
+		notifyObservers("select");
 	}
 
 	public void setUser(String user) {
@@ -69,6 +76,10 @@ public class BeursModel extends Observable {
 
 		setChanged();
 		notifyObservers("Aandelen");
+	}
+
+	public Tabel getSelectedTabel() {
+		return tabelSelect;
 	}
 
 	public String getSelectedAandeel() {

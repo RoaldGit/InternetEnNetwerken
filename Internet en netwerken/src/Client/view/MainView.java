@@ -24,6 +24,7 @@ public class MainView extends JFrame implements Observer {
 	private JLabel connected, loggedIn, saldo, portoWaarde;
 	private JPanel sideBar;
 	private ClientConnection connection;
+	private BeursControl beursControl;
 
 	public MainView() {
 		JFrame frame = new JFrame("Internet en Netwerken Eindopdracht");
@@ -40,6 +41,7 @@ public class MainView extends JFrame implements Observer {
 		clientModel = new ClientModel();
 
 		connection = new ClientConnection(clientModel);
+		beursControl = new BeursControl(beursModel, userModel, connection);
 
 		clientModel.addObserver(this);
 
@@ -55,10 +57,11 @@ public class MainView extends JFrame implements Observer {
 		portoWaarde = new JLabel();
 		portoWaarde.setBounds(5, 50, 200, 20);
 
-		login = new LoginView(userModel, clientModel, connection, beursModel);
+		login = new LoginView(userModel, clientModel, connection, beursModel,
+				beursControl);
 		login.setBounds(300, 300, 200, 100);
 
-		beurs = new BeursView(userModel, beursModel, connection);
+		beurs = new BeursView(userModel, beursModel, connection, null);
 		beurs.setBounds(0, 0, 800, 800);
 
 		sideBar.setLayout(null);
@@ -83,9 +86,9 @@ public class MainView extends JFrame implements Observer {
 		frame.setVisible(true);
 	}
 
-	public void update(Observable o, Object arg) {
-		if (o == clientModel) {
-			if (arg.equals("connected")) {
+	public void update(Observable obs, Object obj) {
+		if (obs == clientModel) {
+			if (obj.equals("connected")) {
 				if (clientModel.getConnected()) {
 					connected.setText("Connected");
 					loggedIn.setText("Not logged in");
@@ -95,8 +98,8 @@ public class MainView extends JFrame implements Observer {
 			}
 		}
 
-		if (o == userModel) {
-			if (arg.equals("loggedIn") && clientModel.getConnected()) {
+		if (obs == userModel) {
+			if (obj.equals("loggedIn") && clientModel.getConnected()) {
 				if (clientModel.getLoggedIn()) {
 					loggedIn.setText("Logged in as: " + userModel.getUser());
 					String saldoString = String.format("Huidig saldo: € %.2f",
@@ -115,6 +118,11 @@ public class MainView extends JFrame implements Observer {
 				}
 				else
 					loggedIn.setText("Not logged in");
+			}
+			if (obj.equals("saldo")) {
+				String saldoString = String.format("Huidig saldo: € %.2f",
+						userModel.getSaldo());
+				saldo.setText(saldoString);
 			}
 		}
 	}
