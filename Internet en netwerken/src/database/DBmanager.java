@@ -5,17 +5,17 @@ import java.sql.SQLException;
 
 public class DBmanager {
 	private static DBmanager uniqueInstance = null;
-	private String user, password;
+	private String userName, password;
 	private static Connection con = null;
 
-	private DBmanager(String dbNaam) {
-		user = "root";
-		password = "a";
+	private DBmanager(String naam, String user, String pass) {
+		userName = user;
+		password = pass;
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			if (!dbExists(dbNaam)) {
-				System.err.println("de database bestaat niet....");
+			if (!dbExists(naam)) {
+				connect();
 			}
 
 			else {
@@ -27,24 +27,37 @@ public class DBmanager {
 		}
 	}
 
-	public static synchronized DBmanager getInstance(String dbNaam) {
+	public static synchronized DBmanager getInstance(String naam, String user,
+			String pass) {
 		if (uniqueInstance == null) {
-			uniqueInstance = new DBmanager(dbNaam);
+			uniqueInstance = new DBmanager(naam, user, pass);
 		}
 		return uniqueInstance;
 	}
 
-    public Boolean dbExists(String dbNaam) {
+	public Boolean dbExists(String naam) {
 		Boolean exists = true;
 		try {
-			con = DriverManager.getConnection("jdbc:mysql://localhost/"
-					+ dbNaam, user, password);
-			System.out.println("Connected");
-		} catch (Exception e) {
-			System.out.println(e);
+			con = DriverManager.getConnection("jdbc:mysql://localhost/" + naam,
+					userName, password);
+		} catch (SQLException e) {
+			// System.out.println("DBmanager|dbExists|naam: " + e);
 			exists = false;
 		}
 		return (exists);
+	}
+
+	public Boolean connect() {
+		Boolean connected = true;
+		try {
+			con = DriverManager.getConnection("jdbc:mysql://localhost/",
+					userName, password);
+			System.out.println("Connected");
+		} catch (SQLException e) {
+			System.out.println("DBmanager|connect: " + e);
+			connected = false;
+		}
+		return (connected);
 	}
 
     public void close() {
@@ -53,12 +66,22 @@ public class DBmanager {
 			uniqueInstance = null;
 			con = null;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
     public Connection getConnection() {
 		return con;
+	}
+
+	public void printSQLException(SQLException se) {
+		while (se != null) {
+
+			System.out.print("SQLException: State:   " + se.getSQLState());
+			System.out.println(" Severity: " + se.getErrorCode());
+			System.out.println(se.getMessage());
+
+			se = se.getNextException();
+		}
 	}
 }

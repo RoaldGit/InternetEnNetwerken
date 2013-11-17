@@ -1,13 +1,34 @@
 package server;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.StringTokenizer;
+
+import database.DBmanager;
+import database.DatabaseApl;
 
 public class WebServer extends Thread {
 	private String requestMessageLine;
 	private ServerSocket listenSocket;
 	private String user= "a", pass="b";
+	private DBmanager dbManager;
+
+	public WebServer(int port, String naam, String user, String pass) {
+		dbManager = DBmanager.getInstance(naam, user, pass);
+
+		if (!dbManager.dbExists(naam)) {
+			DatabaseApl test = new DatabaseApl(dbManager, naam);
+		}
+
+		try {
+			listenSocket = new ServerSocket(port);
+		} catch (Exception e) {
+			System.out.println("Webserver|Consctructor: " + e);
+		}
+	}
 
 	public WebServer(int port) {
 		try {
@@ -44,9 +65,9 @@ public class WebServer extends Thread {
 			while (!connectionSocket.isClosed()) {
 				requestMessageLine = inFromClient.readLine();
 
-				if (!requestMessageLine.equals(""))
-					System.out.println("Webserver|Received request: "
-							+ requestMessageLine);
+				// if (!requestMessageLine.equals(""))
+				// System.out.println("Webserver|Received request: "
+				// + requestMessageLine);
 
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
