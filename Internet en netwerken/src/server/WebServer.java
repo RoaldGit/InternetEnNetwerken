@@ -143,7 +143,7 @@ public class WebServer extends Thread {
 		username = tokenizedLine.nextToken();
 		password = tokenizedLine.nextToken();
 
-		if (user.equals(username) && pass.equals(password))
+		if (dbManager.checkLogin(username, password))
 			sendToClient(outToClient, "Login ok");
 		else
 			sendToClient(outToClient, "Login incorrect");

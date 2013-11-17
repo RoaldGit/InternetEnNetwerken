@@ -1,12 +1,14 @@
 package database;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DBmanager {
 	private static DBmanager uniqueInstance = null;
 	private String userName, password;
-	private static Connection con = null;
+	private static Connection connection = null;
 
 	private DBmanager(String naam, String user, String pass) {
 		userName = user;
@@ -17,11 +19,6 @@ public class DBmanager {
 			if (!dbExists(naam)) {
 				connect();
 			}
-
-			else {
-				System.out.println("Database bestaat");
-			}
-
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -38,10 +35,9 @@ public class DBmanager {
 	public Boolean dbExists(String naam) {
 		Boolean exists = true;
 		try {
-			con = DriverManager.getConnection("jdbc:mysql://localhost/" + naam,
+			connection = DriverManager.getConnection("jdbc:mysql://localhost/" + naam,
 					userName, password);
 		} catch (SQLException e) {
-			// System.out.println("DBmanager|dbExists|naam: " + e);
 			exists = false;
 		}
 		return (exists);
@@ -50,9 +46,8 @@ public class DBmanager {
 	public Boolean connect() {
 		Boolean connected = true;
 		try {
-			con = DriverManager.getConnection("jdbc:mysql://localhost/",
+			connection = DriverManager.getConnection("jdbc:mysql://localhost/",
 					userName, password);
-			System.out.println("Connected");
 		} catch (SQLException e) {
 			System.out.println("DBmanager|connect: " + e);
 			connected = false;
@@ -62,26 +57,46 @@ public class DBmanager {
 
     public void close() {
 		try {
-			con.close();
+			connection.close();
 			uniqueInstance = null;
-			con = null;
+			connection = null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
     public Connection getConnection() {
-		return con;
+		return connection;
 	}
 
-	public void printSQLException(SQLException se) {
-		while (se != null) {
+	public void printSQLException(SQLException e) {
+		while (e != null) {
 
-			System.out.print("SQLException: State:   " + se.getSQLState());
-			System.out.println(" Severity: " + se.getErrorCode());
-			System.out.println(se.getMessage());
+			System.out.print("SQLException: State:   " + e.getSQLState());
+			System.out.println(" Severity: " + e.getErrorCode());
+			System.out.println(e.getMessage());
 
-			se = se.getNextException();
+			e = e.getNextException();
 		}
+	}
+
+	public boolean checkLogin(String user, String pass) {
+		boolean login = false;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select * from User where userName = ? and password = ?");
+
+			pst.setString(1, user);
+			pst.setString(2, pass);
+
+			ResultSet rs = pst.executeQuery();
+
+			if (rs.isBeforeFirst())
+				login = true;
+
+		} catch (SQLException e) {
+			printSQLException(e);
+		}
+		return login;
 	}
 }
