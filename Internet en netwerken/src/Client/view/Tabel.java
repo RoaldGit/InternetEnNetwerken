@@ -93,7 +93,9 @@ public class Tabel extends JTable {
 		}
 
 		public void setValue(Object value) {
-			Double number = Double.parseDouble(value.toString());
+			Double number = 0.0;
+			if (value != null)
+				number = Double.parseDouble(value.toString());
 			setText((value == null) ? "" : String.format("€ %,.2f", number));
 		}
 	}

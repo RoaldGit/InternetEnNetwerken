@@ -8,17 +8,17 @@ import java.net.Socket;
 import java.util.StringTokenizer;
 
 import database.DBmanager;
-//import database.DatabaseApl;
+import database.DatabaseApl;
 
 public class WebServer extends Thread {
 	private String requestMessageLine;
 	private ServerSocket listenSocket;
-	private String user= "a", pass="b";
+	private String user = "a", pass = "b";
 	private DBmanager dbManager;
 
 	public WebServer(int port, String naam, String user, String pass) {
 		dbManager = DBmanager.getInstance(naam, user, pass);
-		//DatabaseApl test = new DatabaseApl(dbManager, naam);
+		DatabaseApl test = new DatabaseApl(dbManager, naam);
 
 		try {
 			listenSocket = new ServerSocket(port);
@@ -78,7 +78,6 @@ public class WebServer extends Thread {
 						break;
 					case "Porto":
 						getPorto(tokenizedLine, outToClient);
-						// TODO database stuff
 						break;
 					case "Buy":
 						getBuy(tokenizedLine, outToClient);
@@ -90,11 +89,9 @@ public class WebServer extends Thread {
 						break;
 					case "Buying":
 						getBuying(tokenizedLine, outToClient);
-						// TODO database stuff
 						break;
 					case "Selling":
 						getSelling(tokenizedLine, outToClient);
-						// TODO database stuff
 						break;
 					case "Stort":
 						stortGeld(tokenizedLine, outToClient);
@@ -121,7 +118,6 @@ public class WebServer extends Thread {
 						break;
 					case "Saldo":
 						sendSaldo(tokenizedLine, outToClient);
-						// TODO database stuff
 						break;
 					case "Done":
 						sendToClient(outToClient, "Ack");
@@ -152,8 +148,6 @@ public class WebServer extends Thread {
 		String aandelen = dbManager.retreiveAandelen();
 
 		sendToClient(outToClient, "Aandelen: " + aandelen);
-
-		// sendToClient(outToClient, "Aandelen: Syntaxis LiNK WaTT");
 	}
 
 	public void checkLogin(StringTokenizer tokenizedLine,
@@ -185,8 +179,8 @@ public class WebServer extends Thread {
 	
 	public void getPorto(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
-		Object[][] data = new Object[][] { { "Syntaxis", 10, 5.00, 50.00 },
-				{ "Watt", 5, 5.00, 25.00 } };
+		String username = tokenizedLine.nextToken();
+		Object[][] data = dbManager.retreivePorto(username);
 
 		getAandelen(outToClient, data);
 	}
@@ -198,23 +192,7 @@ public class WebServer extends Thread {
 		if(tokenizedLine.hasMoreTokens())
 			aandeel = tokenizedLine.nextToken();
 		
-		Object[][] data = new Object[2][];
-		
-		switch(aandeel) {
-		default:
-		case "Syntaxis":
-			data[0] = new Object[] { "Syntaxis", "Syntaxis", 20, 5.00, 100.00 };
-			data[1] = new Object[] { "Syntaxis", "Syntaxis", 200, 5.00, 1000.00 };
-			break;
-		case "LiNK":
-			data[0] = new Object[] { "LiNK", "LiNK", 20, 5.00, 100.00 };
-			data[1] = new Object[] { "LiNK", "LiNK", 200, 5.00, 1000.00 };
-			break;
-		case "WaTT":
-			data[0] = new Object[] { "WaTT", "WaTT", 20, 5.00, 100.00 };
-			data[1] = new Object[] { "WaTT", "WaTT", 200, 5.00, 1000.00 };
-			break;
-		}
+		Object[][] data = dbManager.retreiveBuy(aandeel);
 
 		getAandelen(outToClient, data);
 	}
@@ -226,37 +204,25 @@ public class WebServer extends Thread {
 		if (tokenizedLine.hasMoreTokens())
 			aandeel = tokenizedLine.nextToken();
 
-		Object[][] data = new Object[2][];
-
-		switch (aandeel) {
-		default:
-		case "Syntaxis":
-			data[0] = new Object[] { "Syntaxis", "Syntaxis", 20, 5.00, 100.00 };
-			data[1] = new Object[] { "Syntaxis", "Syntaxis", 200, 5.00, 1000.00 };
-			break;
-		case "LiNK":
-			data[0] = new Object[] { "LiNK", "LiNK", 20, 5.00, 100.00 };
-			data[1] = new Object[] { "LiNK", "LiNK", 200, 5.00, 1000.00 };
-			break;
-		case "WaTT":
-			data[0] = new Object[] { "WaTT", "WaTT", 20, 5.00, 100.00 };
-			data[1] = new Object[] { "WaTT", "WaTT", 200, 5.00, 1000.00 };
-			break;
-		}
+		Object[][] data = dbManager.retreiveSell(aandeel);
 
 		getAandelen(outToClient, data);
 	}
 
 	public void getBuying(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
-		Object[][] data = new Object[][] { { "LiNK", 8, 5.00, 40.00 } };
+		String username = tokenizedLine.nextToken();
+
+		Object[][] data = dbManager.retreiveBuying(username);
 
 		getAandelen(outToClient, data);
 	}
 
 	public void getSelling(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
-		Object[][] data = new Object[][] { { "Syntaxis", 5, 5.00, 25.50 } };
+		String username = tokenizedLine.nextToken();
+
+		Object[][] data = dbManager.retreiveSelling(username);
 
 		getAandelen(outToClient, data);
 	}

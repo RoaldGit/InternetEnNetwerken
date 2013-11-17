@@ -3,7 +3,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DBmanager {
 	private static DBmanager uniqueInstance = null;
@@ -89,12 +91,13 @@ public class DBmanager {
 			pst.setString(1, user);
 			pst.setString(2, pass);
 
-			ResultSet rs = pst.executeQuery();
+			ResultSet result = pst.executeQuery();
 
-			if (rs.isBeforeFirst())
+			if (result.isBeforeFirst())
 				login = true;
 
 		} catch (SQLException e) {
+			System.out.println("DBManager|checkLogin");
 			printSQLException(e);
 		}
 		return login;
@@ -108,10 +111,10 @@ public class DBmanager {
 
 			pst.setString(1, user);
 
-			ResultSet rs = pst.executeQuery();
+			ResultSet result = pst.executeQuery();
 
-			if (rs.next())
-				saldo = rs.getDouble("saldo");
+			if (result.next())
+				saldo = result.getDouble("saldo");
 		} catch (SQLException e) {
 			System.out.println("DBManager|retreiveSaldo");
 			printSQLException(e);
@@ -125,20 +128,156 @@ public class DBmanager {
 		try {
 			PreparedStatement pst = connection
 					.prepareStatement("select count(*) from aandelen");
-			ResultSet rs = pst.executeQuery();
+			ResultSet result = pst.executeQuery();
 
 			pst = connection
 					.prepareStatement("select aandeelNaam from aandelen");
 
-			rs = pst.executeQuery();
+			result = pst.executeQuery();
 
-			while(rs.next())
-				aandelen += rs.getString("aandeelNaam") + " ";
+			while (result.next())
+				aandelen += result.getString("aandeelNaam") + " ";
 
 		} catch (SQLException e) {
-			System.out.println("DBManager|retreiveSaldo");
+			System.out.println("DBManager|retreiveAandelen");
 			printSQLException(e);
 		}
 		return aandelen;
+	}
+
+	public Object[][] retreivePorto(String username) {
+		Object[][] array = null;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select aandeelnaam, aantal, prijs, aantal*prijs from user natural join aandelen natural join portefeuille where username = ?");
+			pst.setString(1, username);
+
+			ResultSet result = pst.executeQuery();
+
+			int size = resultSize("select count(*) from portefeuille natural join user where username = '"
+					+ username + "'");
+
+			array = create2DArray(result, size);
+		} catch (SQLException e) {
+			System.out.println("DBManager|retreivePorto");
+			printSQLException(e);
+		}
+		return array;
+	}
+
+	public Object[][] retreiveBuying(String username) {
+		Object[][] array = null;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select aandeelnaam, aantal, prijs, aantal*prijs from user natural join aandelen natural join kooporder where username = ?");
+			pst.setString(1, username);
+
+			ResultSet result = pst.executeQuery();
+
+			int size = resultSize("select count(*) from kooporder natural join user where username = '"
+					+ username + "'");
+
+			array = create2DArray(result, size);
+		} catch (SQLException e) {
+			System.out.println("DBManager|retreiveBuying");
+			printSQLException(e);
+		}
+		return array;
+	}
+
+	public Object[][] retreiveSelling(String username) {
+		Object[][] array = null;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select aandeelnaam, aantal, prijs, aantal*prijs from user natural join aandelen natural join verkooporder where username = ?");
+			pst.setString(1, username);
+
+			ResultSet result = pst.executeQuery();
+
+			int size = resultSize("select count(*) from verkooporder natural join user where username = '"
+					+ username + "'");
+
+			array = create2DArray(result, size);
+		} catch (SQLException e) {
+			System.out.println("DBManager|retreiveSelling");
+			printSQLException(e);
+		}
+		return array;
+	}
+
+	public Object[][] retreiveBuy(String aandeel) {
+		Object[][] array = null;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select username, aandeelnaam, aantal, prijs, aantal*prijs from user natural join aandelen natural join kooporder where aandeelnaam = ?");
+			pst.setString(1, aandeel);
+
+			ResultSet result = pst.executeQuery();
+
+			int size = resultSize("select count(*) from kooporder natural join aandelen natural join user where aandeelnaam = '"
+					+ aandeel + "'");
+
+			array = create2DArray(result, size);
+		} catch (SQLException e) {
+			System.out.println("DBManager|retreiveBuy");
+			printSQLException(e);
+		}
+		return array;
+	}
+
+	public Object[][] retreiveSell(String aandeel) {
+		Object[][] array = null;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select username, aandeelnaam, aantal, prijs, aantal*prijs from user natural join aandelen natural join verkooporder where aandeelnaam = ?");
+			pst.setString(1, aandeel);
+
+			ResultSet result = pst.executeQuery();
+
+			int size = resultSize("select count(*) from verkooporder natural join aandelen natural join user where aandeelnaam = '"
+					+ aandeel + "'");
+
+			array = create2DArray(result, size);
+		} catch (SQLException e) {
+			System.out.println("DBManager|retreiveBuy");
+			printSQLException(e);
+		}
+		return array;
+	}
+
+	public Object[][] create2DArray(ResultSet result, int rows) {
+		Object[][] array = null;
+		try {
+			ResultSetMetaData rsmd = result.getMetaData();
+			int cols = rsmd.getColumnCount();
+
+			array = new Object[rows][cols];
+
+			int currentRow = 0;
+			int columns = rsmd.getColumnCount();
+			while (result.next()) {
+				for (int i = 0; i < columns; i++)
+					array[currentRow][i] = result.getObject(i + 1);
+				currentRow++;
+			}
+		} catch (SQLException e) {
+			printSQLException(e);
+			System.out.println("DBManager|create2DArray");
+		}
+		return array;
+	}
+
+	public int resultSize(String query) {
+		int size = 0;
+		try {
+			Statement st = connection.createStatement();
+			ResultSet result = st.executeQuery(query);
+
+			result.next();
+			size = result.getInt("count(*)");
+		} catch (SQLException e) {
+			printSQLException(e);
+		}
+		return size;
 	}
 }

@@ -29,9 +29,10 @@ public class BeursModel extends Observable {
 	 */
 	public void setSelectedAandeel(String select) {
 		aandeelSelect = select;
+		aantalAandelen = "0";
+
 		setChanged();
 		notifyObservers("aandeelSelect");
-		aantalAandelen = "0";
 	}
 	
 	/**

@@ -18,10 +18,14 @@ public class DatabaseApl {
 		if (manager.dbExists(naam))
 			removeDatabase();
 
+
 		createDatabase();
 		createTables();
 		createUsers();
 		createAandelen();
+		createPorto();
+		createBuy();
+		createSell();
 	}
 
 	public void removeDatabase() {
@@ -95,7 +99,63 @@ public class DatabaseApl {
 	}
 
 	public void createPorto() {
-		Object[][] portoA = new Object[][] { {} };
+		Object[][] porto = new Object[][] { { 5, 1, 1000 }, { 6, 2, 1000 },
+				{ 7, 3, 1000 } };
+
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("insert into Portefeuille(userID, aandeelID, aantal) values(?,?,?)");
+
+			for (int i = 0; i < porto.length; i++) {
+				pst.setObject(1, porto[i][0]);
+				pst.setObject(2, porto[i][1]);
+				pst.setObject(3, porto[i][2]);
+
+				pst.execute();
+			}
+		} catch (SQLException e) {
+			dbManager.printSQLException(e);
+		}
+	}
+
+	private void createBuy() {
+		Object[][] buy = new Object[][] { { 5, 2, 10 }, { 6, 3, 100 },
+				{ 7, 1, 25 } };
+
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("insert into kooporder(userID, aandeelID, aantal) values(?,?,?)");
+
+			for (int i = 0; i < buy.length; i++) {
+				pst.setObject(1, buy[i][0]);
+				pst.setObject(2, buy[i][1]);
+				pst.setObject(3, buy[i][2]);
+
+				pst.execute();
+			}
+		} catch (SQLException e) {
+			dbManager.printSQLException(e);
+		}
+	}
+
+	private void createSell() {
+		Object[][] sell = new Object[][] { { 5, 1, 8 }, { 6, 2, 5 },
+				{ 7, 3, 20 } };
+
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("insert into verkooporder(userID, aandeelID, aantal) values(?,?,?)");
+
+			for (int i = 0; i < sell.length; i++) {
+				pst.setObject(1, sell[i][0]);
+				pst.setObject(2, sell[i][1]);
+				pst.setObject(3, sell[i][2]);
+
+				pst.execute();
+			}
+		} catch (SQLException e) {
+			dbManager.printSQLException(e);
+		}
 	}
 }
 

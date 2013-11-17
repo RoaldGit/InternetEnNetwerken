@@ -89,8 +89,8 @@ public class BeursView extends JPanel implements Observer {
 		portoLabel.setBounds(5, 80, 200, 20);
 		buyingLabel.setBounds(5, 230, 200, 20);
 		sellingLabel.setBounds(5, 380, 200, 20);
-		buyLabel.setBounds(375, 80, 200, 20);
-		sellLabel.setBounds(375, 230, 200, 20);
+		buyLabel.setBounds(365, 230, 200, 20);
+		sellLabel.setBounds(365, 380, 200, 20);
 
 		porto = new Tabel(dummyPorto, portoHeader, beursModel, "porto");
 		buying = new Tabel(dummyBuying, buyingHeader, beursModel, "buying");
@@ -104,15 +104,15 @@ public class BeursView extends JPanel implements Observer {
 		buyScroll = new JScrollPane(buy);
 		sellScroll = new JScrollPane(sell);
 
-		portoScroll.setBounds(5, 100, 350, 100);
+		portoScroll.setBounds(5, 100, 700, 100);
 		buyingScroll.setBounds(5, 250, 350, 100);
 		sellingScroll.setBounds(5, 400, 350, 100);
-		buyScroll.setBounds(375, 100, 400, 100);
-		sellScroll.setBounds(375, 250, 400, 100);
+		buyScroll.setBounds(365, 250, 415, 100);
+		sellScroll.setBounds(365, 400, 415, 100);
 
 		AandelenLijst aandelenLijst = new AandelenLijst(aandelen, beursModel,
 				connection, userModel);
-		aandelenLijst.setBounds(400, 50, 200, 20);
+		aandelenLijst.setBounds(365, 210, 200, 20);
 
 		details = new JPanel(null);
 		details.setBounds(5, 500, 780, 260);
@@ -282,14 +282,14 @@ public class BeursView extends JPanel implements Observer {
 
 	private void sellSelected() {
 		buyButton.setEnabled(true);
-		sellButton.setEnabled(true);
+		sellButton.setEnabled(false);
 		changeButton.setEnabled(false);
 		cancelButton.setEnabled(false);
 
 	}
 
 	private void buySelected() {
-		buyButton.setEnabled(true);
+		buyButton.setEnabled(false);
 		sellButton.setEnabled(true);
 		changeButton.setEnabled(false);
 		cancelButton.setEnabled(false);

@@ -37,8 +37,10 @@ public class AandelenLijst extends JComboBox {
 		clientConnection = con;
 		userModel = uModel;
 
-		beursModel.setSelectedAandeel(this.getSelectedItem().toString());
-		this.addActionListener(new ComboListener());
+		setSelectedIndex(0);
+		updateSelect();
+
+		addActionListener(new ComboListener());
 	}
 
 	/**
@@ -47,6 +49,15 @@ public class AandelenLijst extends JComboBox {
 	 */
 	public void setAandelen(String[] aandelen) {
 		setModel(new DefaultComboBoxModel<>(aandelen));
+		updateSelect();
+	}
+
+	public void updateSelect() {
+		String selected = getSelectedItem().toString();
+		beursModel.setBuy(clientConnection.getAandelen(userModel.getUser(),
+				"Buy " + selected));
+		beursModel.setSell(clientConnection.getAandelen(userModel.getUser(),
+				"Sell " + selected));
 	}
 	
 	/**
@@ -56,16 +67,7 @@ public class AandelenLijst extends JComboBox {
 	 */
 	class ComboListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			JComboBox combo = (JComboBox) e.getSource();
-
-			String selected = combo.getSelectedItem().toString();
-
-			beursModel.setSelectedAandeel(selected);
-
-			beursModel.setBuy(clientConnection.getAandelen(userModel.getUser(),
-					"Buy " + selected));
-			beursModel.setSell(clientConnection.getAandelen(
-					userModel.getUser(), "Sell " + selected));
+			updateSelect();
 		}
 	}
 }
