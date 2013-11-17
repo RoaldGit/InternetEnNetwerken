@@ -2,7 +2,7 @@ import server.WebServer;
 import Client.view.MainView;
 
 public class Apl {
-	private static boolean databaseTest = false;
+	private static boolean databaseTest = true;
 	private static boolean serverTest = true;
 	private static boolean clientTest = true;
 
@@ -12,7 +12,7 @@ public class Apl {
 			server.start();
 		}
 
-		if (serverTest) {
+		else if (serverTest) {
 			WebServer server = new WebServer(800);
 			server.start();
 		}
