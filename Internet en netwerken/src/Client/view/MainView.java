@@ -15,6 +15,12 @@ import Client.model.BeursModel;
 import Client.model.ClientModel;
 import Client.model.UserModel;
 
+/**
+ * De Mainview bouwt de gehele gui op.
+ * @author Roald en Stef
+ * @since 5-11-2013
+ * @version 0.1
+ */
 public class MainView extends JFrame implements Observer {
 	private LoginView login;
 	private BeursView beurs;
@@ -26,6 +32,9 @@ public class MainView extends JFrame implements Observer {
 	private ClientConnection connection;
 	private BeursControl beursControl;
 
+	/**
+	 * De constructor waarin alles geinitialiseerd wordt.
+	 */
 	public MainView() {
 		JFrame frame = new JFrame("Internet en Netwerken Eindopdracht");
 		frame.setBounds(40, 40, 800, 800);
@@ -86,6 +95,9 @@ public class MainView extends JFrame implements Observer {
 		frame.setVisible(true);
 	}
 
+	/**
+	 * Deze method wordt aangeroepen als de observable aangeeft dat er een verandering heeft plaats gevonden.
+	 */
 	public void update(Observable obs, Object obj) {
 		if (obs == clientModel) {
 			if (obj.equals("connected")) {

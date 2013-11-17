@@ -19,7 +19,12 @@ import Client.control.ClientConnection;
 import Client.control.TextFieldEvent;
 import Client.model.BeursModel;
 import Client.model.UserModel;
-
+/**
+ * Deze klasse bouwt de beursview op.
+ * @author Roald en Stef
+ * @since 9-11-2013
+ * @version 0.1
+ */
 public class BeursView extends JPanel implements Observer {
 	private Tabel porto, buy, sell, buying, selling, selected;
 	private JScrollPane portoScroll, buyScroll, sellScroll, buyingScroll,
@@ -40,6 +45,13 @@ public class BeursView extends JPanel implements Observer {
 	private JButton buyButton, sellButton, changeButton, cancelButton;
 	private TextFieldEvent textFieldEvent;
 
+	/**
+	 * De constructor voor de beursview.
+	 * @param uModel Het Usermodel dat gebruikt wordt.
+	 * @param bModel Het beursmodel dat gebruikt wordt.
+	 * @param con De connectie met de server die gebruikt wordt.
+	 * @param bControl Het beurscontrol dat gebruikt wordt.
+	 */
 	public BeursView(UserModel uModel, BeursModel bModel, ClientConnection con,
 			BeursControl bControl) {
 		setLayout(null);
@@ -188,6 +200,9 @@ public class BeursView extends JPanel implements Observer {
 		updateTables();
 	}
 
+	/**
+	 * Deze method wordt aangeroepen als de observable aangeeft dat er een verandering heeft plaats gevonden.
+	 */
 	public void update(Observable obs, Object obj) {
 		if (obs == beursModel) {
 			if (obj instanceof String) {

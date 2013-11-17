@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.StringTokenizer;
 
 import database.DBmanager;
-import database.DatabaseApl;
+//import database.DatabaseApl;
 
 public class WebServer extends Thread {
 	private String requestMessageLine;
@@ -18,7 +18,7 @@ public class WebServer extends Thread {
 
 	public WebServer(int port, String naam, String user, String pass) {
 		dbManager = DBmanager.getInstance(naam, user, pass);
-		DatabaseApl test = new DatabaseApl(dbManager, naam);
+		//DatabaseApl test = new DatabaseApl(dbManager, naam);
 
 		try {
 			listenSocket = new ServerSocket(port);

@@ -15,6 +15,13 @@ import Client.model.BeursModel;
 import Client.model.ClientModel;
 import Client.model.UserModel;
 
+/**
+ * Deze klasse handelt het inloggen vanaf het beginscherm af.
+ * 
+ * @author Roald en Stef
+ * @since 12-11-2013
+ * @version 0.1
+ */
 public class LoginControl extends JPanel{
 	private JTextField user, password;
 	private JButton login = new JButton("Login");
@@ -24,6 +31,14 @@ public class LoginControl extends JPanel{
 	private BeursModel beursModel;
 	private BeursControl beursControl;
 
+	/**
+	 * De constructor voor LoginControl
+	 * @param uModel Het usermodel dat gebruikt wordt
+	 * @param cModel Het Clientmodel dat gebruikt wordt.
+	 * @param con De connectie met de server die gebruikt wordt.
+	 * @param bModel Het beursmodel dat gebruikt wordt.
+	 * @param bControl Het beurscontrol object dat gebruikt wordt.
+	 */
 	public LoginControl(UserModel uModel, ClientModel cModel,
 			ClientConnection con, BeursModel bModel, BeursControl bControl) {
 		setLayout(new GridLayout(3, 2));
@@ -50,14 +65,27 @@ public class LoginControl extends JPanel{
 		login.addActionListener(new ButtonListener());
 	}
 	
+	/**
+	 * De method haalt op wat er in de user tekstbox wordt ingevult
+	 * @return Returned een string met de usernaam er in.
+	 */
 	public String getUser() {
 		return user.getText();
 	}
 
+	/**
+	 * De method haalt op wat er in de password tekstbox wordt ingevult
+	 * @return Returned een string met de password er in.
+	 */
 	public String getPass() {
 		return password.getText();
 	}
 
+	/**
+	 * Deze klasse handelt af wat er gebeurt als er op de login knop gedrukt wordt.
+	 * @author Roald en Stef
+	 *
+	 */
 	class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 

@@ -9,13 +9,28 @@ import javax.swing.JOptionPane;
 import Client.model.BeursModel;
 import Client.model.UserModel;
 
+/**
+ * De klasse die afhandelt wat er gebeurt als je een bepaalde knop op de GUI indrukt.
+ * 
+ * @author Roald en Stef
+ * @since 10-11-2013
+ * @version 0.1
+ */
 public class ButtonControl implements ActionListener {
 	private String type;
 	private ClientConnection connection;
 	private BeursControl beursControl;
 	private BeursModel beursModel;
 	private UserModel userModel;
-
+	
+	/**
+	 * De constructor van ButtonControl
+	 * @param button De naam van de button, die bepaalt welke button het is.
+	 * @param con De connectie tussen het programma en de server.
+	 * @param bControl De beurscontrol die de aandelen ophaalt.
+	 * @param bModel Het beursmodel dat gebruikt wordt.
+	 * @param uModel Het usermodel dat gebruikt wordt.
+	 */
 	public ButtonControl(String button, ClientConnection con,
 			BeursControl bControl, BeursModel bModel, UserModel uModel) {
 		type = button;
@@ -24,13 +39,16 @@ public class ButtonControl implements ActionListener {
 		beursModel = bModel;
 		userModel = uModel;
 	}
-
+	
+	/**
+	 * De methode die een actie uitvoert op basis van welke knop er is ingedrukt en dat doorstuurt naar de connectie op te communiceren met de server.
+	 */
 	public void actionPerformed(ActionEvent e) {
 		String userName = userModel.getUser();
 		String password = userModel.getPassword();
 		String aandeel = beursModel.getAandeel();
 		String aantal = beursModel.getAantalAandelen();
-		
+
 		boolean done = false;
 
 		switch (type) {
