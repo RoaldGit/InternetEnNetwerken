@@ -121,6 +121,7 @@ public class ClientConnection {
 		String response = "";
 		String request = transactie + " " + user + " " + password + " "
 				+ aandeel + " " + aantal;
+
 		boolean succes = false;
 
 		try {

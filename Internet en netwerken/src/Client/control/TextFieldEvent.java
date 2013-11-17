@@ -19,6 +19,14 @@ public class TextFieldEvent implements DocumentListener {
 
 	public void removeUpdate(DocumentEvent e) {
 		beursModel.selected();
+		try {
+			Document textFieldText = e.getDocument();
+			String text = textFieldText.getText(0, textFieldText.getLength());
+			text = "" + Integer.parseInt(text);
+			beursModel.setAantal(text);
+		} catch (Exception e1) {
+			beursModel.setAantal("error");
+		}
 	}
 
 	public void insertUpdate(DocumentEvent e) {
@@ -26,10 +34,10 @@ public class TextFieldEvent implements DocumentListener {
 		try {
 			Document textFieldText = e.getDocument();
 			String text = textFieldText.getText(0, textFieldText.getLength());
+			text = "" + Integer.parseInt(text);
 			beursModel.setAantal(text);
-		} catch (BadLocationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (Exception e1) {
+			beursModel.setAantal("error");
 		}
 	}
 }

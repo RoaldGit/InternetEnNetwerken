@@ -237,7 +237,7 @@ public class BeursView extends JPanel implements Observer {
 						try {
 							aantalVeld.setBackground(Color.white);
 							aantal = Integer.parseInt(text);
-						} catch(Exception e) {
+						} catch (Exception e) {
 							aantalVeld.setBackground(Color.red);
 						}
 						totaalVeld.setText(String.format("€ %,.2f", prijs

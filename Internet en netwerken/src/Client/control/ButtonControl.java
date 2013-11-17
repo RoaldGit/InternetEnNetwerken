@@ -52,11 +52,8 @@ public class ButtonControl implements ActionListener {
 			break;
 		}
 
-		try {
-			beursControl.retreiveSaldo("Silly");
-		} catch (Exception exc) {
-			System.out.println(exc);
-		}
+		beursControl.retreiveAlleAandelen();
+		beursModel.refreshSelect();
 
 		if (done)
 			JOptionPane.showMessageDialog(new JFrame(), "Transactie Geslaagd",
@@ -64,8 +61,6 @@ public class ButtonControl implements ActionListener {
 		else
 			JOptionPane.showMessageDialog(new JFrame(), "Transactie Mislukt",
 					"Transactie Mislukt", JOptionPane.ERROR_MESSAGE);
-
-
 	}
 
 }

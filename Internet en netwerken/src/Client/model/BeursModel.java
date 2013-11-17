@@ -7,6 +7,7 @@ import Client.view.Tabel;
 public class BeursModel extends Observable {
 	private String aandeelSelect, aantalAandelen;
 	private Tabel tabelSelect = null;
+	int row;
 	private Object[][] porto, buying, selling, buy, sell;
 
 	public BeursModel() {
@@ -28,10 +29,16 @@ public class BeursModel extends Observable {
 		
 		tabelSelect = select;
 
+		row = tabelSelect.getSelectedRow();
+
 		setChanged();
 		notifyObservers(oldSelect);
 
 		selected();
+	}
+
+	public void refreshSelect() {
+		tabelSelect.setRowSelectionInterval(row, row);
 	}
 
 	public void selected() {
