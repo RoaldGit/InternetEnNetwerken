@@ -72,23 +72,6 @@ public class WebServer extends Thread {
 						break;
 					case "Selling":
 						getSelling(tokenizedLine, outToClient);
-						// TODO Aandelen van de user ophalen
-						// Request bevat username en (waarschijnlijk) soort
-						// van
-						// identifier
-						break;
-					case "Koop":
-						koopAandeel(tokenizedLine, outToClient);
-						// TODO Aandeel order plaatsen
-						// Fancy implementatie kijkt ook naar bestaande
-						// verkoop
-						// orders
-						break;
-					case "Verkoop":
-						verkoopAandeel(tokenizedLine, outToClient);
-						// TODO Aandeel order plaatsen
-						// Fancy implementatie kijkt ook naar bestaande koop
-						// orders
 						break;
 					case "Stort":
 						stortGeld(tokenizedLine, outToClient);
@@ -96,24 +79,28 @@ public class WebServer extends Thread {
 					case "Aandelen":
 						sendAandeelNamen(outToClient);
 						break;
-					case "KoopOrder":
+					case "WijzigOrder":
+						sendToClient(outToClient, "WijzigOrder ok");
 						break;
-					case "VerkoopOrder":
+					case "VerwijderOrder":
+						sendToClient(outToClient, "VerwijderOrder ok");
 						break;
 					case "AandeelKoop":
+						sendToClient(outToClient, "AandeelKoop ok");
 						break;
 					case "AandeelVerkoop":
+						sendToClient(outToClient, "AandeelVerkoop ok");
 						break;
 					case "Saldo":
 						sendSaldo(tokenizedLine, outToClient);
 						break;
 					case "Done":
-						sendToClient(outToClient, "Ack\n\r\n\r");
+						sendToClient(outToClient, "Ack");
 						connectionSocket.close();
 						System.out.println("Webserver: Connection closed");
 						break;
 					default:
-						sendToClient(outToClient, "Unknown Error\n\r\n\r");
+						sendToClient(outToClient, "Unknown Error");
 						break;
 					}
 				}
@@ -125,11 +112,11 @@ public class WebServer extends Thread {
 
 	private void sendSaldo(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
-		sendToClient(outToClient, "Saldo 1000\n\r\n\r");
+		sendToClient(outToClient, "Saldo 1000");
 	}
 
 	private void sendAandeelNamen(DataOutputStream outToClient) {
-		sendToClient(outToClient, "Aandelen: Syntaxis LiNK WaTT\n\r\n\r");
+		sendToClient(outToClient, "Aandelen: Syntaxis LiNK WaTT");
 	}
 
 	public void checkLogin(StringTokenizer tokenizedLine,
@@ -139,24 +126,24 @@ public class WebServer extends Thread {
 		password = tokenizedLine.nextToken();
 
 		if (user.equals(username) && pass.equals(password))
-			sendToClient(outToClient, "Login ok\n\r\n\r");
+			sendToClient(outToClient, "Login ok");
 		else
-			sendToClient(outToClient, "Login incorrect\n\r\n\r");
+			sendToClient(outToClient, "Login incorrect");
 	}
 	
 	public void getAandelen(DataOutputStream outToClient,
 			Object[][] data) {
-		sendToClient(outToClient, "Aandeel: Size: " + data.length + "\n\r");
+		sendToClient(outToClient, "Aandeel: Size: " + data.length);
 
 		for (int i = 0; i < data.length; i++) {
 			String aandeel = "";
 			for (int j = 0; j < data[0].length; j++)
 				aandeel += (data[i][j] + " ");
 
-			sendToClient(outToClient, "Aandeel: " + aandeel + "\n\r");
+			sendToClient(outToClient, "Aandeel: " + aandeel);
 		}
 
-		sendToClient(outToClient, "Aandeel: Done\n\r\n\r");
+		sendToClient(outToClient, "Aandeel: Done");
 	}
 	
 	public void getPorto(StringTokenizer tokenizedLine,
@@ -253,9 +240,9 @@ public class WebServer extends Thread {
 
 	public void sendToClient(DataOutputStream outToClient, String message) {
 		try {
-			outToClient.writeBytes(message);
+			outToClient.writeBytes(message + "\n\r");
 		} catch (Exception e) {
-			sendToClient(outToClient, "Sending Error\n\r\n\r");
+			sendToClient(outToClient, "Sending Error");
 			System.out.println("Webserver|sentToClient: " + e);
 			System.out.println(Thread.currentThread().getStackTrace());
 		}

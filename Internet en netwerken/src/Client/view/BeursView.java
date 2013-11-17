@@ -14,6 +14,7 @@ import javax.swing.border.EtchedBorder;
 
 import Client.control.AandelenLijst;
 import Client.control.BeursControl;
+import Client.control.ButtonControl;
 import Client.control.ClientConnection;
 import Client.control.TextFieldEvent;
 import Client.model.BeursModel;
@@ -95,7 +96,7 @@ public class BeursView extends JPanel implements Observer {
 		sellScroll.setBounds(375, 250, 400, 100);
 
 		AandelenLijst aandelenLijst = new AandelenLijst(aandelen, beursModel,
-				connection);
+				connection, userModel);
 		aandelenLijst.setBounds(400, 50, 200, 20);
 
 		details = new JPanel(null);
@@ -109,13 +110,22 @@ public class BeursView extends JPanel implements Observer {
 
 		aandeelVeld = new JTextField("");
 		prijsVeld = new JTextField("");
-		aantalVeld = new JTextField("0");
+		aantalVeld = new JTextField("");
 		totaalVeld = new JTextField("");
 
 		buyButton = new JButton("Koop dit aandeel");
 		sellButton = new JButton("Verkoop dit aandeel");
 		changeButton = new JButton("Verander order");
 		cancelButton = new JButton("Verwijder order");
+
+		buyButton.addActionListener(new ButtonControl("buy", connection,
+				beursControl, beursModel, userModel));
+		sellButton.addActionListener(new ButtonControl("sell", connection,
+				beursControl, beursModel, userModel));
+		changeButton.addActionListener(new ButtonControl("change", connection,
+				beursControl, beursModel, userModel));
+		cancelButton.addActionListener(new ButtonControl("cancel", connection,
+				beursControl, beursModel, userModel));
 
 		aandeelVeld.setEditable(false);
 		prijsVeld.setEditable(false);
@@ -228,7 +238,6 @@ public class BeursView extends JPanel implements Observer {
 							aantalVeld.setBackground(Color.white);
 							aantal = Integer.parseInt(text);
 						} catch(Exception e) {
-							System.out.println(e);
 							aantalVeld.setBackground(Color.red);
 						}
 						totaalVeld.setText(String.format("€ %,.2f", prijs

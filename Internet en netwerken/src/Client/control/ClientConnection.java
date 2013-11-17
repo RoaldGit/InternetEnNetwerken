@@ -66,7 +66,7 @@ public class ClientConnection {
 		String request = "Login " + user + " " + password;
 
 		try {
-			outToClient.writeBytes(request + "\n\r\n\r");
+			outToClient.writeBytes(request + "\n\r");
 
 			while (!response.contains("Login") && !response.contains("Error")) {
 				response = inFromClient.readLine();
@@ -90,11 +90,10 @@ public class ClientConnection {
 		Object[][] porto = new Object[1][];
 
 		try {
-			outToClient.writeBytes(request + "\n\r\n\r");
+			outToClient.writeBytes(request + "\n\r");
 
 			while (!response.contains("Done")) {
 				response = inFromClient.readLine();
-				// System.out.print(response);
 
 				if (response.contains("Size:")) {
 					arraySize = retrieveSize(response);
@@ -116,13 +115,37 @@ public class ClientConnection {
 		return porto;
 	}
 
+	public boolean executeTransaction(String transactie, String user,
+			String password,
+			String aandeel, String aantal) {
+		String response = "";
+		String request = transactie + " " + user + " " + password + " "
+				+ aandeel + " " + aantal;
+		boolean succes = false;
+
+		try {
+			outToClient.writeBytes(request + "\n\r");
+
+			while (!response.contains(transactie)) {
+				response = inFromClient.readLine();
+			}
+
+			if (response.equals(transactie + " ok"))
+				succes = true;
+
+		} catch (Exception e) {
+			System.out.println("ClientConnection|executeTransaction: " + e);
+		}
+		return succes;
+	}
+
 	public double getSaldo(String user) {
 		String response = "";
 		String request = "Saldo " + user;
 		double saldo = 0;
 		
 		try{
-			outToClient.writeBytes(request + "\n\r\n\r");
+			outToClient.writeBytes(request + "\n\r");
 			while (!response.contains("Saldo")) {
 				response = inFromClient.readLine();
 
@@ -167,7 +190,7 @@ public class ClientConnection {
 	public String[] getAandelen() {
 		String[] aandeel = new String[1];
 		try {
-			outToClient.writeBytes("Aandelen b\n\r\n\r");
+			outToClient.writeBytes("Aandelen b\n\r");
 
 			String response = "";
 

@@ -74,7 +74,6 @@ public class LoginControl extends JPanel{
 				if (response.equals("Login ok")) {
 					clientModel.setLoggedIn(true);
 					userModel.setUserDetails(passwordInput, userInput);
-					beursModel.setUser(userInput);
 					beursControl.retreiveAlleAandelen();
 					beursControl.retreiveSaldo(userInput);
 				} else

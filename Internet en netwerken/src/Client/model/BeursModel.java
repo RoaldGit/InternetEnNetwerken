@@ -5,10 +5,9 @@ import java.util.Observable;
 import Client.view.Tabel;
 
 public class BeursModel extends Observable {
-	private String aandeelSelect;
+	private String aandeelSelect, aantalAandelen;
 	private Tabel tabelSelect = null;
 	private Object[][] porto, buying, selling, buy, sell;
-	private String user;
 
 	public BeursModel() {
 
@@ -18,6 +17,7 @@ public class BeursModel extends Observable {
 		aandeelSelect = select;
 		setChanged();
 		notifyObservers("aandeelSelect");
+		aantalAandelen = "0";
 	}
 	
 	public void setSelectedTable(Tabel select) {
@@ -39,8 +39,15 @@ public class BeursModel extends Observable {
 		notifyObservers("select");
 	}
 
-	public void setUser(String user) {
-		this.user = user;
+	public String getAandeel() {
+		int cols = tabelSelect.getColumnCount();
+		int row = tabelSelect.getSelectedRow();
+		int col = 0;
+
+		if (cols == 5)
+			col = 1;
+
+		return (String) tabelSelect.getValueAt(row, col);
 	}
 
 	public void setPorto(Object[][] data) {
@@ -106,7 +113,11 @@ public class BeursModel extends Observable {
 		return sell;
 	}
 
-	public String getUser() {
-		return user;
+	public void setAantal(String text) {
+		aantalAandelen = text;
+	}
+
+	public String getAantalAandelen() {
+		return aantalAandelen;
 	}
 }

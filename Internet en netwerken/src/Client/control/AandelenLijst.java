@@ -3,22 +3,24 @@ package Client.control;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
 import Client.model.BeursModel;
+import Client.model.UserModel;
 
 public class AandelenLijst extends JComboBox {
 	private BeursModel beursModel;
 	private ClientConnection clientConnection;
+	private UserModel userModel;
 
 	public AandelenLijst(String[] aandelen, BeursModel bModel,
-			ClientConnection con) {
+			ClientConnection con, UserModel uModel) {
 		super(aandelen);
 
 		beursModel = bModel;
 		clientConnection = con;
+		userModel = uModel;
 
 		beursModel.setSelectedAandeel(this.getSelectedItem().toString());
 		this.addActionListener(new ComboListener());
@@ -36,10 +38,10 @@ public class AandelenLijst extends JComboBox {
 
 			beursModel.setSelectedAandeel(selected);
 
-			beursModel.setBuy(clientConnection.getAandelen(
-					beursModel.getUser(), "Buy " + selected));
+			beursModel.setBuy(clientConnection.getAandelen(userModel.getUser(),
+					"Buy " + selected));
 			beursModel.setSell(clientConnection.getAandelen(
-					beursModel.getUser(), "Sell " + selected));
+					userModel.getUser(), "Sell " + selected));
 		}
 	}
 }
