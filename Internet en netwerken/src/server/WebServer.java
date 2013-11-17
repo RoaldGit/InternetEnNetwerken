@@ -78,39 +78,50 @@ public class WebServer extends Thread {
 						break;
 					case "Porto":
 						getPorto(tokenizedLine, outToClient);
+						// TODO database stuff
 						break;
 					case "Buy":
 						getBuy(tokenizedLine, outToClient);
+						// TODO database stuff
 						break;
 					case "Sell":
 						getSell(tokenizedLine, outToClient);
+						// TODO database stuff
 						break;
 					case "Buying":
 						getBuying(tokenizedLine, outToClient);
+						// TODO database stuff
 						break;
 					case "Selling":
 						getSelling(tokenizedLine, outToClient);
+						// TODO database stuff
 						break;
 					case "Stort":
 						stortGeld(tokenizedLine, outToClient);
+						// TODO database stuff
 						break;
 					case "Aandelen":
 						sendAandeelNamen(outToClient);
 						break;
 					case "WijzigOrder":
 						sendToClient(outToClient, "WijzigOrder ok");
+						// TODO database stuff
 						break;
 					case "VerwijderOrder":
 						sendToClient(outToClient, "VerwijderOrder ok");
+						// TODO database stuff
 						break;
 					case "AandeelKoop":
 						sendToClient(outToClient, "AandeelKoop ok");
+						// TODO database stuff
 						break;
 					case "AandeelVerkoop":
 						sendToClient(outToClient, "AandeelVerkoop ok");
+						// TODO database stuff
 						break;
 					case "Saldo":
 						sendSaldo(tokenizedLine, outToClient);
+						// TODO database stuff
 						break;
 					case "Done":
 						sendToClient(outToClient, "Ack");
@@ -130,11 +141,19 @@ public class WebServer extends Thread {
 
 	private void sendSaldo(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
-		sendToClient(outToClient, "Saldo 1000");
+		String user = tokenizedLine.nextToken();
+
+		Double saldo = dbManager.retreiveSaldo(user);
+
+		sendToClient(outToClient, "Saldo " + saldo);
 	}
 
 	private void sendAandeelNamen(DataOutputStream outToClient) {
-		sendToClient(outToClient, "Aandelen: Syntaxis LiNK WaTT");
+		String aandelen = dbManager.retreiveAandelen();
+
+		sendToClient(outToClient, "Aandelen: " + aandelen);
+
+		// sendToClient(outToClient, "Aandelen: Syntaxis LiNK WaTT");
 	}
 
 	public void checkLogin(StringTokenizer tokenizedLine,

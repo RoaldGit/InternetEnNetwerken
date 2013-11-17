@@ -18,6 +18,8 @@ public class ClientModel extends Observable {
 
 	public void setLoggedIn(boolean b) {
 		loggedIn = b;
+		setChanged();
+		notifyObservers("logged");
 	}
 
 	public boolean getConnected() {

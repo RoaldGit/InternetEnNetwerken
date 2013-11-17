@@ -58,6 +58,11 @@ public class LoginControl extends JPanel{
 		return password.getText();
 	}
 
+	public void clearFields() {
+		user.setText("");
+		password.setText("");
+	}
+
 	class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 

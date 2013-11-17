@@ -18,6 +18,7 @@ import Client.control.ButtonControl;
 import Client.control.ClientConnection;
 import Client.control.TextFieldEvent;
 import Client.model.BeursModel;
+import Client.model.ClientModel;
 import Client.model.UserModel;
 
 public class BeursView extends JPanel implements Observer {
@@ -25,9 +26,9 @@ public class BeursView extends JPanel implements Observer {
 	private JScrollPane portoScroll, buyScroll, sellScroll, buyingScroll,
 			sellingScroll;
 	private UserModel userModel;
+	private ClientModel clientModel;
 	private BeursModel beursModel;
 	private ClientConnection connection;
-	private String user;
 	private String[] portoHeader, buyingHeader, sellingHeader, buyHeader,
 			sellHeader, aandelen;
 	private Object[][] dummyPorto, dummyBuying, dummySelling, dummyBuy,
@@ -37,14 +38,16 @@ public class BeursView extends JPanel implements Observer {
 	private JTextField aandeelVeld, prijsVeld, totaalVeld, aantalVeld;
 	private JPanel details;
 	private BeursControl beursControl;
-	private JButton buyButton, sellButton, changeButton, cancelButton;
+	private JButton buyButton, sellButton, changeButton, cancelButton,
+			logOutButton;
 	private TextFieldEvent textFieldEvent;
 
 	public BeursView(UserModel uModel, BeursModel bModel, ClientConnection con,
-			BeursControl bControl) {
+			BeursControl bControl, ClientModel cModel) {
 		setLayout(null);
 
 		userModel = uModel;
+		clientModel = cModel;
 		beursModel = bModel;
 		connection = con;
 		beursControl = bControl;
@@ -117,15 +120,18 @@ public class BeursView extends JPanel implements Observer {
 		sellButton = new JButton("Verkoop dit aandeel");
 		changeButton = new JButton("Verander order");
 		cancelButton = new JButton("Verwijder order");
+		logOutButton = new JButton("Log uit");
 
 		buyButton.addActionListener(new ButtonControl("buy", connection,
-				beursControl, beursModel, userModel));
+				beursControl, beursModel, userModel, clientModel));
 		sellButton.addActionListener(new ButtonControl("sell", connection,
-				beursControl, beursModel, userModel));
+				beursControl, beursModel, userModel, clientModel));
 		changeButton.addActionListener(new ButtonControl("change", connection,
-				beursControl, beursModel, userModel));
+				beursControl, beursModel, userModel, clientModel));
 		cancelButton.addActionListener(new ButtonControl("cancel", connection,
-				beursControl, beursModel, userModel));
+				beursControl, beursModel, userModel, clientModel));
+		logOutButton.addActionListener(new ButtonControl("logOut", connection,
+				beursControl, beursModel, userModel, clientModel));
 
 		aandeelVeld.setEditable(false);
 		prijsVeld.setEditable(false);
@@ -146,6 +152,7 @@ public class BeursView extends JPanel implements Observer {
 		sellButton.setBounds(300, 35, 400, 20);
 		changeButton.setBounds(300, 60, 400, 20);
 		cancelButton.setBounds(300, 85, 400, 20);
+		logOutButton.setBounds(600, 10, 100, 20);
 
 		buyButton.setEnabled(false);
 		sellButton.setEnabled(false);
@@ -183,6 +190,7 @@ public class BeursView extends JPanel implements Observer {
 		add(sellLabel);
 
 		add(aandelenLijst);
+		add(logOutButton);
 		add(details);
 
 		updateTables();
@@ -294,17 +302,13 @@ public class BeursView extends JPanel implements Observer {
 	}
 
 	public void updateTables() {
-		updateTableData();
+		// updateTableData();
 
 		updatePorto();
 		updateBuying();
 		updateSelling();
 		updateBuy();
 		updateSell();
-	}
-
-	public void updateTableData() {
-		user = userModel.getUser();
 	}
 
 	public void updatePorto() {

@@ -61,7 +61,8 @@ public class MainView extends JFrame implements Observer {
 				beursControl);
 		login.setBounds(300, 300, 200, 100);
 
-		beurs = new BeursView(userModel, beursModel, connection, beursControl);
+		beurs = new BeursView(userModel, beursModel, connection, beursControl,
+				clientModel);
 		beurs.setBounds(0, 0, 800, 800);
 
 		sideBar.setLayout(null);
@@ -96,10 +97,7 @@ public class MainView extends JFrame implements Observer {
 				else
 					connected.setText("Not Connected");
 			}
-		}
-
-		if (obs == userModel) {
-			if (obj.equals("loggedIn") && clientModel.getConnected()) {
+			if (obj.equals("logged") && clientModel.getConnected()) {
 				if (clientModel.getLoggedIn()) {
 					loggedIn.setText("Logged in as: " + userModel.getUser());
 					String saldoString = String.format("Huidig saldo: € %.2f",
@@ -115,10 +113,18 @@ public class MainView extends JFrame implements Observer {
 					beurs.setVisible(true);
 
 					beurs.updateTables();
-				}
-				else
+				} else {
 					loggedIn.setText("Not logged in");
+					userModel.setUserDetails("", "");
+					saldo.setText("");
+					portoWaarde.setText("");
+
+					login.setVisible(true);
+					beurs.setVisible(false);
+				}
 			}
+		}
+		if (obs == userModel) {
 			if (obj.equals("saldo")) {
 				String saldoString = String.format("Huidig saldo: € %.2f",
 						userModel.getSaldo());

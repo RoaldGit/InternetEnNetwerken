@@ -16,9 +16,6 @@ public class UserModel extends Observable {
 	public void setUserDetails(String password, String user) {
 		this.user = user;
 		this.password = password;
-
-		setChanged();
-		notifyObservers("loggedIn");
 	}
 
 	public void setSaldo(double d) {

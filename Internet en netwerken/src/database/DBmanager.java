@@ -99,4 +99,46 @@ public class DBmanager {
 		}
 		return login;
 	}
+
+	public double retreiveSaldo(String user) {
+		double saldo = 0;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select saldo from User where userName = ?");
+
+			pst.setString(1, user);
+
+			ResultSet rs = pst.executeQuery();
+
+			if (rs.next())
+				saldo = rs.getDouble("saldo");
+		} catch (SQLException e) {
+			System.out.println("DBManager|retreiveSaldo");
+			printSQLException(e);
+		}
+		return saldo;		
+	}
+
+	public String retreiveAandelen() {
+		String aandelen = "";
+
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select count(*) from aandelen");
+			ResultSet rs = pst.executeQuery();
+
+			pst = connection
+					.prepareStatement("select aandeelNaam from aandelen");
+
+			rs = pst.executeQuery();
+
+			while(rs.next())
+				aandelen += rs.getString("aandeelNaam") + " ";
+
+		} catch (SQLException e) {
+			System.out.println("DBManager|retreiveSaldo");
+			printSQLException(e);
+		}
+		return aandelen;
+	}
 }
