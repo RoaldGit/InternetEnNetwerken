@@ -12,6 +12,13 @@ import java.util.StringTokenizer;
 
 import Client.model.ClientModel;
 
+/**
+ * De klasse die de connection maakt met de server en alles afhandelt qua communicatie.
+ * 
+ * @author Roald en Stef
+ * @since 9-10-2013
+ * @version 0.1
+ */
 public class ClientConnection {
 	private Socket connectionSocket;
 	private InputStream in;
@@ -19,11 +26,18 @@ public class ClientConnection {
 	private DataOutputStream outToClient;
 	private ClientModel clientModel;
 
+	/**
+	 * De constructor van ClientConnection, waarin meteen een connection gemaakt wordt met de server.
+	 * @param cModel Het ClientModel dat gebruikt wordt
+	 */
 	public ClientConnection(ClientModel cModel) {
 		clientModel = cModel;
 		connect();
 	}
-
+	
+	/**
+	 * De method die probeert te connecten met de server.
+	 */
 	public void connect(){
 		try {
 			connectionSocket = new Socket("localhost", 800);
@@ -47,6 +61,9 @@ public class ClientConnection {
 		}
 	}
 	
+	/**
+	 * De method om de connectie met de server te sluiten, het probeert dan de socket te sluiten, zodat het niet meer open is.
+	 */
 	public void close(){
 		try {
 			outToClient.writeBytes("Done");
@@ -58,6 +75,12 @@ public class ClientConnection {
 		}
 	}
 
+	/**
+	 * De method om in te loggen op de server.
+	 * @param user De username
+	 * @param password De password
+	 * @return De method returned een response van de server.
+	 */
 	public String login(String user, String password) {
 		if (connectionSocket.isClosed())
 			connect();
@@ -78,6 +101,12 @@ public class ClientConnection {
 		return response;
 	}
 
+	/**
+	 * De method om aandelen van de server op te halen
+	 * @param user De user
+	 * @param method De method bepaalt wat er opgehaald moet worden van de server.
+	 * @return
+	 */
 	public Object[][] getAandelen(String user, String method) {
 		if (connectionSocket.isClosed())
 			connect();
@@ -115,6 +144,15 @@ public class ClientConnection {
 		return porto;
 	}
 
+	/**
+	 * Deze method voert een transactie uit, waarbij het aangeeft wat de client wil 
+	 * @param transactie De transactie geeft aan wat de client wil doen (kopen of verkopen).
+	 * @param user De user.
+	 * @param password De wachtwoord van de user.
+	 * @param aandeel Het betreffende aandeel.
+	 * @param aantal Het aantal van de aandelen.
+	 * @return returned een boolean of het geslaagd is of niet.
+	 */
 	public boolean executeTransaction(String transactie, String user,
 			String password,
 			String aandeel, String aantal) {
@@ -140,6 +178,11 @@ public class ClientConnection {
 		return succes;
 	}
 
+	/**
+	 * De method die de saldo ophaalt van de server voor de user.
+	 * @param user De user.
+	 * @return Returned een double, oftewel de saldo van de user.
+	 */
 	public double getSaldo(String user) {
 		String response = "";
 		String request = "Saldo " + user;
@@ -162,6 +205,12 @@ public class ClientConnection {
 		}
 		return saldo;
 	}
+	
+	/**
+	 * De method die de size terug haalt van de response van de server.
+	 * @param response De response die de server terug stuurt
+	 * @return returned een integer van hoe groot de array is.
+	 */
 	public int retrieveSize(String response) {
 		StringTokenizer tokenizedLine = new StringTokenizer(response);
 
@@ -173,6 +222,11 @@ public class ClientConnection {
 		return arraySize;
 	}
 
+	/**
+	 * Deze method returned aandelen in een array.
+	 * @param response De response van de server
+	 * @return Returned een array van objects
+	 */
 	public Object[] retrieveAandeel(String response) {
 		StringTokenizer tokenizedLine = new StringTokenizer(response);
 		tokenizedLine.nextToken();
@@ -188,6 +242,10 @@ public class ClientConnection {
 		return aandeel;
 	}
 
+	/**
+	 * De methode returned een array van aandelen.
+	 * @return Returned een array van aandelen.
+	 */
 	public String[] getAandelen() {
 		String[] aandeel = new String[1];
 		try {

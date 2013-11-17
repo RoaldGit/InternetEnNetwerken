@@ -10,13 +10,26 @@ import Client.control.LoginControl;
 import Client.model.BeursModel;
 import Client.model.ClientModel;
 import Client.model.UserModel;
-
+/**
+ * Deze klasse bouwt de loginview op.
+ * @author Roald en Stef
+ * @since 9-11-2013
+ * @version 0.1
+ */
 public class LoginView extends JPanel {
 	private UserModel userModel;
 	private ClientModel clientModel;
 	private ClientConnection connection;
 	private BeursModel beursModel;
 
+	/**
+	 * De constructor voor de loginview.
+	 * @param uModel Het Usermodel dat gebruikt wordt.
+	 * @param cModel Het clientmodel dat gebruikt wordt.
+	 * @param con De connectie met de server die gebruikt wordt.
+	 * @param bModel Het beursmodel dat gebruikt wordt.
+	 * @param bControl Het beurscontrol dat gebruikt wordt.
+	 */
 	public LoginView(UserModel uModel, ClientModel cModel,
 			ClientConnection con, BeursModel bModel, BeursControl bControl) {
 		userModel = uModel;

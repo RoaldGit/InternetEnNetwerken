@@ -1,6 +1,13 @@
 import server.WebServer;
 import Client.view.MainView;
 
+/**
+ * Deze klasse start alles op, zowel de server als het client programma.
+ * 
+ * @author Roald en Stef
+ * @since 10-11-2013
+ * @version 0.1
+ */
 public class Apl {
 	private static boolean databaseTest = true;
 	private static boolean serverTest = true;
