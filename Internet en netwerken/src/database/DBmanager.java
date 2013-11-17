@@ -17,11 +17,6 @@ public class DBmanager {
 			if (!dbExists(naam)) {
 				connect();
 			}
-
-			else {
-				System.out.println("Database bestaat");
-			}
-
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -41,7 +36,6 @@ public class DBmanager {
 			con = DriverManager.getConnection("jdbc:mysql://localhost/" + naam,
 					userName, password);
 		} catch (SQLException e) {
-			// System.out.println("DBmanager|dbExists|naam: " + e);
 			exists = false;
 		}
 		return (exists);
@@ -52,7 +46,6 @@ public class DBmanager {
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost/",
 					userName, password);
-			System.out.println("Connected");
 		} catch (SQLException e) {
 			System.out.println("DBmanager|connect: " + e);
 			connected = false;
