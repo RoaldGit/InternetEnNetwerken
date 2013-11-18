@@ -18,7 +18,7 @@ public class WebServer extends Thread {
 
 	public WebServer(int port, String naam, String user, String pass) {
 		dbManager = DBmanager.getInstance(naam, user, pass);
-		DatabaseApl test = new DatabaseApl(dbManager, naam);
+		DatabaseApl apl = new DatabaseApl(dbManager, naam);
 
 		try {
 			listenSocket = new ServerSocket(port);
@@ -62,15 +62,15 @@ public class WebServer extends Thread {
 			while (!connectionSocket.isClosed()) {
 				requestMessageLine = inFromClient.readLine();
 
-				// if (requestMessageLine.contains("AandeelKoop"))
-				// System.out.println("Webserver|Received request: "
-				// + requestMessageLine);
+				if (requestMessageLine.contains("AandeelKoop"))
+					System.out.println("Webserver|Received request: "
+							+ requestMessageLine);
 
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
 
 				if (tokenizedLine.hasMoreTokens()
-						&& tokenizedLine.countTokens() > 1) {
+						&& tokenizedLine.countTokens() >= 1) {
 					String firstToken = tokenizedLine.nextToken();
 					switch (firstToken) {
 					case "Login":
@@ -97,6 +97,9 @@ public class WebServer extends Thread {
 						break;
 					case "Aandelen":
 						sendAandeelNamen(outToClient);
+						break;
+					case "AandeelPrijs":
+						sendAandeelPrijs(tokenizedLine, outToClient);
 						break;
 					case "WijzigOrder":
 						sendToClient(outToClient, "WijzigOrder ok");
@@ -136,11 +139,19 @@ public class WebServer extends Thread {
 		}
 	}
 
+	private void sendAandeelPrijs(StringTokenizer tokenizedLine,
+			DataOutputStream outToClient) {
+		String aandeel = tokenizedLine.nextToken();
+		double prijs = dbManager.retreivePrijs(aandeel);
+
+		sendToClient(outToClient, "AandeelPrijs " + prijs);
+	}
+
 	private void sendSaldo(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String user = tokenizedLine.nextToken();
 
-		Double saldo = dbManager.retreiveSaldo(user);
+		double saldo = dbManager.retreiveSaldo(user);
 
 		sendToClient(outToClient, "Saldo " + saldo);
 	}
@@ -149,7 +160,7 @@ public class WebServer extends Thread {
 			DataOutputStream outToClient) {
 		String user = tokenizedLine.nextToken();
 
-		Double waarde = dbManager.retreivePortoWaarde(user);
+		double waarde = dbManager.retreivePortoWaarde(user);
 
 		sendToClient(outToClient, "PortoWaarde " + waarde);
 	}

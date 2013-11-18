@@ -257,7 +257,8 @@ public class BeursView extends JPanel implements Observer {
 											++col))));
 						} catch(Exception e) {
 							aandeelVeld.setText("");
-							prijsVeld.setText("");
+							prijsVeld.setText(String.format("€ %,.2f",
+									beursModel.getAandeelPrijs()));
 							aantalVeld.setText("");
 							clearSelected();
 						}
@@ -270,7 +271,7 @@ public class BeursView extends JPanel implements Observer {
 							prijs = Double.parseDouble((String) selected
 								.getValueAt(row, col));
 						} catch (Exception e) {
-
+							// prijs = Double.parseDouble(prijsVeld.getText());
 						}
 
 						int aantal = 0;

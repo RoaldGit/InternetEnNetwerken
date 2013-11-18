@@ -718,4 +718,22 @@ public class DBmanager {
 		}
 		return size;
 	}
+
+	public double retreivePrijs(String aandeel) {
+		double prijs = 0;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select prijs from aandelen where aandeelnaam = ?");
+			pst.setString(1, aandeel);
+
+			ResultSet result = pst.executeQuery();
+
+			if (result.next())
+				prijs = result.getDouble("prijs");
+		} catch (SQLException e) {
+			System.out.println("DBManager|getUserID");
+			printSQLException(e);
+		}
+		return prijs;
+	}
 }

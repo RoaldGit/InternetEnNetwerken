@@ -22,7 +22,7 @@ public class BeursModel extends Observable {
 	 * De constructor.
 	 */
 	public BeursModel() {
-		setAandeelPrijs(0);
+
 	}
 
 	/**
@@ -213,13 +213,8 @@ public class BeursModel extends Observable {
 	/**
 	 * Deze methode set het aantal aandelen.
 	 */
-	public void setAantal(String text, Boolean notify) {
+	public void setAantal(String text) {
 		aantalAandelen = text;
-		
-		if (notify) {
-			setChanged();
-			notifyObservers("aandeelSelect");
-		}
 	}
 
 	/**
@@ -234,7 +229,7 @@ public class BeursModel extends Observable {
 		return aandeelPrijs;
 	}
 
-	public void setAandeelPrijs(double aandeelPrijs) {
-		this.aandeelPrijs = aandeelPrijs;
-	}
+	// public void setAandeelPrijs(double aandeelPrijs) {
+	// this.aandeelPrijs = aandeelPrijs;
+	// }
 }

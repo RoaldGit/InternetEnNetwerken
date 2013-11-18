@@ -60,6 +60,7 @@ public class AandelenLijst extends JComboBox {
 				"Buy " + selected));
 		beursModel.setSell(clientConnection.getAandelen(userModel.getUser(),
 				"Sell " + selected));
+		// beursModel.setAandeelPrijs(clientConnection.getAandeelPrijs(selected));
 	}
 	
 	/**
