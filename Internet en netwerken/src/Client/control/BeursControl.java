@@ -40,7 +40,6 @@ public class BeursControl {
 		retreiveAandelen("Sell " + selectedAandeel);
 		retreiveAandelen("Buying");
 		retreiveAandelen("Selling");
-		System.out.println("Retreiving: " + selectedAandeel);
 	}
 
 	/**
