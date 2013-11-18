@@ -244,17 +244,29 @@ public class BeursView extends JPanel implements Observer {
 							col = 1;
 						else
 							col = 0;
+						
+						try {
+							aandeelVeld.setText((String) selected.getValueAt(row,
+									col++));
+							prijsVeld.setText(String.format("€ %,.2f", Double
+									.parseDouble((String) selected.getValueAt(row,
+											++col))));
+						} catch(Exception e) {
+							aandeelVeld.setText("");
+							prijsVeld.setText("");
+							aantalVeld.setText("");
+							clearSelected();
+						}
 
-						aandeelVeld.setText((String) selected.getValueAt(row,
-								col++));
-						prijsVeld.setText(String.format("€ %,.2f", Double
-								.parseDouble((String) selected.getValueAt(row,
-										++col))));
-
-						double prijs = Double.parseDouble((String) selected
+						double prijs = 0;
+						try {
+							prijs = Double.parseDouble((String) selected
 								.getValueAt(row, col));
-						int aantal = 0;
+						} catch (Exception e) {
 
+						}
+
+						int aantal = 0;
 						String text = aantalVeld.getText();
 
 						try {
@@ -265,6 +277,12 @@ public class BeursView extends JPanel implements Observer {
 						}
 						totaalVeld.setText(String.format("€ %,.2f", prijs
 								* aantal));
+					}
+					if (obj.equals("selectClear")) {
+						aandeelVeld.setText("");
+						prijsVeld.setText("");
+						aantalVeld.setText("");
+						clearSelected();
 					}
 				}
 			}
@@ -280,45 +298,42 @@ public class BeursView extends JPanel implements Observer {
 				updateTables();
 	}
 
-	private void sellSelected() {
+	public void clearSelected() {
+		buyButton.setEnabled(false);
+		sellButton.setEnabled(false);
+		changeButton.setEnabled(false);
+		cancelButton.setEnabled(false);
+	}
+
+	public void sellSelected() {
+		clearSelected();
 		buyButton.setEnabled(true);
-		sellButton.setEnabled(false);
-		changeButton.setEnabled(false);
-		cancelButton.setEnabled(false);
-
 	}
 
-	private void buySelected() {
-		buyButton.setEnabled(false);
+	public void buySelected() {
+		clearSelected();
 		sellButton.setEnabled(true);
-		changeButton.setEnabled(false);
-		cancelButton.setEnabled(false);
 	}
 
-	private void sellingSelected() {
-		buyButton.setEnabled(false);
-		sellButton.setEnabled(false);
+	public void sellingSelected() {
+		clearSelected();
 		changeButton.setEnabled(true);
 		cancelButton.setEnabled(true);
 	}
 
-	private void buyingSelected() {
-		buyButton.setEnabled(false);
-		sellButton.setEnabled(false);
+	public void buyingSelected() {
+		clearSelected();
 		changeButton.setEnabled(true);
 		cancelButton.setEnabled(true);
 	}
 
 	public void portoSelected() {
+		clearSelected();
 		buyButton.setEnabled(true);
 		sellButton.setEnabled(true);
-		changeButton.setEnabled(false);
-		cancelButton.setEnabled(false);
 	}
 
 	public void updateTables() {
-		// updateTableData();
-
 		updatePorto();
 		updateBuying();
 		updateSelling();

@@ -113,7 +113,7 @@ public class WebServer extends Thread {
 						// TODO database stuff
 						break;
 					case "AandeelVerkoop":
-						sendToClient(outToClient, "AandeelVerkoop ok");
+						verkoopAandeel(tokenizedLine, outToClient);
 						// TODO database stuff
 						break;
 					case "Saldo":
@@ -241,7 +241,16 @@ public class WebServer extends Thread {
 
 	public void verkoopAandeel(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
-		//TODO aandeel verkopen, dingen updaten, boolean returnen
+		String userName = tokenizedLine.nextToken();
+		tokenizedLine.nextToken();
+		String aandeel = tokenizedLine.nextToken();
+		String aantal = tokenizedLine.nextToken();
+
+		boolean succes = dbManager.sellAandeel(userName, aandeel, aantal);
+		if (succes)
+			sendToClient(outToClient, "AandeelVerkoop ok");
+		else
+			sendToClient(outToClient, "AandeelVerkoop error");
 	}
 	
 	public void koopAandeel(StringTokenizer tokenizedLine,

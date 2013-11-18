@@ -316,48 +316,48 @@ public class DBmanager {
 	public boolean sellAandeel(String userName, String aandeel, String aantal) {
 		int userID = getUserID(userName);
 		int aandeelID = getAandeelID(aandeel);
-		int buyAantal = Integer.parseInt(aantal);
+		int sellAantal = Integer.parseInt(aantal);
 
 		double prijs = getAandeelPrijs(aandeelID);
 		double saldo = retreiveSaldo(userName);
-		double newSaldo = saldo - buyAantal * prijs;
+		double newSaldo = saldo + sellAantal * prijs;
 
 		boolean portoExists = checkPorto(userID, aandeelID);
 		boolean succes = false;
 
-		if (newSaldo > 0) {
-			try {
-				PreparedStatement pst = null;
-				if (portoExists) {
-					int oldAantal = getAantalAandelen(userID, aandeelID);
-					int newAantal = oldAantal + buyAantal;
-
+		try {
+			PreparedStatement pst = null;
+			if (portoExists) {
+				int oldAantal = getAantalAandelen(userID, aandeelID);
+				int newAantal = oldAantal - sellAantal;
+				if (newAantal >= 0) {
 					pst = connection
 							.prepareStatement("update portefeuille set aantal = ? where userID = ? and aandeelID = ?");
 					pst.setInt(1, newAantal);
 					pst.setInt(2, userID);
 					pst.setInt(3, aandeelID);
-				} else {
+
 					pst = connection
-							.prepareStatement("insert into portefeuille(userID, aandeelID, aantal) values (?, ?, ?)");
+							.prepareStatement("update user set saldo = ? where userID = ?");
+					pst.setDouble(1, newSaldo);
+					pst.setInt(2, userID);
+
+					pst.execute();
+					succes = true;
+				}
+				if (newAantal == 0) {
+					pst = connection
+							.prepareStatement("delete from portefeuille where userID = ? and aandeelID = ?");
 					pst.setInt(1, userID);
 					pst.setInt(2, aandeelID);
-					pst.setString(3, aantal);
+
+					pst.execute();
+					succes = true;
 				}
-				pst.execute();
-
-				pst = connection
-						.prepareStatement("update user set saldo = ? where userID = ?");
-				pst.setDouble(1, newSaldo);
-				pst.setInt(2, userID);
-
-				pst.execute();
-
-				succes = true;
-			} catch (SQLException e) {
-				System.out.println("DBManager|retreiveBuy");
-				printSQLException(e);
 			}
+		} catch (SQLException e) {
+			System.out.println("DBManager|retreiveBuy");
+			printSQLException(e);
 		}
 		return succes;
 	}

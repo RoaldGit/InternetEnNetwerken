@@ -80,7 +80,7 @@ public class ButtonControl implements ActionListener {
 			beursControl.retreiveSaldo(userName);
 			beursControl.retreivePortoWaarde(userName);
 
-			beursModel.refreshSelect();
+			beursModel.clearSelect();
 
 			if (done)
 				JOptionPane.showMessageDialog(new JFrame(),

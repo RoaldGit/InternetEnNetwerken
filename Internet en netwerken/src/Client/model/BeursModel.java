@@ -14,6 +14,7 @@ public class BeursModel extends Observable {
 	private String aandeelSelect, aantalAandelen;
 	private Tabel tabelSelect = null;
 	int row;
+
 	private Object[][] porto, buying, selling, buy, sell;
 
 	/**
@@ -56,7 +57,19 @@ public class BeursModel extends Observable {
 	}
 
 	public void refreshSelect() {
-		tabelSelect.setRowSelectionInterval(row, row);
+		try {
+			tabelSelect.setRowSelectionInterval(row, row);
+		} catch (Exception e) {
+			tabelSelect.clearSelection();
+		}
+		setChanged();
+		notifyObservers("select");
+	}
+
+	public void clearSelect() {
+		tabelSelect.clearSelection();
+		setChanged();
+		notifyObservers("select");
 	}
 
 	public void selected() {
@@ -75,8 +88,11 @@ public class BeursModel extends Observable {
 
 		if (cols == 5)
 			col = 1;
-
-		return (String) tabelSelect.getValueAt(row, col);
+		try {
+			return (String) tabelSelect.getValueAt(row, col);
+		} catch (Exception e) {
+			return "";
+		}
 	}
 
 	/**
