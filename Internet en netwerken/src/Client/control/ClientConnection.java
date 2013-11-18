@@ -155,6 +155,9 @@ public class ClientConnection {
 	public boolean executeTransaction(String transactie, String user,
 			String password,
 			String aandeel, String aantal) {
+		if (connectionSocket.isClosed())
+			connect();
+
 		String response = "";
 		String request = transactie + " " + user + " " + password + " "
 				+ aandeel + " " + aantal;
@@ -163,13 +166,13 @@ public class ClientConnection {
 		try {
 			outToClient.writeBytes(request + "\n\r");
 
-			while (!response.contains(transactie)) {
+			while (!response.contains(transactie)
+					&& !response.contains("Error")) {
 				response = inFromClient.readLine();
 			}
 
 			if (response.equals(transactie + " ok"))
 				succes = true;
-
 		} catch (Exception e) {
 			System.out.println("ClientConnection|executeTransaction: " + e);
 		}

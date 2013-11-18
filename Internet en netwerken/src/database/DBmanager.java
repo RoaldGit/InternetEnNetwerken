@@ -313,7 +313,7 @@ public class DBmanager {
 					int teKoop = result.getInt("aantal");
 					
 					if (teKoop >= buyAantal) {
-						updatePorto(userID, verkoperUserID, aandeelID,
+						addToPorto(userID, aandeelID,
 								buyAantal);
 						updateSellOrder(teKoop, buyAantal, verkoperUserID,
 								aandeelID);
@@ -321,7 +321,7 @@ public class DBmanager {
 								userSaldo, prijs, buyAantal);
 					}
 					else {
-						updatePorto(userID, verkoperUserID, aandeelID, teKoop);
+						addToPorto(userID, aandeelID, teKoop);
 						updateSellOrder(teKoop, teKoop, verkoperUserID,
 								aandeelID);
 						updateSaldo(verkoperUserID, verkoperSaldo, userID,
@@ -348,56 +348,66 @@ public class DBmanager {
 		int aandeelID = getAandeelID(aandeel);
 		int sellAantal = Integer.parseInt(aantal);
 		
+		int aandelenInBezit = getAantalAandelen(userID, aandeelID);
+
 		double prijs = getAandeelPrijs(aandeelID);
 		double userSaldo = retreiveSaldo(userName);
 
 		boolean succes = false;
 
-		try {
-			PreparedStatement pst = null;
-			ResultSet result = null;
-			pst = connection
-					.prepareStatement("select * from kooporder where aandeelID = ?");
-			pst.setInt(1, aandeelID);
+		if (sellAantal <= aandelenInBezit) {
+			try {
+				PreparedStatement pst = null;
+				ResultSet result = null;
+				pst = connection
+						.prepareStatement("select * from kooporder where aandeelID = ?");
+				pst.setInt(1, aandeelID);
 
-			result = pst.executeQuery();
+				result = pst.executeQuery();
 
-			while (result.next() && sellAantal > 0) {
-				int koperUserID = result.getInt("userid");
-				double koperSaldo = retreiveSaldo(koperUserID);
+				while (result.next() && sellAantal > 0) {
+					int koperUserID = result.getInt("userid");
+					double koperSaldo = retreiveSaldo(koperUserID);
 
-				userSaldo = retreiveSaldo(userName);
+					userSaldo = retreiveSaldo(userName);
 
-				int gevraagd = result.getInt("aantal");
+					int gevraagd = result.getInt("aantal");
 
-				if (gevraagd >= sellAantal) {
-					updatePorto(koperUserID, userID, aandeelID, sellAantal);
-					updateBuyOrder(gevraagd, sellAantal, koperUserID,
-							aandeelID);
-					updateSaldo(userID, userSaldo, koperUserID, koperSaldo,
-							prijs, sellAantal);
-				} else {
-					updatePorto(koperUserID, userID, aandeelID, gevraagd);
-					updateBuyOrder(gevraagd, gevraagd, koperUserID,
-							aandeelID);
-					updateSaldo(userID, userSaldo, koperUserID, koperSaldo,
-							prijs, gevraagd);
+					if (gevraagd >= sellAantal) {
+						addToPorto(koperUserID, aandeelID, sellAantal);
+						removeFromPorto(userID, aandeelID, sellAantal);
+
+						updateBuyOrder(gevraagd, sellAantal, koperUserID,
+								aandeelID);
+						updateSaldo(userID, userSaldo, koperUserID, koperSaldo,
+								prijs, sellAantal);
+						sellAantal = 0;
+					} else {
+						addToPorto(koperUserID, aandeelID, sellAantal);
+						removeFromPorto(userID, aandeelID, sellAantal);
+
+						updateBuyOrder(gevraagd, gevraagd, koperUserID,
+								aandeelID);
+						updateSaldo(userID, userSaldo, koperUserID, koperSaldo,
+								prijs, gevraagd);
+						sellAantal = sellAantal - gevraagd;
+					}
+
 				}
-				sellAantal = sellAantal - gevraagd;
+				if (sellAantal > 0) {
+					userSaldo = retreiveSaldo(userName);
+					placeSellOrder(userID, aandeelID, sellAantal);
+					removeFromPorto(userID, aandeelID, sellAantal);
+				}
+				removeFromPorto(userID, aandeelID, sellAantal);
+				succes = true;
+			} catch (SQLException e) {
+				System.out.println("DBManager|sellAandeel");
+				printSQLException(e);
 			}
-			if (sellAantal > 0) {
-				userSaldo = retreiveSaldo(userName);
-				placeSellOrder(userID, aandeelID, sellAantal);
-				// updateSaldo(userID, 0, userID, userSaldo, prijs, sellAantal);
-			}
-			succes = true;
-		} catch (SQLException e) {
-			System.out.println("DBManager|sellAandeel");
-			printSQLException(e);
 		}
 		return succes;
 	}
-
 
 	private void placeSellOrder(int userID, int aandeelID, int sellAantal) {
 		try {
@@ -410,6 +420,8 @@ public class DBmanager {
 			pst.setInt(3, sellAantal);
 
 			pst.execute();
+
+			removeFromPorto(userID, aandeelID, sellAantal);
 		} catch (SQLException e) {
 			System.out.println("DBManager|placeSellOrder");
 			printSQLException(e);
@@ -468,6 +480,7 @@ public class DBmanager {
 			printSQLException(e);
 		}
 	}
+
 	public void updateSellOrder(int teKoop, int buyAantal, int verkoperUserID,
 			int aandeelID) {
 		try {
@@ -494,6 +507,7 @@ public class DBmanager {
 			printSQLException(e);
 		}
 	}
+
 	private void placeBuyOrder(int userID, int aandeelID, int buyAantal) {
 		try {
 			PreparedStatement pst = null;
@@ -512,15 +526,13 @@ public class DBmanager {
 
 	}
 
-	public void updatePorto(int userID, int andereUserID, int aandeelID,
+	public void addToPorto(int userID, int aandeelID,
 			int buyAantal) {
-		boolean userPortoExists = checkPorto(userID, aandeelID);
-		boolean andereUserPortoExists = checkPorto(andereUserID, aandeelID);
-
+		boolean portoExists = checkPorto(userID, aandeelID);
 		try {
 			PreparedStatement pst = null;
 
-			if (userPortoExists) {
+			if (portoExists) {
 				int oldAantal = getAantalAandelen(userID, aandeelID);
 				int newAantal = oldAantal + buyAantal;
 
@@ -537,6 +549,34 @@ public class DBmanager {
 				pst.setInt(1, userID);
 				pst.setInt(2, aandeelID);
 				pst.setInt(3, buyAantal);
+
+				pst.execute();
+			}
+		} catch (SQLException e) {
+			System.out.println("DBManager|updatePorto");
+			printSQLException(e);
+		}
+	}
+
+	public void removeFromPorto(int userID, int aandeelID, int sellAantal) {
+		try {
+			PreparedStatement pst = null;
+				int oldAantal = getAantalAandelen(userID, aandeelID);
+			int newAantal = oldAantal - sellAantal;
+
+			if (newAantal > 0) {
+				pst = connection
+						.prepareStatement("update portefeuille set aantal = ? where userID = ? and aandeelID = ?");
+				pst.setInt(1, newAantal);
+				pst.setInt(2, userID);
+				pst.setInt(3, aandeelID);
+
+				pst.execute();
+			} else {
+				pst = connection
+						.prepareStatement("delete from portefeuille where userID = ? and aandeelID = ?");
+				pst.setInt(1, userID);
+				pst.setInt(2, aandeelID);
 
 				pst.execute();
 			}

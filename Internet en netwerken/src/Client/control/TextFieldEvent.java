@@ -34,6 +34,7 @@ public class TextFieldEvent implements DocumentListener {
 	 * Een methode die aangeeft dat er een aantal ingevoerd is. 
 	 */
 	public void removeUpdate(DocumentEvent e) {
+		// beursModel.selected();
 		update(e);
 	}
 	
@@ -41,6 +42,7 @@ public class TextFieldEvent implements DocumentListener {
 	 * Een methode die aangeeft dat er een aantal ingevoerd is.
 	 */
 	public void insertUpdate(DocumentEvent e) {
+		// beursModel.selected();
 		update(e);
 	}
 
@@ -49,10 +51,9 @@ public class TextFieldEvent implements DocumentListener {
 		try {
 			Document textFieldText = e.getDocument();
 			String text = textFieldText.getText(0, textFieldText.getLength());
-			text = "" + Integer.parseInt(text);
-			beursModel.setAantal(text);
-		} catch (Exception e1) {
-			beursModel.setAantal("error");
+			beursModel.setAantal(text, true);
+		} catch (Exception ex) {
+			// beursModel.setAantal("error", false);
 		}
 	}
 }

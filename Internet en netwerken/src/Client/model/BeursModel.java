@@ -12,6 +12,7 @@ import Client.view.Tabel;
  */
 public class BeursModel extends Observable {
 	private String aandeelSelect, aantalAandelen;
+	private double aandeelPrijs;
 	private Tabel tabelSelect = null;
 	int row;
 
@@ -21,7 +22,7 @@ public class BeursModel extends Observable {
 	 * De constructor.
 	 */
 	public BeursModel() {
-
+		setAandeelPrijs(0);
 	}
 
 	/**
@@ -60,14 +61,16 @@ public class BeursModel extends Observable {
 		try {
 			tabelSelect.setRowSelectionInterval(row, row);
 		} catch (Exception e) {
-			tabelSelect.clearSelection();
+			clearSelect();
 		}
 		setChanged();
 		notifyObservers("select");
 	}
 
 	public void clearSelect() {
-		tabelSelect.clearSelection();
+		if (tabelSelect != null)
+			tabelSelect.clearSelection();
+		tabelSelect = null;
 		setChanged();
 		notifyObservers("select");
 	}
@@ -82,16 +85,17 @@ public class BeursModel extends Observable {
 	 * @return returned een string met daarin de naam van het aandeel.
 	 */
 	public String getAandeel() {
-		int cols = tabelSelect.getColumnCount();
-		int row = tabelSelect.getSelectedRow();
-		int col = 0;
-
-		if (cols == 5)
-			col = 1;
 		try {
+			int cols = tabelSelect.getColumnCount();
+			int row = tabelSelect.getSelectedRow();
+			int col = 0;
+
+			if (cols == 5)
+				col = 1;
+
 			return (String) tabelSelect.getValueAt(row, col);
 		} catch (Exception e) {
-			return "";
+			return aandeelSelect;
 		}
 	}
 
@@ -209,8 +213,13 @@ public class BeursModel extends Observable {
 	/**
 	 * Deze methode set het aantal aandelen.
 	 */
-	public void setAantal(String text) {
+	public void setAantal(String text, Boolean notify) {
 		aantalAandelen = text;
+		
+		if (notify) {
+			setChanged();
+			notifyObservers("aandeelSelect");
+		}
 	}
 
 	/**
@@ -219,5 +228,13 @@ public class BeursModel extends Observable {
 	 */
 	public String getAantalAandelen() {
 		return aantalAandelen;
+	}
+
+	public double getAandeelPrijs() {
+		return aandeelPrijs;
+	}
+
+	public void setAandeelPrijs(double aandeelPrijs) {
+		this.aandeelPrijs = aandeelPrijs;
 	}
 }

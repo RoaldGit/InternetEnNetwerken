@@ -110,10 +110,6 @@ public class BeursView extends JPanel implements Observer {
 		buyScroll.setBounds(365, 250, 415, 100);
 		sellScroll.setBounds(365, 400, 415, 100);
 
-		AandelenLijst aandelenLijst = new AandelenLijst(aandelen, beursModel,
-				connection, userModel);
-		aandelenLijst.setBounds(365, 210, 200, 20);
-
 		details = new JPanel(null);
 		details.setBounds(5, 500, 780, 260);
 		details.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
@@ -174,6 +170,10 @@ public class BeursView extends JPanel implements Observer {
 		textFieldEvent = new TextFieldEvent(beursModel);
 		aantalVeld.getDocument().addDocumentListener(textFieldEvent);
 
+		AandelenLijst aandelenLijst = new AandelenLijst(aandelen, beursModel,
+				connection, userModel);
+		aandelenLijst.setBounds(365, 210, 200, 20);
+
 		details.add(aandeelLabel);
 		details.add(prijsLabel);
 		details.add(aantalLabel);
@@ -201,11 +201,13 @@ public class BeursView extends JPanel implements Observer {
 		add(buyLabel);
 		add(sellLabel);
 
+		add(details);
 		add(aandelenLijst);
 		add(logOutButton);
-		add(details);
 
 		updateTables();
+
+		portoSelected();
 	}
 
 	/**
@@ -218,6 +220,8 @@ public class BeursView extends JPanel implements Observer {
 					String aandeel = beursModel.getSelectedAandeel();
 					buyLabel.setText("Inkooporders voor " + aandeel);
 					sellLabel.setText("Verkooporders voor " + aandeel);
+					aandeelVeld.setText(aandeel);
+					aantalVeld.setText("");
 				}
 				if (obj.equals("Aandelen"))
 					updateTables();
@@ -280,7 +284,8 @@ public class BeursView extends JPanel implements Observer {
 						}
 						totaalVeld.setText(String.format("€ %,.2f", prijs
 								* aantal));
-					}
+					} else
+						portoSelected();
 					if (obj.equals("selectClear")) {
 						aandeelVeld.setText("");
 						prijsVeld.setText("");

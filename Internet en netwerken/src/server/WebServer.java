@@ -62,9 +62,9 @@ public class WebServer extends Thread {
 			while (!connectionSocket.isClosed()) {
 				requestMessageLine = inFromClient.readLine();
 
-				if (requestMessageLine.contains("AandeelKoop"))
-					System.out.println("Webserver|Received request: "
-							+ requestMessageLine);
+				// if (requestMessageLine.contains("AandeelKoop"))
+				// System.out.println("Webserver|Received request: "
+				// + requestMessageLine);
 
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
@@ -81,11 +81,9 @@ public class WebServer extends Thread {
 						break;
 					case "Buy":
 						getBuy(tokenizedLine, outToClient);
-						// TODO database stuff
 						break;
 					case "Sell":
 						getSell(tokenizedLine, outToClient);
-						// TODO database stuff
 						break;
 					case "Buying":
 						getBuying(tokenizedLine, outToClient);
@@ -113,7 +111,6 @@ public class WebServer extends Thread {
 						break;
 					case "AandeelVerkoop":
 						verkoopAandeel(tokenizedLine, outToClient);
-						// TODO database stuff
 						break;
 					case "Saldo":
 						sendSaldo(tokenizedLine, outToClient);
@@ -134,6 +131,8 @@ public class WebServer extends Thread {
 			}
 		} catch (Exception e) {
 			System.out.println("Webserver|serve: " + e);
+			sendToClient(outToClient, "Error: " + requestMessageLine);
+			// Socket closes
 		}
 	}
 

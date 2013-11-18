@@ -56,6 +56,8 @@ public class ButtonControl implements ActionListener {
 			String aandeel = beursModel.getAandeel();
 			String aantal = beursModel.getAantalAandelen();
 
+			System.out.println(aandeel + " " + aantal);
+
 			boolean done = false;
 
 			switch (type) {
@@ -81,6 +83,8 @@ public class ButtonControl implements ActionListener {
 					"Buy " + aandeel));
 			beursModel.setSell(connection.getAandelen(
 					userModel.getUser(), "Sell " + aandeel));
+
+			beursModel.setAantal("0", true);
 
 			beursControl.retreiveAlleAandelen();
 			beursControl.retreiveSaldo(userName);
