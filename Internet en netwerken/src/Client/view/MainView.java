@@ -115,7 +115,7 @@ public class MainView extends JFrame implements Observer {
 					String saldoString = String.format("Huidig saldo: € %,.2f",
 							userModel.getSaldo());
 					String portoString = String.format(
-							"Waarde portofeuille: € %,.2f",
+							"Waarde portefeuille: € %,.2f",
 							userModel.getPortoWaarde());
 
 					saldo.setText(saldoString);
@@ -143,7 +143,8 @@ public class MainView extends JFrame implements Observer {
 				saldo.setText(saldoString);
 			}
 			if (obj.equals("waarde")) {
-				String waardeString = String.format("Huidig saldo: € %,.2f",
+				String waardeString = String.format(
+						"Waarde portefeuille: € %,.2f",
 						userModel.getPortoWaarde());
 				portoWaarde.setText(waardeString);
 			}

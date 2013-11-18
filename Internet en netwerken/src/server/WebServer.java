@@ -110,7 +110,6 @@ public class WebServer extends Thread {
 						break;
 					case "AandeelKoop":
 						koopAandeel(tokenizedLine, outToClient);
-						// TODO database stuff
 						break;
 					case "AandeelVerkoop":
 						verkoopAandeel(tokenizedLine, outToClient);
