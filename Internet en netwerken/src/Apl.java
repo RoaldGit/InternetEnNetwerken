@@ -12,10 +12,11 @@ public class Apl {
 	private static boolean databaseTest = true;
 	private static boolean serverTest = true;
 	private static boolean clientTest = true;
+	private static String username = "root", pass = "a";
 
 	public static void main(String args[]) {
 		if (databaseTest) {
-			WebServer server = new WebServer(800, "internet", "root", "a");
+			WebServer server = new WebServer(800, "internet", username, pass);
 			server.start();
 		}
 

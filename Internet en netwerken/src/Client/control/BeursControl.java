@@ -34,9 +34,10 @@ public class BeursControl {
 	 * Deze method haalt alle info van de server op van de huidige user.
 	 */
 	public void retreiveAlleAandelen() {
+		String selectedAandeel = beursModel.getSelectedAandeel();
 		retreiveAandelen("Porto");
-		retreiveAandelen("Buy");
-		retreiveAandelen("Sell");
+		retreiveAandelen("Buy " + selectedAandeel);
+		retreiveAandelen("Sell " + selectedAandeel);
 		retreiveAandelen("Buying");
 		retreiveAandelen("Selling");
 	}
