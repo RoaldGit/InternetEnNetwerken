@@ -224,7 +224,7 @@ public class BeursView extends JPanel implements Observer {
 				if (obj.equals("select")) {
 					Tabel selected = beursModel.getSelectedTabel();
 					if (selected != null) {
-						aantalVeld.setEditable(true);
+						aantalVeld.setEditable(false);
 
 						if (selected == porto)
 							portoSelected();
@@ -244,7 +244,7 @@ public class BeursView extends JPanel implements Observer {
 							col = 1;
 						else
 							col = 0;
-						
+
 						try {
 							aandeelVeld.setText((String) selected.getValueAt(row,
 									col++));
@@ -257,6 +257,9 @@ public class BeursView extends JPanel implements Observer {
 							aantalVeld.setText("");
 							clearSelected();
 						}
+
+						if (!aandeelVeld.getText().equals(""))
+							aantalVeld.setEditable(true);
 
 						double prijs = 0;
 						try {

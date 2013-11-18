@@ -122,6 +122,25 @@ public class DBmanager {
 		return saldo;		
 	}
 
+	public double retreiveSaldo(int userID) {
+		double saldo = 0;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select saldo from User where userID = ?");
+
+			pst.setInt(1, userID);
+
+			ResultSet result = pst.executeQuery();
+
+			if (result.next())
+				saldo = result.getDouble("saldo");
+		} catch (SQLException e) {
+			System.out.println("DBManager|retreiveSaldo");
+			printSQLException(e);
+		}
+		return saldo;
+	}
+
 	public double retreivePortoWaarde(String user) {
 		double waarde = 0;
 		try {
@@ -264,6 +283,7 @@ public class DBmanager {
 		return array;
 	}
 
+	@SuppressWarnings("resource")
 	public boolean buyAandeel(String userName, String aandeel, String aantal) {
 		int userID = getUserID(userName);
 		int aandeelID = getAandeelID(aandeel);
@@ -271,40 +291,75 @@ public class DBmanager {
 		
 		double prijs = getAandeelPrijs(aandeelID);
 		double saldo = retreiveSaldo(userName);
-		double newSaldo = saldo - buyAantal * prijs;
+		double newEndSaldo = saldo - buyAantal * prijs;
 
 		boolean portoExists = checkPorto(userID, aandeelID);
 		boolean succes = false;
 
-		if (newSaldo > 0) {
+		if (newEndSaldo >= 0) {
 			try {
 				PreparedStatement pst = null;
-				if (portoExists) {
-					int oldAantal = getAantalAandelen(userID, aandeelID);
-					int newAantal = oldAantal + buyAantal;
-
-					pst = connection
-							.prepareStatement("update portefeuille set aantal = ? where userID = ? and aandeelID = ?");
-					pst.setInt(1, newAantal);
-					pst.setInt(2, userID);
-					pst.setInt(3, aandeelID);
-				} else {
-					pst = connection
-							.prepareStatement("insert into portefeuille(userID, aandeelID, aantal) values (?, ?, ?)");
-					pst.setInt(1, userID);
-					pst.setInt(2, aandeelID);
-					pst.setString(3, aantal);
-				}
-				pst.execute();
-
+				ResultSet result = null;
 				pst = connection
-						.prepareStatement("update user set saldo = ? where userID = ?");
-				pst.setDouble(1, newSaldo);
-				pst.setInt(2, userID);
+						.prepareStatement("select * from verkooporder where aandeelID = ?");
+				pst.setInt(1, aandeelID);
 
-				pst.execute();
+				result = pst.executeQuery();
 
-				succes = true;
+				while (result.next() && buyAantal > 0) {
+					int verkoperUserID = result.getInt("userid");
+					double verkoperSaldo = retreiveSaldo(verkoperUserID);
+					int teKoop = result.getInt("aantal");
+					
+					if (teKoop > buyAantal) {
+						if (portoExists) {
+							int oldAantal = getAantalAandelen(userID, aandeelID);
+							int newAantal = oldAantal + buyAantal;
+
+							pst = connection
+									.prepareStatement("update portefeuille set aantal = ? where userID = ? and aandeelID = ?");
+							pst.setInt(1, newAantal);
+							pst.setInt(2, userID);
+							pst.setInt(3, aandeelID);
+
+							pst.execute();
+						} else {
+							pst = connection
+									.prepareStatement("insert into portefeuille(userID, aandeelID, aantal) values (?, ?, ?)");
+							pst.setInt(1, userID);
+							pst.setInt(2, aandeelID);
+							pst.setString(3, aantal);
+
+							pst.execute();
+						}
+						pst = connection
+								.prepareStatement("update verkooporder set aantal = ? where userid = ?");
+						pst.setInt(1, teKoop - buyAantal);
+						pst.setInt(2, verkoperUserID);
+
+						pst.execute();
+						
+						pst = connection
+								.prepareStatement("update user set saldo = ? where userID = ?");
+						pst.setDouble(1, verkoperSaldo + prijs * buyAantal);
+						pst.setInt(2, verkoperUserID);
+
+						pst.execute();
+
+						pst = connection
+								.prepareStatement("update user set saldo = ? where userID = ?");
+						pst.setDouble(1, newEndSaldo);
+						pst.setInt(2, userID);
+
+						pst.execute();
+
+						buyAantal = buyAantal - teKoop;
+						succes = true;
+					}
+					else {
+						
+					}
+				}
 			} catch (SQLException e) {
 				System.out.println("DBManager|retreiveBuy");
 				printSQLException(e);

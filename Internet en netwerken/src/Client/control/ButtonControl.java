@@ -76,6 +76,12 @@ public class ButtonControl implements ActionListener {
 						userName, password, aandeel, aantal);
 			}
 
+			beursModel.setSelectedAandeel(aandeel);
+			beursModel.setBuy(connection.getAandelen(userModel.getUser(),
+					"Buy " + aandeel));
+			beursModel.setSell(connection.getAandelen(
+					userModel.getUser(), "Sell " + aandeel));
+
 			beursControl.retreiveAlleAandelen();
 			beursControl.retreiveSaldo(userName);
 			beursControl.retreivePortoWaarde(userName);
