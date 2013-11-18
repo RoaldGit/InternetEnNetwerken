@@ -16,6 +16,7 @@ public class BeursControl {
 	private BeursModel beursModel;
 	private UserModel userModel;
 	private ClientConnection connection;
+	private AandelenLijst aandelenLijst;
 	
 	/**
 	 * De constructor van BeursControl.
@@ -48,6 +49,14 @@ public class BeursControl {
 	 */
 	public void retreiveSaldo(String user) {
 		userModel.setSaldo(connection.getSaldo(user));
+	}
+
+	public void setAandelenLijst(AandelenLijst aLijst) {
+		aandelenLijst = aLijst;
+	}
+
+	public void changeSelected(String aandeel) {
+		aandelenLijst.setSelectedItem(aandeel);
 	}
 
 	/**

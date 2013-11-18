@@ -55,6 +55,7 @@ public class ButtonControl implements ActionListener {
 			String password = userModel.getPassword();
 			String aandeel = beursModel.getAandeel();
 			String aantal = beursModel.getAantalAandelen();
+			String method = beursModel.getSelectedTable();
 
 			boolean done = false;
 
@@ -68,11 +69,11 @@ public class ButtonControl implements ActionListener {
 						userName, password, aandeel, aantal);
 				break;
 			case "change":
-				done = connection.executeTransaction("WijzigOrder", userName,
-						password, aandeel, aantal);
+				done = connection.executeTransaction("WijzigOrder", method
+						+ " " + userName, password, aandeel, aantal);
 				break;
 			case "cancel":
-				done = connection.executeTransaction("VerwijderOrder",
+				done = connection.executeTransaction("VerwijderOrder ",
 						userName, password, aandeel, aantal);
 			}
 
@@ -87,6 +88,7 @@ public class ButtonControl implements ActionListener {
 			beursControl.retreiveAlleAandelen();
 			beursControl.retreiveSaldo(userName);
 			beursControl.retreivePortoWaarde(userName);
+			beursControl.changeSelected(aandeel);
 
 			beursModel.clearSelect();
 

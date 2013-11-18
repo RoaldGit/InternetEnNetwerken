@@ -11,7 +11,7 @@ import Client.view.Tabel;
  * @version 0.1
  */
 public class BeursModel extends Observable {
-	private String aandeelSelect, aantalAandelen;
+	private String aandeelSelect, aantalAandelen, selectedTabel;
 	private double aandeelPrijs;
 	private Tabel tabelSelect = null;
 	int row;
@@ -55,6 +55,14 @@ public class BeursModel extends Observable {
 		notifyObservers(oldSelect);
 
 		selected();
+	}
+	
+	public void setSelectedTable(String table) {
+		selectedTabel = table;
+	}
+
+	public String getSelectedTable() {
+		return selectedTabel;
 	}
 
 	public void refreshSelect() {
@@ -100,8 +108,11 @@ public class BeursModel extends Observable {
 	}
 
 	/**
-	 * Deze functie set de porto.
-	 * @param data Data is een 2D-array met daarin de data voor de porto.
+	 * Deze functie set de data van de portefeuille van de user.
+	 * 
+	 * @param data
+	 *            Data is een 2D-array met daarin de data van de portefeuille
+	 *            van de user
 	 */
 	public void setPorto(Object[][] data) {
 		porto = data;
@@ -111,8 +122,11 @@ public class BeursModel extends Observable {
 	}
 
 	/**
-	 * Deze methode set de data voor het inkopen.
-	 * @param data Data is een 2D-array met daarin de data voor de inkoop.
+	 * Deze methode set de data voor kooporders van de user.
+	 * 
+	 * @param data
+	 *            Data is een 2D-array met daarin de data voor kooporders van de
+	 *            user.
 	 */
 	public void setBuying(Object[][] data) {
 		buying = data;
@@ -122,8 +136,11 @@ public class BeursModel extends Observable {
 	}
 
 	/**
-	 * Deze methode set de data voor het verkopen.
-	 * @param data Data is een 2D-array met daarin de data voor de verkoop
+	 * Deze methode set de data voor verkooporders van de user.
+	 * 
+	 * @param data
+	 *            Data is een 2D-array met daarin de data voor verkooporders van
+	 *            de user
 	 */
 	public void setSelling(Object[][] data) {
 		selling = data;
@@ -133,8 +150,11 @@ public class BeursModel extends Observable {
 	}
 
 	/**
-	 * Deze methode set de data voor het kopen
-	 * @param data Data is een 2D-array met daarin de data voor de koop
+	 * Deze methode set de data voor kooporders voor het geselecteerde aandeel
+	 * 
+	 * @param data
+	 *            Data is een 2D-array met daarin de data voor kooporders voor
+	 *            het geselecteerde aandeel.
 	 */
 	public void setBuy(Object[][] data) {
 		buy = data;
@@ -144,8 +164,12 @@ public class BeursModel extends Observable {
 	}
 
 	/**
-	 * Deze methode set de data voor wat er verkocht is.
-	 * @param data Data is een 2D-array met daarin de data voor wat er verkocht is.
+	 * Deze methode set de data voor verkooporders voor het geselecteerde
+	 * aandeel
+	 * 
+	 * @param data
+	 *            Data is een 2D-array met daarin de data voor verkooporders
+	 *            voor het geselecteerde aandeel.
 	 */
 	public void setSell(Object[][] data) {
 		sell = data;
@@ -163,62 +187,71 @@ public class BeursModel extends Observable {
 	}
 
 	/**
-	 * Deze method returned geselecteerd aandelen.
-	 * @return Returned een geselecteerd aandeel.
+	 * Deze method returned het, met de combobox, geselecteerd aandeel.
+	 * 
+	 * @return Returned een geselecteerde aandeel.
 	 */
 	public String getSelectedAandeel() {
 		return aandeelSelect;
 	}
 
 	/**
-	 * Deze methode returned een 2D-array met de porto data.
-	 * @return Returned een 2D-array met de porto data.
+	 * Deze methode returned een 2D-array met de portefeuille van de user.
+	 * 
+	 * @return Returned een 2D-array met de portefeuille van de user
 	 */
 	public Object[][] getPorto() {
 		return porto;
 	}
 
 	/**
-	 * Deze methode returned een 2D-array met de aandelen die gekocht kunnen worden.
-	 * @return Returned een 2D-array met de aandelen die gekocht kunnen worden.
+	 * Deze methode returned een 2D-array met kooporders van de user.
+	 * 
+	 * @return Returned een 2D-array met de kooporders van de user.
 	 */
 	public Object[][] getBuying() {
 		return buying;
 	}
 
 	/**
-	 * Deze methode returned een 2D-array met de aandelen die verkocht worden.
-	 * @return Returned een 2D-array met de aandelen die verkocht worden.
+	 * Deze methode returned een 2D-array met verkooporders van de user.
+	 * 
+	 * @return Returned een 2D-array met verkooporders van de user.
 	 */
 	public Object[][] getSelling() {
 		return selling;
 	}
 
 	/**
-	 * Deze methode returned een 2D-array van aandelen die gekocht kunnen worden
-	 * @return Returned een 2D-array van aandelen die gekocht kunnen worden
+	 * Deze methode returned een 2D-array van kooporders
+	 * 
+	 * @return Returned een 2D-array van kooporders.
 	 */
 	public Object[][] getBuy() {
 		return buy;
 	}
 
 	/**
-	 * Deze methode returned een 2D-array van verkochte aandelen
-	 * @return Returned een 2D-array van verkochte aandelen.
+	 * Deze methode returned een 2D-array van verkooporders
+	 * 
+	 * @return Returned een 2D-array van verkooporders.
 	 */
 	public Object[][] getSell() {
 		return sell;
 	}
 
 	/**
-	 * Deze methode set het aantal aandelen.
+	 * Deze methode set het aantal aandelen dat is ingevult in het textfield
+	 * (aantalVeld) in beursView.
 	 */
 	public void setAantal(String text) {
 		aantalAandelen = text;
 	}
 
 	/**
-	 * Deze methode returned het aantal aandelen.
+	 * Deze methode returned het aantal aandelen dat is ingevult in het
+	 * textfield (aantalVeld) in beursView.
+	 * 
 	 * @return Returned een string met het aantal aandelen.
 	 */
 	public String getAantalAandelen() {
@@ -229,7 +262,7 @@ public class BeursModel extends Observable {
 		return aandeelPrijs;
 	}
 
-	// public void setAandeelPrijs(double aandeelPrijs) {
-	// this.aandeelPrijs = aandeelPrijs;
-	// }
+	public void setAandeelPrijs(double aandeelPrijs) {
+		this.aandeelPrijs = aandeelPrijs;
+	}
 }

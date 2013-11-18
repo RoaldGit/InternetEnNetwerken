@@ -319,6 +319,8 @@ public class DBmanager {
 								aandeelID);
 						updateSaldo(verkoperUserID, verkoperSaldo, userID,
 								userSaldo, prijs, buyAantal);
+						System.out.println("Bought " + buyAantal);
+						buyAantal = 0;
 					}
 					else {
 						addToPorto(userID, aandeelID, teKoop);
@@ -326,8 +328,8 @@ public class DBmanager {
 								aandeelID);
 						updateSaldo(verkoperUserID, verkoperSaldo, userID,
 								userSaldo, prijs, teKoop);
+						buyAantal = buyAantal - teKoop;
 					}
-					buyAantal = buyAantal - teKoop;
 				}
 				if (buyAantal > 0) {
 					userSaldo = retreiveSaldo(userName);
@@ -383,8 +385,8 @@ public class DBmanager {
 								prijs, sellAantal);
 						sellAantal = 0;
 					} else {
-						addToPorto(koperUserID, aandeelID, sellAantal);
-						removeFromPorto(userID, aandeelID, sellAantal);
+						addToPorto(koperUserID, aandeelID, gevraagd);
+						removeFromPorto(userID, aandeelID, gevraagd);
 
 						updateBuyOrder(gevraagd, gevraagd, koperUserID,
 								aandeelID);
@@ -392,14 +394,11 @@ public class DBmanager {
 								prijs, gevraagd);
 						sellAantal = sellAantal - gevraagd;
 					}
-
 				}
 				if (sellAantal > 0) {
 					userSaldo = retreiveSaldo(userName);
 					placeSellOrder(userID, aandeelID, sellAantal);
-					removeFromPorto(userID, aandeelID, sellAantal);
 				}
-				removeFromPorto(userID, aandeelID, sellAantal);
 				succes = true;
 			} catch (SQLException e) {
 				System.out.println("DBManager|sellAandeel");
@@ -414,7 +413,7 @@ public class DBmanager {
 			PreparedStatement pst = null;
 
 			pst = connection
-					.prepareStatement("insert into kooporder(userid, aandeelid, aantal) values(?,?,?)");
+					.prepareStatement("insert into verkooporder(userid, aandeelid, aantal) values(?,?,?)");
 			pst.setInt(1, userID);
 			pst.setInt(2, aandeelID);
 			pst.setInt(3, sellAantal);
@@ -469,12 +468,14 @@ public class DBmanager {
 				pst.execute();
 			}
 
-			pst = connection
-					.prepareStatement("update user set saldo = ? where userID = ?");
-			pst.setDouble(1, userSaldo - prijs * buyAantal);
-			pst.setInt(2, userID);
+			if (userID != 0) {
+				pst = connection
+						.prepareStatement("update user set saldo = ? where userID = ?");
+				pst.setDouble(1, userSaldo - prijs * buyAantal);
+				pst.setInt(2, userID);
 
-			pst.execute();
+				pst.execute();
+			}
 		} catch (SQLException e) {
 			System.out.println("DBManager|updateSaldo");
 			printSQLException(e);
@@ -561,7 +562,7 @@ public class DBmanager {
 	public void removeFromPorto(int userID, int aandeelID, int sellAantal) {
 		try {
 			PreparedStatement pst = null;
-				int oldAantal = getAantalAandelen(userID, aandeelID);
+			int oldAantal = getAantalAandelen(userID, aandeelID);
 			int newAantal = oldAantal - sellAantal;
 
 			if (newAantal > 0) {
@@ -677,9 +678,50 @@ public class DBmanager {
 				aantal = result.getInt("aantal");
 
 		} catch (SQLException e) {
-			System.out.println("DBManager|getUserID");
+			System.out.println("DBManager|getAantalAandelen");
 			printSQLException(e);
 		}
+		return aantal;
+	}
+
+	public int getAantalFromBuy(int userID, int aandeelID) {
+		int aantal = 0;
+		try {
+			PreparedStatement pst = connection.prepareStatement("select aantal from kooporder where userid = ? and aandeelid = ?");
+			pst.setInt(1, userID);
+			pst.setInt(2, aandeelID);
+			
+			ResultSet result = pst.executeQuery();
+
+			if (result.next())
+				aantal = result.getInt("aantal");
+
+		} catch (SQLException e) {
+			System.out.println("DBManager|getAantalFromBuy");
+			printSQLException(e);
+		}
+		
+		return aantal;
+	}
+
+	public int getAantalFromSell(int userID, int aandeelID) {
+		int aantal = 0;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select aantal from verkooporder where userid = ? and aandeelid = ?");
+			pst.setInt(1, userID);
+			pst.setInt(2, aandeelID);
+
+			ResultSet result = pst.executeQuery();
+
+			if (result.next())
+				aantal = result.getInt("aantal");
+
+		} catch (SQLException e) {
+			System.out.println("DBManager|getAantalFromSell");
+			printSQLException(e);
+		}
+
 		return aantal;
 	}
 
@@ -735,5 +777,61 @@ public class DBmanager {
 			printSQLException(e);
 		}
 		return prijs;
+	}
+
+	public boolean verAnderOrder(String method, String userName,
+			String aandeel, String aantal) {
+		int userID = getUserID(userName);
+		int aandeelID = getAandeelID(aandeel);
+		int oudAantal = 0;
+		int nieuwAantal = Integer.parseInt(aantal);
+		
+		double prijs = retreivePrijs(aandeel);
+		double saldo = retreiveSaldo(userID);
+		
+		boolean succes = false;
+		try {
+			PreparedStatement pst = null;
+			if (method.equals("Verkoop")) {
+				double nieuwSaldo = saldo - (nieuwAantal - oudAantal) * prijs;
+
+				if (nieuwSaldo > 0) {
+					oudAantal = getAantalFromBuy(userID, aandeelID);
+					pst = connection
+							.prepareStatement("update kooporder set aantal = ? where aandeelid = ? and userid = ?");
+					pst.setString(1, aantal);
+					pst.setInt(2, aandeelID);
+					pst.setInt(3, userID);
+
+					pst.execute();
+
+					if (oudAantal > nieuwAantal)
+						updateSaldo(userID, saldo, 0, 0, prijs, nieuwAantal);
+					else
+						updateSaldo(0, 0, userID, saldo, prijs, nieuwAantal
+								- oudAantal);
+				}
+			} else {
+				int aandelenInBezit = getAantalAandelen(userID, aandeelID);
+				oudAantal = getAantalFromSell(userID, aandeelID);
+
+				pst = connection
+						.prepareStatement("update verkooporder set aantal = ? where aandeelid = ? and userid = ?");
+				pst.setString(1, aantal);
+				pst.setInt(2, aandeelID);
+				pst.setInt(3, userID);
+				pst.execute();
+			}
+
+
+
+
+			succes = true;
+		} catch (SQLException e) {
+			System.out.println("DBManager|getUserID");
+			printSQLException(e);
+		}
+		// TODO Auto-generated method stub
+		return succes;
 	}
 }

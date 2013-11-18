@@ -298,25 +298,25 @@ public class ClientConnection {
 		return aandeel;
 	}
 
-	// public double getAandeelPrijs(String selected) {
-	// double prijs = 0;
-	// try {
-	// outToClient.writeBytes("AandeelPrijs " + selected + "\n\r");
-	//
-	// String response = "";
-	//
-	// while (!response.contains("AandeelPrijs")
-	// && !response.contains("Error"))
-	// response = inFromClient.readLine();
-	//
-	// StringTokenizer tokenizedLine = new StringTokenizer(response);
-	//
-	// tokenizedLine.nextToken();
-	//
-	// prijs = Double.parseDouble(tokenizedLine.nextToken());
-	// } catch (Exception e) {
-	// System.out.println("ClientConnection|getAandeelPrijs: " + e);
-	// }
-	// return prijs;
-	// }
+	public double getAandeelPrijs(String selected) {
+		double prijs = 0;
+		try {
+			outToClient.writeBytes("AandeelPrijs " + selected + "\n\r");
+
+			String response = "";
+
+			while (!response.contains("AandeelPrijs")
+					&& !response.contains("Error"))
+				response = inFromClient.readLine();
+
+			StringTokenizer tokenizedLine = new StringTokenizer(response);
+
+			tokenizedLine.nextToken();
+
+			prijs = Double.parseDouble(tokenizedLine.nextToken());
+		} catch (Exception e) {
+			System.out.println("ClientConnection|getAandeelPrijs: " + e);
+		}
+		return prijs;
+	}
 }
