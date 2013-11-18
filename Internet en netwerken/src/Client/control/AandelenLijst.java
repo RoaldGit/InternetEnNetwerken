@@ -54,7 +54,7 @@ public class AandelenLijst extends JComboBox {
 
 	public void updateSelect() {
 		String selected = getSelectedItem().toString();
-		System.out.println(selected);
+
 		beursModel.setSelectedAandeel(selected);
 		beursModel.setBuy(clientConnection.getAandelen(userModel.getUser(),
 				"Buy " + selected));
@@ -69,16 +69,6 @@ public class AandelenLijst extends JComboBox {
 	 */
 	class ComboListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			// JComboBox combo = (JComboBox) e.getSource();
-			//
-			// String selected = combo.getSelectedItem().toString();
-			//
-			// beursModel.setSelectedAandeel(selected);
-			//
-			// beursModel.setBuy(clientConnection.getAandelen(userModel.getUser(),
-			// "Buy " + selected));
-			// beursModel.setSell(clientConnection.getAandelen(
-			// userModel.getUser(), "Sell " + selected));
 			updateSelect();
 		}
 	}
