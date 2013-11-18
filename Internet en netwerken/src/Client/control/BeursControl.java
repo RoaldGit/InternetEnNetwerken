@@ -77,4 +77,8 @@ public class BeursControl {
 			break;
 		}
 	}
+
+	public void retreivePortoWaarde (String user) {
+		userModel.setPortoWaarde(connection.getPortoWaarde(user));
+	}
 }

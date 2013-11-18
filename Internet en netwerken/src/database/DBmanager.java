@@ -122,6 +122,25 @@ public class DBmanager {
 		return saldo;		
 	}
 
+	public double retreivePortoWaarde(String user) {
+		double waarde = 0;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select aantal*prijs from portefeuille natural join aandelen natural join	user where username = ?");
+
+			pst.setString(1, user);
+
+			ResultSet result = pst.executeQuery();
+
+			if (result.next())
+				waarde = result.getDouble("aantal*prijs");
+		} catch (SQLException e) {
+			System.out.println("DBManager|retreivePortoWaarde");
+			printSQLException(e);
+		}
+		return waarde;
+	}
+
 	public String retreiveAandelen() {
 		String aandelen = "";
 
@@ -243,6 +262,201 @@ public class DBmanager {
 			printSQLException(e);
 		}
 		return array;
+	}
+
+	public boolean buyAandeel(String userName, String aandeel, String aantal) {
+		int userID = getUserID(userName);
+		int aandeelID = getAandeelID(aandeel);
+		int buyAantal = Integer.parseInt(aantal);
+		
+		double prijs = getAandeelPrijs(aandeelID);
+		double saldo = retreiveSaldo(userName);
+		double newSaldo = saldo - buyAantal * prijs;
+
+		boolean portoExists = checkPorto(userID, aandeelID);
+		boolean succes = false;
+
+		if (newSaldo > 0) {
+			try {
+				PreparedStatement pst = null;
+				if (portoExists) {
+					int oldAantal = getAantalAandelen(userID, aandeelID);
+					int newAantal = oldAantal + buyAantal;
+
+					pst = connection
+							.prepareStatement("update portefeuille set aantal = ? where userID = ? and aandeelID = ?");
+					pst.setInt(1, newAantal);
+					pst.setInt(2, userID);
+					pst.setInt(3, aandeelID);
+				} else {
+					pst = connection
+							.prepareStatement("insert into portefeuille(userID, aandeelID, aantal) values (?, ?, ?)");
+					pst.setInt(1, userID);
+					pst.setInt(2, aandeelID);
+					pst.setString(3, aantal);
+				}
+				pst.execute();
+
+				pst = connection
+						.prepareStatement("update user set saldo = ? where userID = ?");
+				pst.setDouble(1, newSaldo);
+				pst.setInt(2, userID);
+
+				pst.execute();
+
+				succes = true;
+			} catch (SQLException e) {
+				System.out.println("DBManager|retreiveBuy");
+				printSQLException(e);
+			}
+		}
+		return succes;
+	}
+
+	public boolean sellAandeel(String userName, String aandeel, String aantal) {
+		int userID = getUserID(userName);
+		int aandeelID = getAandeelID(aandeel);
+		int buyAantal = Integer.parseInt(aantal);
+
+		double prijs = getAandeelPrijs(aandeelID);
+		double saldo = retreiveSaldo(userName);
+		double newSaldo = saldo - buyAantal * prijs;
+
+		boolean portoExists = checkPorto(userID, aandeelID);
+		boolean succes = false;
+
+		if (newSaldo > 0) {
+			try {
+				PreparedStatement pst = null;
+				if (portoExists) {
+					int oldAantal = getAantalAandelen(userID, aandeelID);
+					int newAantal = oldAantal + buyAantal;
+
+					pst = connection
+							.prepareStatement("update portefeuille set aantal = ? where userID = ? and aandeelID = ?");
+					pst.setInt(1, newAantal);
+					pst.setInt(2, userID);
+					pst.setInt(3, aandeelID);
+				} else {
+					pst = connection
+							.prepareStatement("insert into portefeuille(userID, aandeelID, aantal) values (?, ?, ?)");
+					pst.setInt(1, userID);
+					pst.setInt(2, aandeelID);
+					pst.setString(3, aantal);
+				}
+				pst.execute();
+
+				pst = connection
+						.prepareStatement("update user set saldo = ? where userID = ?");
+				pst.setDouble(1, newSaldo);
+				pst.setInt(2, userID);
+
+				pst.execute();
+
+				succes = true;
+			} catch (SQLException e) {
+				System.out.println("DBManager|retreiveBuy");
+				printSQLException(e);
+			}
+		}
+		return succes;
+	}
+
+	public boolean checkPorto(int userID, int aandeelID) {
+		boolean found = false;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select * from portefeuille where userID = ? and aandeelID = ?");
+			pst.setInt(1, userID);
+			pst.setInt(2, aandeelID);
+
+			ResultSet result = pst.executeQuery();
+
+			if (result.next())
+				found = true;
+			// System.out.println(result.getObject(1));
+
+		} catch (SQLException e) {
+			System.out.println("DBManager|checkPorto");
+			printSQLException(e);
+		}
+		return found;
+	}
+
+	private int getAandeelID(String aandeel) {
+		int aandeelID = 0;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select aandeelID from aandelen where aandeelnaam = ?");
+			pst.setString(1, aandeel);
+
+			ResultSet result = pst.executeQuery();
+
+			if (result.next())
+				aandeelID = result.getInt("aandeelID");
+
+		} catch (SQLException e) {
+			System.out.println("DBManager|getAandeelID");
+			printSQLException(e);
+		}
+		return aandeelID;
+	}
+
+	private double getAandeelPrijs(int aandeelID) {
+		double prijs = 0.0;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select prijs from aandelen where aandeelid = ?");
+			pst.setInt(1, aandeelID);
+
+			ResultSet result = pst.executeQuery();
+
+			if (result.next())
+				prijs = result.getDouble("prijs");
+		} catch (SQLException e) {
+			System.out.println("DBManager|getAandeelID");
+			printSQLException(e);
+		}
+		return prijs;
+	}
+
+	public int getUserID(String userName) {
+		int userID = 0;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select userid from user where username = ?");
+			pst.setString(1, userName);
+
+			ResultSet result = pst.executeQuery();
+
+			if (result.next())
+				userID = result.getInt("userID");
+
+		} catch (SQLException e) {
+			System.out.println("DBManager|getUserID");
+			printSQLException(e);
+		}
+		return userID;
+	}
+
+	public int getAantalAandelen(int userID, int aandeelID) {
+		int aantal = 0;
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("select aantal from portefeuille where userid = ? and aandeelID = ?");
+			pst.setInt(1, userID);
+			pst.setInt(2, aandeelID);
+
+			ResultSet result = pst.executeQuery();
+
+			if (result.next())
+				aantal = result.getInt("aantal");
+
+		} catch (SQLException e) {
+			System.out.println("DBManager|getUserID");
+			printSQLException(e);
+		}
+		return aantal;
 	}
 
 	public Object[][] create2DArray(ResultSet result, int rows) {

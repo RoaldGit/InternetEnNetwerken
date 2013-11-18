@@ -77,6 +77,9 @@ public class ButtonControl implements ActionListener {
 			}
 
 			beursControl.retreiveAlleAandelen();
+			beursControl.retreiveSaldo(userName);
+			beursControl.retreivePortoWaarde(userName);
+
 			beursModel.refreshSelect();
 
 			if (done)

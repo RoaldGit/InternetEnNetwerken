@@ -158,7 +158,6 @@ public class ClientConnection {
 		String response = "";
 		String request = transactie + " " + user + " " + password + " "
 				+ aandeel + " " + aantal;
-
 		boolean succes = false;
 
 		try {
@@ -205,6 +204,28 @@ public class ClientConnection {
 		return saldo;
 	}
 	
+	public double getPortoWaarde(String user) {
+		String response = "";
+		String request = "PortoWaarde " + user;
+		double waarde = 0;
+
+		try {
+			outToClient.writeBytes(request + "\n\r");
+			while (!response.contains("PortoWaarde")) {
+				response = inFromClient.readLine();
+
+				if (!response.equals("")) {
+					StringTokenizer tokenizedLine = new StringTokenizer(
+							response);
+					tokenizedLine.nextToken();
+					waarde = Double.parseDouble(tokenizedLine.nextToken());
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("ClientConnection|getPortoWaarde: " + e);
+		}
+		return waarde;
+	}
 	/**
 	 * De method die de size terug haalt van de response van de server.
 	 * @param response De response die de server terug stuurt

@@ -109,6 +109,7 @@ public class LoginControl extends JPanel{
 					userModel.setUserDetails(passwordInput, userInput);
 					beursControl.retreiveAlleAandelen();
 					beursControl.retreiveSaldo(userInput);
+					beursControl.retreivePortoWaarde(userInput);
 				} else
 					JOptionPane.showMessageDialog(new JFrame(),
 							"Invalid username or password", "Error bij login",

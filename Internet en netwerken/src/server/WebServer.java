@@ -62,9 +62,9 @@ public class WebServer extends Thread {
 			while (!connectionSocket.isClosed()) {
 				requestMessageLine = inFromClient.readLine();
 
-				// if (!requestMessageLine.equals(""))
-				// System.out.println("Webserver|Received request: "
-				// + requestMessageLine);
+				if (requestMessageLine.contains("AandeelKoop"))
+					System.out.println("Webserver|Received request: "
+							+ requestMessageLine);
 
 				StringTokenizer tokenizedLine = new StringTokenizer(
 						requestMessageLine);
@@ -109,7 +109,7 @@ public class WebServer extends Thread {
 						// TODO database stuff
 						break;
 					case "AandeelKoop":
-						sendToClient(outToClient, "AandeelKoop ok");
+						koopAandeel(tokenizedLine, outToClient);
 						// TODO database stuff
 						break;
 					case "AandeelVerkoop":
@@ -118,6 +118,9 @@ public class WebServer extends Thread {
 						break;
 					case "Saldo":
 						sendSaldo(tokenizedLine, outToClient);
+						break;
+					case "PortoWaarde":
+						sendPortoWaarde(tokenizedLine, outToClient);
 						break;
 					case "Done":
 						sendToClient(outToClient, "Ack");
@@ -142,6 +145,15 @@ public class WebServer extends Thread {
 		Double saldo = dbManager.retreiveSaldo(user);
 
 		sendToClient(outToClient, "Saldo " + saldo);
+	}
+
+	private void sendPortoWaarde(StringTokenizer tokenizedLine,
+			DataOutputStream outToClient) {
+		String user = tokenizedLine.nextToken();
+
+		Double waarde = dbManager.retreivePortoWaarde(user);
+
+		sendToClient(outToClient, "PortoWaarde " + waarde);
 	}
 
 	private void sendAandeelNamen(DataOutputStream outToClient) {
@@ -234,6 +246,16 @@ public class WebServer extends Thread {
 	
 	public void koopAandeel(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
+		String userName = tokenizedLine.nextToken();
+		tokenizedLine.nextToken();
+		String aandeel = tokenizedLine.nextToken();
+		String aantal = tokenizedLine.nextToken();
+
+		boolean succes = dbManager.buyAandeel(userName, aandeel, aantal);
+		if (succes)
+			sendToClient(outToClient, "AandeelKoop ok");
+		else
+			sendToClient(outToClient, "AandeelKoop error");
 	}
 	
 	public void stortGeld(StringTokenizer tokenizedLine,

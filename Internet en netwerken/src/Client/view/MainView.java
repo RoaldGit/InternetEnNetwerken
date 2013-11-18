@@ -112,10 +112,10 @@ public class MainView extends JFrame implements Observer {
 			if (obj.equals("logged") && clientModel.getConnected()) {
 				if (clientModel.getLoggedIn()) {
 					loggedIn.setText("Logged in as: " + userModel.getUser());
-					String saldoString = String.format("Huidig saldo: € %.2f",
+					String saldoString = String.format("Huidig saldo: € %,.2f",
 							userModel.getSaldo());
 					String portoString = String.format(
-							"Waarde portofeuille: € %.2f",
+							"Waarde portofeuille: € %,.2f",
 							userModel.getPortoWaarde());
 
 					saldo.setText(saldoString);
@@ -138,9 +138,14 @@ public class MainView extends JFrame implements Observer {
 		}
 		if (obs == userModel) {
 			if (obj.equals("saldo")) {
-				String saldoString = String.format("Huidig saldo: € %.2f",
+				String saldoString = String.format("Huidig saldo: € %,.2f",
 						userModel.getSaldo());
 				saldo.setText(saldoString);
+			}
+			if (obj.equals("waarde")) {
+				String waardeString = String.format("Huidig saldo: € %,.2f",
+						userModel.getPortoWaarde());
+				portoWaarde.setText(waardeString);
 			}
 		}
 	}

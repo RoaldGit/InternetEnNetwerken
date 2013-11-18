@@ -54,6 +54,12 @@ public class UserModel extends Observable {
 		notifyObservers("saldo");
 	}
 
+	public void setPortoWaarde(double waarde) {
+		portoWaarde = waarde;
+
+		setChanged();
+		notifyObservers("waarde");
+	}
 	/**
 	 * Deze method returned een String met de username.
 	 * @return Returned een String met de username.
