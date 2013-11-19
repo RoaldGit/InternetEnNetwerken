@@ -15,6 +15,12 @@ import Client.model.BeursModel;
 import Client.model.ClientModel;
 import Client.model.UserModel;
 
+/**
+ * De Mainview bouwt de gehele gui op.
+ * @author Roald en Stef
+ * @since 5-11-2013
+ * @version 0.1
+ */
 public class MainView extends JFrame implements Observer {
 	private LoginView login;
 	private BeursView beurs;
@@ -24,7 +30,11 @@ public class MainView extends JFrame implements Observer {
 	private JLabel connected, loggedIn, saldo, portoWaarde;
 	private JPanel sideBar;
 	private ClientConnection connection;
+	private BeursControl beursControl;
 
+	/**
+	 * De constructor waarin alles geinitialiseerd wordt.
+	 */
 	public MainView() {
 		JFrame frame = new JFrame("Internet en Netwerken Eindopdracht");
 		frame.setBounds(40, 40, 800, 800);
@@ -40,6 +50,7 @@ public class MainView extends JFrame implements Observer {
 		clientModel = new ClientModel();
 
 		connection = new ClientConnection(clientModel);
+		beursControl = new BeursControl(beursModel, userModel, connection);
 
 		clientModel.addObserver(this);
 
@@ -55,10 +66,12 @@ public class MainView extends JFrame implements Observer {
 		portoWaarde = new JLabel();
 		portoWaarde.setBounds(5, 50, 200, 20);
 
-		login = new LoginView(userModel, clientModel, connection, beursModel);
+		login = new LoginView(userModel, clientModel, connection, beursModel,
+				beursControl);
 		login.setBounds(300, 300, 200, 100);
 
-		beurs = new BeursView(userModel, beursModel, connection);
+		beurs = new BeursView(userModel, beursModel, connection, beursControl,
+				clientModel);
 		beurs.setBounds(0, 0, 800, 800);
 
 		sideBar.setLayout(null);
@@ -80,13 +93,15 @@ public class MainView extends JFrame implements Observer {
 		login.setVisible(true);
 		beurs.setVisible(false);
 
-		BeursControl test = new BeursControl(beursModel, userModel, connection);
 		frame.setVisible(true);
 	}
 
-	public void update(Observable o, Object arg) {
-		if (o == clientModel) {
-			if (arg.equals("connected")) {
+	/**
+	 * Deze method wordt aangeroepen als de observable aangeeft dat er een verandering heeft plaats gevonden.
+	 */
+	public void update(Observable obs, Object obj) {
+		if (obs == clientModel) {
+			if (obj.equals("connected")) {
 				if (clientModel.getConnected()) {
 					connected.setText("Connected");
 					loggedIn.setText("Not logged in");
@@ -94,16 +109,13 @@ public class MainView extends JFrame implements Observer {
 				else
 					connected.setText("Not Connected");
 			}
-		}
-
-		if (o == userModel) {
-			if (arg.equals("loggedIn") && clientModel.getConnected()) {
+			if (obj.equals("logged") && clientModel.getConnected()) {
 				if (clientModel.getLoggedIn()) {
 					loggedIn.setText("Logged in as: " + userModel.getUser());
-					String saldoString = String.format("Huidig saldo: € %.2f",
+					String saldoString = String.format("Huidig saldo: € %,.2f",
 							userModel.getSaldo());
 					String portoString = String.format(
-							"Waarde portofeuille: € %.2f",
+							"Waarde portefeuille: € %,.2f",
 							userModel.getPortoWaarde());
 
 					saldo.setText(saldoString);
@@ -113,9 +125,28 @@ public class MainView extends JFrame implements Observer {
 					beurs.setVisible(true);
 
 					beurs.updateTables();
-				}
-				else
+				} else {
 					loggedIn.setText("Not logged in");
+					userModel.setUserDetails("", "");
+					saldo.setText("");
+					portoWaarde.setText("");
+
+					login.setVisible(true);
+					beurs.setVisible(false);
+				}
+			}
+		}
+		if (obs == userModel) {
+			if (obj.equals("saldo")) {
+				String saldoString = String.format("Huidig saldo: € %,.2f",
+						userModel.getSaldo());
+				saldo.setText(saldoString);
+			}
+			if (obj.equals("waarde")) {
+				String waardeString = String.format(
+						"Waarde portefeuille: € %,.2f",
+						userModel.getPortoWaarde());
+				portoWaarde.setText(waardeString);
 			}
 		}
 	}

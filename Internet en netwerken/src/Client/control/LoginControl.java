@@ -15,6 +15,13 @@ import Client.model.BeursModel;
 import Client.model.ClientModel;
 import Client.model.UserModel;
 
+/**
+ * Deze klasse handelt het inloggen vanaf het beginscherm af.
+ * 
+ * @author Roald en Stef
+ * @since 12-11-2013
+ * @version 0.1
+ */
 public class LoginControl extends JPanel{
 	private JTextField user, password;
 	private JButton login = new JButton("Login");
@@ -22,9 +29,18 @@ public class LoginControl extends JPanel{
 	private ClientModel clientModel;
 	private ClientConnection connection;
 	private BeursModel beursModel;
+	private BeursControl beursControl;
 
+	/**
+	 * De constructor voor LoginControl
+	 * @param uModel Het usermodel dat gebruikt wordt
+	 * @param cModel Het Clientmodel dat gebruikt wordt.
+	 * @param con De connectie met de server die gebruikt wordt.
+	 * @param bModel Het beursmodel dat gebruikt wordt.
+	 * @param bControl Het beurscontrol object dat gebruikt wordt.
+	 */
 	public LoginControl(UserModel uModel, ClientModel cModel,
-			ClientConnection con, BeursModel bModel) {
+			ClientConnection con, BeursModel bModel, BeursControl bControl) {
 		setLayout(new GridLayout(3, 2));
 		setSize(250, 100);
 
@@ -37,6 +53,7 @@ public class LoginControl extends JPanel{
 		clientModel = cModel;
 		connection = con;
 		beursModel = bModel;
+		beursControl = bControl;
 
 		add(userLabel);
 		add(user);
@@ -48,31 +65,56 @@ public class LoginControl extends JPanel{
 		login.addActionListener(new ButtonListener());
 	}
 	
+	/**
+	 * De method haalt op wat er in de user tekstbox wordt ingevult
+	 * @return Returned een string met de usernaam er in.
+	 */
 	public String getUser() {
 		return user.getText();
 	}
 
+	/**
+	 * De method haalt op wat er in de password tekstbox wordt ingevult
+	 * @return Returned een string met de password er in.
+	 */
 	public String getPass() {
 		return password.getText();
 	}
 
+	public void clearFields() {
+		user.setText("");
+		password.setText("");
+	}
+
+	/**
+	 * Deze klasse handelt af wat er gebeurt als er op de login knop gedrukt wordt.
+	 * @author Roald en Stef
+	 *
+	 */
 	class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 
 			String userInput = user.getText();
 			String passwordInput = password.getText();
-
-			String response = connection.login(userInput, passwordInput);
-
-			if (response.equals("Login ok")) {
-				clientModel.setLoggedIn(true);
-				userModel.setUserDetails(passwordInput, userInput);
-				beursModel.setUser(userInput);
-			}
- else
+			
+			if (userInput.equals("") || passwordInput.equals(""))
 				JOptionPane.showMessageDialog(new JFrame(),
-						"Invalid username or password", "Error bij login",
-						JOptionPane.ERROR_MESSAGE);
+						"Please enter your username and password",
+						"Error bij login", JOptionPane.ERROR_MESSAGE);
+			else {
+				String response = connection.login(userInput, passwordInput);
+
+				if (response.equals("Login ok")) {
+					clientModel.setLoggedIn(true);
+					userModel.setUserDetails(passwordInput, userInput);
+					beursControl.retreiveAlleAandelen();
+					beursControl.retreiveSaldo(userInput);
+					beursControl.retreivePortoWaarde(userInput);
+				} else
+					JOptionPane.showMessageDialog(new JFrame(),
+							"Invalid username or password", "Error bij login",
+							JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 }
