@@ -56,7 +56,7 @@ public class ButtonControl implements ActionListener {
 			String aandeel = beursModel.getAandeel();
 			String aantal = beursModel.getAantalAandelen();
 			String method = beursModel.getSelectedTable();
-
+			System.out.println(method);
 			boolean done = false;
 
 			switch (type) {

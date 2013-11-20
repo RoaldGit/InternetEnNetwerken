@@ -10,12 +10,25 @@ import java.util.StringTokenizer;
 import database.DBmanager;
 import database.DatabaseApl;
 
+/**
+ * Deze klasse executeert de server waarmee het programma mee moet verbinden. Het stuurt data heen en weer met de ClientConnection klasse. 
+ * @author Roald en Stef
+ * @since 9-11-2013
+ * @version  0.1
+ */
 public class WebServer extends Thread {
 	private String requestMessageLine;
 	private ServerSocket listenSocket;
 	private String user = "a", pass = "b";
 	private DBmanager dbManager;
 
+	/**
+	 * De constructor voor de webserver
+	 * @param port De port waar de server op zal runnen
+	 * @param naam naam van de database
+	 * @param user username van de database
+	 * @param pass password van de database
+	 */
 	public WebServer(int port, String naam, String user, String pass) {
 		dbManager = DBmanager.getInstance(naam, user, pass);
 		DatabaseApl apl = new DatabaseApl(dbManager, naam);
@@ -27,6 +40,10 @@ public class WebServer extends Thread {
 		}
 	}
 
+	/**
+	 * 2de constructor zonder een database connectie
+	 * @param port port waarop de server zal runnen
+	 */
 	public WebServer(int port) {
 		try {
 			listenSocket = new ServerSocket(port);
@@ -35,6 +52,9 @@ public class WebServer extends Thread {
 		}
 	}
 
+	/**
+	 * De methode die continu blijft runnen, waarin de server inkomende connecties accepteert.
+	 */
 	public void run() {
 		while (!listenSocket.isClosed()) {
 			try {
@@ -48,6 +68,10 @@ public class WebServer extends Thread {
 		}
 	}
 
+	/**
+	 * Deze methode ontvangt alle requests van de client connection.
+	 * @param connectionSocket De socket van de client die connect met server.
+	 */
 	public void serve(Socket connectionSocket) {
 		BufferedReader inFromClient = null;
 		DataOutputStream outToClient = null;
@@ -136,35 +160,50 @@ public class WebServer extends Thread {
 		}
 	}
 
+	/**
+	 * Een order verwijderen
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	private void verwijderOrder(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String method = tokenizedLine.nextToken();
 		String userName = tokenizedLine.nextToken();
 		tokenizedLine.nextToken();
 		String aandeel = tokenizedLine.nextToken();
-		String aantal = tokenizedLine.nextToken();
-		boolean succes = dbManager.verAnderOrder(method, userName, aandeel,
-				aantal);
+		
+		boolean succes = dbManager.verwijderOrder(method, userName, aandeel);
 		if (succes)
 			sendToClient(outToClient, "VerwijderOrder ok");
 		else
 			sendToClient(outToClient, "VerwijderOrder error");
 	}
 
+	/**
+	 * Een order wijzigen
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	private void wijzigOrder(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String method = tokenizedLine.nextToken();
 		String userName = tokenizedLine.nextToken();
 		tokenizedLine.nextToken();
 		String aandeel = tokenizedLine.nextToken();
+		String aantal = tokenizedLine.nextToken();
 
-		boolean succes = dbManager.verwijderOrder(method, userName, aandeel);
+		boolean succes = dbManager.verAnderOrder(method, userName, aandeel, aantal);
 		if (succes)
 			sendToClient(outToClient, "WijzigOrder ok");
 		else
 			sendToClient(outToClient, "WijzigOrder error");
 	}
 
+	/**
+	 * De prijs van een aandeel ophalen uit de database
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	private void sendAandeelPrijs(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String aandeel = tokenizedLine.nextToken();
@@ -173,6 +212,11 @@ public class WebServer extends Thread {
 		sendToClient(outToClient, "AandeelPrijs " + prijs);
 	}
 
+	/**
+	 * Saldo ophalen uit de database
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	private void sendSaldo(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String user = tokenizedLine.nextToken();
@@ -182,6 +226,11 @@ public class WebServer extends Thread {
 		sendToClient(outToClient, "Saldo " + saldo);
 	}
 
+	/**
+	 * Portowaarde ophalen uit een database
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	private void sendPortoWaarde(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String user = tokenizedLine.nextToken();
@@ -191,12 +240,21 @@ public class WebServer extends Thread {
 		sendToClient(outToClient, "PortoWaarde " + waarde);
 	}
 
+	/**
+	 * Aandelennamen sturen.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd
+	 */
 	private void sendAandeelNamen(DataOutputStream outToClient) {
 		String aandelen = dbManager.retreiveAandelen();
 
 		sendToClient(outToClient, "Aandelen: " + aandelen);
 	}
 
+	/**
+	 * De logingegevens checken in de database.
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	public void checkLogin(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String username, password;
@@ -208,7 +266,12 @@ public class WebServer extends Thread {
 		else
 			sendToClient(outToClient, "Login incorrect");
 	}
-	
+
+	/**
+	 * Aandelen ophalen uit de database.
+	 * @param outToClient Hiermee een response naar de client sturen
+	 * @param data Een 2D array waarin de data over de aandelen zit.
+	 */
 	public void getAandelen(DataOutputStream outToClient,
 			Object[][] data) {
 		sendToClient(outToClient, "Aandeel: Size: " + data.length);
@@ -223,7 +286,12 @@ public class WebServer extends Thread {
 
 		sendToClient(outToClient, "Aandeel: Done");
 	}
-	
+
+	/**
+	 * Haal de huidige portofeuille op.
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	public void getPorto(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String username = tokenizedLine.nextToken();
@@ -232,18 +300,28 @@ public class WebServer extends Thread {
 		getAandelen(outToClient, data);
 	}
 
+	/**
+	 * Inkooporders van de aanbieder.
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	public void getBuy(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String aandeel = "";
 
 		if(tokenizedLine.hasMoreTokens())
 			aandeel = tokenizedLine.nextToken();
-		
+
 		Object[][] data = dbManager.retreiveBuy(aandeel);
 
 		getAandelen(outToClient, data);
 	}
 
+	/**
+	 * Verkooporders van de aanbieder.
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	public void getSell(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String aandeel = "";
@@ -256,15 +334,25 @@ public class WebServer extends Thread {
 		getAandelen(outToClient, data);
 	}
 
+	/**
+	 * De kooporders van de gebruiker.
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	public void getBuying(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String username = tokenizedLine.nextToken();
-
+		
 		Object[][] data = dbManager.retreiveBuying(username);
 
 		getAandelen(outToClient, data);
 	}
 
+	/**
+	 * De verkooporders van de user.
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	public void getSelling(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String username = tokenizedLine.nextToken();
@@ -274,6 +362,11 @@ public class WebServer extends Thread {
 		getAandelen(outToClient, data);
 	}
 
+	/**
+	 * Een aandeel verkopen
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	public void verkoopAandeel(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String userName = tokenizedLine.nextToken();
@@ -287,7 +380,12 @@ public class WebServer extends Thread {
 		else
 			sendToClient(outToClient, "AandeelVerkoop error");
 	}
-	
+
+	/**
+	 * Een aandeel kopen
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	public void koopAandeel(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient) {
 		String userName = tokenizedLine.nextToken();
@@ -301,12 +399,22 @@ public class WebServer extends Thread {
 		else
 			sendToClient(outToClient, "AandeelKoop error");
 	}
-	
+
+	/**
+	 * Geld storten.
+	 * @param tokenizedLine Dit argument is het overige deel van de request.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 */
 	public void stortGeld(StringTokenizer tokenizedLine,
 			DataOutputStream outToClient){
 		//TODO Geld storten voor de user
 	}
 
+	/**
+	 * Een bericht naar de client gestuurd.
+	 * @param outToClient Hiermee wordt een response naar een client gestuurd.
+	 * @param message Bericht voor de client.
+	 */
 	public void sendToClient(DataOutputStream outToClient, String message) {
 		try {
 			outToClient.writeBytes(message + "\n\r");
