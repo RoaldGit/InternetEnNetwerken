@@ -62,7 +62,7 @@ public class WebServer extends Thread {
 			while (!connectionSocket.isClosed()) {
 				requestMessageLine = inFromClient.readLine();
 
-				if (requestMessageLine.contains("WijzigOrder"))
+				if (requestMessageLine.contains("VerwijderOrder"))
 					System.out.println("Webserver|Received request: "
 							+ requestMessageLine);
 
@@ -103,11 +103,9 @@ public class WebServer extends Thread {
 						break;
 					case "WijzigOrder":
 						wijzigOrder(tokenizedLine, outToClient);
-						// TODO database stuff
 						break;
 					case "VerwijderOrder":
-						sendToClient(outToClient, "VerwijderOrder ok");
-						// TODO database stuff
+						verwijderOrder(tokenizedLine, outToClient);
 						break;
 					case "AandeelKoop":
 						koopAandeel(tokenizedLine, outToClient);
@@ -135,8 +133,22 @@ public class WebServer extends Thread {
 		} catch (Exception e) {
 			System.out.println("Webserver|serve: " + e);
 			sendToClient(outToClient, "Error: " + requestMessageLine);
-			// Socket closes
 		}
+	}
+
+	private void verwijderOrder(StringTokenizer tokenizedLine,
+			DataOutputStream outToClient) {
+		String method = tokenizedLine.nextToken();
+		String userName = tokenizedLine.nextToken();
+		tokenizedLine.nextToken();
+		String aandeel = tokenizedLine.nextToken();
+		String aantal = tokenizedLine.nextToken();
+		boolean succes = dbManager.verAnderOrder(method, userName, aandeel,
+				aantal);
+		if (succes)
+			sendToClient(outToClient, "VerwijderOrder ok");
+		else
+			sendToClient(outToClient, "VerwijderOrder error");
 	}
 
 	private void wijzigOrder(StringTokenizer tokenizedLine,
@@ -145,15 +157,12 @@ public class WebServer extends Thread {
 		String userName = tokenizedLine.nextToken();
 		tokenizedLine.nextToken();
 		String aandeel = tokenizedLine.nextToken();
-		String aantal = tokenizedLine.nextToken();
 
-		boolean succes = dbManager.verAnderOrder(method, userName, aandeel,
-				aantal);
+		boolean succes = dbManager.verwijderOrder(method, userName, aandeel);
 		if (succes)
 			sendToClient(outToClient, "WijzigOrder ok");
 		else
 			sendToClient(outToClient, "WijzigOrder error");
-		// TODO Auto-generated method stub
 	}
 
 	private void sendAandeelPrijs(StringTokenizer tokenizedLine,

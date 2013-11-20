@@ -802,7 +802,6 @@ public class DBmanager {
 		int userID = getUserID(userName);
 		int aandeelID = getAandeelID(aandeel);
 
-		boolean succes = false;
 		try {
 			PreparedStatement pst = null;
 			if (method.equals("Buy"))
@@ -815,12 +814,13 @@ public class DBmanager {
 			pst.setInt(2, aandeelID);
 
 			pst.execute();
+			return true;
 		} catch (SQLException e) {
 			System.out.println("DBManager|verwijderOrder");
 			printSQLException(e);
 		}
 
-		return succes;
+		return false;
 	}
 
 	public void removeBuyOrder(int userID, int aandeelID) {

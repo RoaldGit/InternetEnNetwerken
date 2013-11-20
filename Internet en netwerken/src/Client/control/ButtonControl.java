@@ -73,8 +73,8 @@ public class ButtonControl implements ActionListener {
 						+ " " + userName, password, aandeel, aantal);
 				break;
 			case "cancel":
-				done = connection.executeTransaction("VerwijderOrder ",
-						userName, password, aandeel, aantal);
+				done = connection.executeTransaction("VerwijderOrder ", method
+						+ " " + userName, password, aandeel, aantal);
 			}
 
 			beursModel.setSelectedAandeel(aandeel);
