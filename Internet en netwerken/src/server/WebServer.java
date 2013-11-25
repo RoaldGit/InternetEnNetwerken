@@ -86,7 +86,7 @@ public class WebServer extends Thread {
 			while (!connectionSocket.isClosed()) {
 				requestMessageLine = inFromClient.readLine();
 
-				if (requestMessageLine.contains("VerwijderOrder"))
+				// if (requestMessageLine.contains("VerwijderOrder"))
 					System.out.println("Webserver|Received request: "
 							+ requestMessageLine);
 
@@ -198,6 +198,19 @@ public class WebServer extends Thread {
 		else
 			sendToClient(outToClient, "WijzigOrder error");
 	}
+
+	//
+	// private void verwijderOrder(StringTokenizer tokenizedLine,
+	// DataOutputStream outToClient) {
+	// String method = tokenizedLine.nextToken();
+	// String userName = tokenizedLine.nextToken();
+	// tokenizedLine.nextToken();
+	// String aandeel = tokenizedLine.nextToken();
+	// String aantal = tokenizedLine.nextToken();
+	//
+	// if(method.equals(Buy))
+	// dbManager.removeBuyOrder(userID, aandeelID)
+	// }
 
 	/**
 	 * De prijs van een aandeel ophalen uit de database
