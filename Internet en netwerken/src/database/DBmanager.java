@@ -783,55 +783,71 @@ public class DBmanager {
 			String aandeel, String aantal) {
 		int userID = getUserID(userName);
 		int aandeelID = getAandeelID(aandeel);
-		int oudAantal = 0;
-		int nieuwAantal = Integer.parseInt(aantal);
-		
-		double prijs = retreivePrijs(aandeel);
+		int oudAantal = getAantalFromBuy(userID, aandeelID);
+
 		double saldo = retreiveSaldo(userID);
-		
-		boolean succes = false;
+		double prijs = retreivePrijs(aandeel);
+
+		verwijderOrder(method, userName, aandeel);
+		if (method.equals("Buy")) {
+			updateSaldo(userID, saldo, 0, 0, prijs, oudAantal);
+			return buyAandeel(userName, aandeel, aantal);
+		} else {
+			addToPorto(userID, aandeelID, oudAantal);
+			return sellAandeel(userName, aandeel, aantal);
+		}
+	}
+
+	public boolean verwijderOrder(String method, String userName, String aandeel) {
+		int userID = getUserID(userName);
+		int aandeelID = getAandeelID(aandeel);
+
 		try {
 			PreparedStatement pst = null;
-			if (method.equals("Verkoop")) {
-				double nieuwSaldo = saldo - (nieuwAantal - oudAantal) * prijs;
-
-				if (nieuwSaldo > 0) {
-					oudAantal = getAantalFromBuy(userID, aandeelID);
-					pst = connection
-							.prepareStatement("update kooporder set aantal = ? where aandeelid = ? and userid = ?");
-					pst.setString(1, aantal);
-					pst.setInt(2, aandeelID);
-					pst.setInt(3, userID);
-
-					pst.execute();
-
-					if (oudAantal > nieuwAantal)
-						updateSaldo(userID, saldo, 0, 0, prijs, nieuwAantal);
-					else
-						updateSaldo(0, 0, userID, saldo, prijs, nieuwAantal
-								- oudAantal);
-				}
-			} else {
-				int aandelenInBezit = getAantalAandelen(userID, aandeelID);
-				oudAantal = getAantalFromSell(userID, aandeelID);
-
+			if (method.equals("Buy"))
 				pst = connection
-						.prepareStatement("update verkooporder set aantal = ? where aandeelid = ? and userid = ?");
-				pst.setString(1, aantal);
-				pst.setInt(2, aandeelID);
-				pst.setInt(3, userID);
-				pst.execute();
-			}
+					.prepareStatement("delete from kooporder where userid = ? and aandeelid = ?");
+			else
+				pst = connection
+						.prepareStatement("delete from kooporder where userid = ? and aandeelid = ?");
+			pst.setInt(1, userID);
+			pst.setInt(2, aandeelID);
 
-
-
-
-			succes = true;
+			pst.execute();
+			return true;
 		} catch (SQLException e) {
-			System.out.println("DBManager|getUserID");
+			System.out.println("DBManager|verwijderOrder");
 			printSQLException(e);
 		}
-		// TODO Auto-generated method stub
-		return succes;
+
+		return false;
+	}
+
+	public void removeBuyOrder(int userID, int aandeelID) {
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("delete from kooporder where userid = ? and aandeelid = ?");
+			pst.setInt(1, userID);
+			pst.setInt(2, aandeelID);
+
+			pst.execute();
+		} catch (SQLException e) {
+			System.out.println("DBManager|bla");
+			printSQLException(e);
+		}
+	}
+
+	public void removeSellOrder(int userID, int aandeelID) {
+		try {
+			PreparedStatement pst = connection
+					.prepareStatement("delete from kooporder where userid = ? and aandeelid = ?");
+			pst.setInt(1, userID);
+			pst.setInt(2, aandeelID);
+
+			pst.execute();
+		} catch (SQLException e) {
+			System.out.println("DBManager|bla");
+			printSQLException(e);
+		}
 	}
 }

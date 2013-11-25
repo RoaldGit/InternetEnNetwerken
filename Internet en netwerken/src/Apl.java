@@ -12,7 +12,7 @@ public class Apl {
 	private static boolean databaseTest = true;
 	private static boolean serverTest = true;
 	private static boolean clientTest = true;
-	private static String username = "root", pass = "a";
+	private static String username = "root", pass = "b";
 
 	public static void main(String args[]) {
 		if (databaseTest) {
